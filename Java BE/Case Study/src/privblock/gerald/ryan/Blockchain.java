@@ -1,4 +1,5 @@
 package privblock.gerald.ryan;
+import privblock.gerald.ryan.Block;
 /**
  * 
  * @author Gerald Ryan
@@ -9,5 +10,10 @@ package privblock.gerald.ryan;
  */
 
 public class Blockchain {
+//	
+	public Block create_genesis() {
+		Block genesis_block = new Block(1, "genesis_last_hash",);
+		return genesis_block;
+	}
 
 }
