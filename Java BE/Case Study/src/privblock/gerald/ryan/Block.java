@@ -114,9 +114,32 @@ public class Block {
 	 * @throws NoSuchAlgorithmException
 	 */
 
+	/**
+	 * Validate block by enforcing following rules: - Block must have the proper
+	 * last_hash reference - Block must meet the proof of work requirements -
+	 * difficulty must only adjust by one - block hash must be a valid combination
+	 * of block fields
+	 * 
+	 * @param last_block
+	 * @param block
+	 * @return
+	 */
+	public static boolean is_valid_block(Block last_block, Block block) {
+		if (block.getHash() != last_block.getHash()) {
+			return false;
+			// Should I throw an exception?
+		}
+
+		else {
+			return true;
+		}
+
+	}
+
 	public String toString() {
-		return "\n-----------BLOCK--------\ntimestamp: " + this.timestamp + "\nlastHash: " + this.lastHash + "\nhash: " + this.hash
-				+ "\ndifficulty: " + this.getDifficulty() + "\nNonce: " + this.nonce + "\n-----------------------\n";
+		return "\n-----------BLOCK--------\ntimestamp: " + this.timestamp + "\nlastHash: " + this.lastHash + "\nhash: "
+				+ this.hash + "\ndifficulty: " + this.getDifficulty() + "\nNonce: " + this.nonce
+				+ "\n-----------------------\n";
 
 	}
 
@@ -124,10 +147,10 @@ public class Block {
 		String md = CryptoHash.getSHA256("foobar");
 		Block genesis = genesis_block();
 		System.out.println(genesis.toString());
-		String[] new_data = {"watch", "AOT"};
+		String[] new_data = { "watch", "AOT" };
 		Block new_block = mine_block(genesis, new_data);
 		System.out.println(new_block.toString());
-		System.out.println(mine_block(new_block, new String[] {"crypto", "is", "fun"}).toString());
+		System.out.println(mine_block(new_block, new String[] { "crypto", "is", "fun" }).toString());
 	}
 
 }
