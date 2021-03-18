@@ -6,6 +6,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date; // gets time in ms.
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import privblock.gerald.ryan.utilities.CryptoHash;
 
 /**
@@ -16,7 +20,13 @@ import privblock.gerald.ryan.utilities.CryptoHash;
  *         last_hash, the data, the difficulty and the nonce
  *
  */
+@Entity
+@Table (name="block")
 public class Block {
+	
+	public static int blockcount = 0;
+	@Id
+	int id;
 	long timestamp;
 	String lastHash;
 	String hash;
@@ -55,6 +65,7 @@ public class Block {
 	 */
 	public Block(long timestamp, String lastHash, String hash, String[] data, int difficulty, int nonce) {
 		super();
+		this.id = this.blockcount;
 		this.timestamp = timestamp;
 		this.lastHash = lastHash;
 		this.hash = hash;
@@ -62,8 +73,11 @@ public class Block {
 		this.difficulty = difficulty;
 		this.nonce = nonce;
 	}
-
-	public String toString() {
+	
+	public Block() {
+		
+	}
+	public String toStringConsole() {
 		String datastring = "";
 		for (String s: data) {
 			datastring = datastring + s + "|--|";
@@ -74,6 +88,14 @@ public class Block {
 				datastring + 
 				"\nNonce: " + this.nonce
 				+ "\n-----------------------\n";
+	}
+	public String toString() {
+		String datastring = "";
+		for (String s: data) {
+			datastring = datastring + s + "|--|";
+		}
+		
+		return String.format("%5s %5s %10s %15s %15s %15s", id, timestamp, lastHash, hash, datastring, difficulty, nonce);
 	}
 
 	/**
@@ -111,7 +133,7 @@ public class Block {
 		System.out.println("binary_Hash_work_end " + binary_hash_work_end);
 		System.out.println("binary hash " + binary_hash);
 		System.out.println("BLOCK MINED");
-
+		blockcount++;
 		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
 	}
 

@@ -1,4 +1,4 @@
-package privblock.gerald.ryan.main;
+package privblock.gerald.ryan.mains;
 
 public class BlockchainAppMain {
 

@@ -1,4 +1,4 @@
-package privblock.gerald.ryan.main;
+package privblock.gerald.ryan.mains;
 	
 	import java.sql.SQLException;
 	import java.util.Scanner;
@@ -80,7 +80,7 @@ package privblock.gerald.ryan.main;
 	//				break;
 				case 8:
 	//				accountApp.close();
-					System.out.println("\nClosing the app...");
+					System.out.println("\nLeaving Account Panel...");
 					break;
 				}
 			}

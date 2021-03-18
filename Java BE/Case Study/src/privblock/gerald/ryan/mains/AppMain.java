@@ -1,12 +1,16 @@
-package privblock.gerald.ryan.main;
+package privblock.gerald.ryan.mains;
 
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class AppMain {
+	public static AccountAppMain accountApp = new AccountAppMain();
+	public static BlockAppMain blockApp = new BlockAppMain();
 
 	public static Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException, NoSuchAlgorithmException {
 
 		int id;
 
@@ -17,12 +21,14 @@ public class AppMain {
 			switch (choice) {
 			case 1:
 				System.out.println("Pulling up account options");
+				accountApp.main(args);
 				break;
 			case 2:
 				System.out.println("Pulling up user options");
 				break;
 			case 3:
 				System.out.println("Pulling up block interface");
+				blockApp.main(args);
 				break;
 			case 4:
 				System.out.println("Pulling up blockchain interface");
