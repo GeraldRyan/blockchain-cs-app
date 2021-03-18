@@ -1,4 +1,4 @@
-package privblock.gerald.ryan.util;
+package privblock.gerald.ryan.utilities;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

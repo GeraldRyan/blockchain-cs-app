@@ -1,11 +1,12 @@
-package privblock.gerald.ryan;
+package privblock.gerald.ryan.entity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date; // gets time in ms.
-import privblock.gerald.ryan.util.CryptoHash;
+
+import privblock.gerald.ryan.utilities.CryptoHash;
 
 /**
  * 

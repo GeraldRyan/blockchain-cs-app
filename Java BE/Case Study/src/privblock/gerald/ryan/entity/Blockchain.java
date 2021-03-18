@@ -1,9 +1,9 @@
-package privblock.gerald.ryan;
+package privblock.gerald.ryan.entity;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-import privblock.gerald.ryan.Block;
+import privblock.gerald.ryan.entity.Block;
 
 
 /**
