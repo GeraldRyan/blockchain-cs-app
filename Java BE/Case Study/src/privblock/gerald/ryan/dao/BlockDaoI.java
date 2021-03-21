@@ -9,6 +9,10 @@ public interface BlockDaoI {
 	public void addBlock(Block block);
 
 	public Block getBlock(int id); // should really get by hash via query or by timestamp - get block by unique identifier
+	
+	public static Block findBlockByHash(long hashcode) {
+		return null;
+	}
 
 //	public boolean updateBlock(Block block); // Blocks are immutable. They are not altered. Chains may be altered but not blocks. 
 	

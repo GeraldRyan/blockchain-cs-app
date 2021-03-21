@@ -1,32 +1,87 @@
 package privblock.gerald.ryan.entity;
-
+//@GeneratedValue(strategy=GenerationType.AUTO)  Consider using this later under ID to auto increment
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.eclipse.persistence.indirection.ValueHolderInterface;
 
 import privblock.gerald.ryan.entity.Block;
-
 
 /**
  * 
  * @author Gerald Ryan Blockchain class of blockchain app.
- *
+ * Blockchain class. Instantiate blockchain with a name as string
  *
  *
  */
-
+@Entity
+@Table(name = "blockchain")
 public class Blockchain {
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id
+	int id;
+	String coin_name;
+	long date_created;
+	long date_last_modified;
+	int length_of_chain;
+//	@Basic(fetch=FetchType.EAGER)
+	@Transient
 	ArrayList<Block> chain = new ArrayList<Block>();
 
+	
+	
 	/**
-	 * Constructor function, initializes an array list and adds a genesis block
+	 * Constructor function, initializes an ArrayList of Blocks with a valid genesis block. Future blocks are to be mined. 
 	 */
-	Blockchain() {
+	public Blockchain(String name) {
+		this.coin_name = name;
+		this.date_created = new Date().getTime();
+		this.chain.add(Block.genesis_block());
+		this.length_of_chain = 1;
+	}
+
+	public Blockchain() {
 		this.chain.add(Block.genesis_block());
 	}
+
+	
+//	private ValueHolderInterface chainValueHolder;
+//
+//	// Use this get/set pair when configuring your Mapping
+//	public void setChainValueHolder(ValueHolderInterface value) {
+//		this.chainValueHolder = value;
+//	}
+//
+//	public ValueHolderInterface getChainValueHolder() {
+//		return this.chainValueHolder;
+//	}
+
+////	 Your application uses these methods to interact with Addresses
+//	public void setChain(ArrayList<Block> chain) {
+//		this.chainValueHolder.setValue(chain);
+//	}
+//
+//	public ArrayList<Block> getChain() {
+//		return (ArrayList<Block>) this.chainValueHolder.getValue();
+//	}
+
 
 	public void add_block(String[] data) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), data);
 		this.chain.add(new_block);
+		this.length_of_chain++;
 	}
 
 	/**
@@ -35,19 +90,20 @@ public class Blockchain {
 	 * properly
 	 * 
 	 * @param chain
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
 	 */
 	public void replace_chain(Blockchain other_blockchain) throws NoSuchAlgorithmException {
 		if (other_blockchain.chain.size() <= this.chain.size()) {
 			System.out.println("Cannot replace chain. The incoming chain must be longer");
 			return;
-		} 
-		else if (!Blockchain.is_valid_chain(other_blockchain)) {
+		} else if (!Blockchain.is_valid_chain(other_blockchain)) {
 			System.out.println("Cannot replace chain. The incoming chain is invalid");
 			return;
 		}
-		
+
 		this.chain = other_blockchain.chain;
+		this.length_of_chain = other_blockchain.length_of_chain;
+		this.date_last_modified = new Date().getTime();
 //		else {
 //			try {
 //				Blockchain.is_valid_chain(other_blockchain);
@@ -86,13 +142,16 @@ public class Blockchain {
 
 	@Override
 	public String toString() {
-		return "Blockchain: " + this.chain;
+
+		return String.format("\n%5s %15s %15s %15s %15s %15s\n", "ID", "Name", "date created", "last_modified",
+				"length", "content");
+//		return "Blockchain: " + this.chain;
 	}
-	
+
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 		Blockchain blockchain = new Blockchain();
 //		System.out.println(blockchain);
-		blockchain.add_block(new String[] {"Shakespeare", "wrote", "it"});
+		blockchain.add_block(new String[] { "Shakespeare", "wrote", "it" });
 		System.out.println(blockchain);
 	}
 

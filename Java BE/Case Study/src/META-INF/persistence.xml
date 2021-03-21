@@ -6,6 +6,7 @@
 	<persistence-unit name="Case Study">
 		<class>privblock.gerald.ryan.entity.Account</class>
 		<class>privblock.gerald.ryan.entity.Block</class>
+		<class>privblock.gerald.ryan.entity.Blockchain</class>
 		<properties>
 			<!-- DB configuration -->
 			<property name="javax.persistence.jdbc.url"
@@ -16,7 +17,8 @@
 
 			<!-- EclipseLink configuration -->
 			<property name="eclipselink.logging.level" value="FINEST" />
-			<property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+			<property name="eclipselink.ddl-generation"
+				value="create-or-extend-tables" />
 		</properties>
 	</persistence-unit>
 </persistence>
