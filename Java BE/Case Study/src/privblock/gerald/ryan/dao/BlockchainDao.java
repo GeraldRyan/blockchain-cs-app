@@ -1,5 +1,6 @@
 package privblock.gerald.ryan.dao;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -40,7 +41,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Blockchain getBlockchainByName(String name) {
 		try {
@@ -50,17 +51,31 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			Blockchain blockchain = (Blockchain) query.getSingleResult();
 			this.disconnect();
 			return blockchain;
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
 	@Override
-	public boolean addBlock(Block block) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addBlock(String name, String[] data) {
+		this.connect();
+		Query query = em.createQuery("select b from Blockchain b where b.coin_name = :name");
+		query.setParameter("name", name);
+		Blockchain blockchain = (Blockchain) query.getSingleResult();
+		try {
+			em.getTransaction().begin();
+			Block new_block = blockchain.add_block(data);
+			em.persist(new_block);
+			em.getTransaction().commit();
+			this.disconnect();
+			System.out.println("Returning true");
+			return true;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
@@ -76,8 +91,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			List<Blockchain> list_of_chains = em.createQuery("select b from Blockchain b").getResultList();
 			this.disconnect();
 			return list_of_chains;
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}

@@ -48,7 +48,19 @@ public class BlockchainAppMain {
 				blockchainApp.getAllBlockchainsService().forEach(System.out::println);
 				break;
 			case 4:
-				blockchainApp.getBlockchainService("bitcoin").add_block(new String[] {"dummy", "data"});
+				// TODO Make so doesn't crash system
+				System.out.println("Enter the name of blockchain to mine");
+				String name = sc.nextLine();
+				String[] dummyData = new String[] {"dummy", "data"};
+				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name);
+				if (blockchain_to_mine == null){
+					System.out.println("The blockchain you selected does not appear to exist in our system");
+					break;
+				}
+				else {
+					blockchainApp.addBlockService(name, dummyData);
+//					blockchain_to_mine.add_block(new String[] {"dummy", "data"});
+				}
 			// case 6:
 			// System.out.println("\nEnter the Employee ID, Name, and Title to be
 			// validated");
@@ -89,7 +101,8 @@ public class BlockchainAppMain {
 	}
 
 	public static void header() {
-		System.out.format("\n%5s %15s %15s %15s %15s\n", "ID", "COIN_NAME", "DATE_CREATED", "DATE_LAST_MODIFIED", "LENGTH_OF_CHAIN");
+		System.out.format("\n%5s %15s %15s %15s %15s\n", "ID", "COIN_NAME", "DATE_CREATED", "DATE_LAST_MODIFIED",
+				"LENGTH_OF_CHAIN");
 		System.out.println("-".repeat(100));
 	}
 

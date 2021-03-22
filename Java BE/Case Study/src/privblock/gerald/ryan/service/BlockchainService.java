@@ -3,6 +3,7 @@ package privblock.gerald.ryan.service;
 import java.util.List;
 
 import privblock.gerald.ryan.dao.BlockchainDao;
+import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
 
 public class BlockchainService {
@@ -18,6 +19,10 @@ public class BlockchainService {
 
 	public List<Blockchain> getAllBlockchainsService(){
 		return blockchainD.getAllBlockchains();
+	}
+	
+	public boolean addBlockService(String name, String[] data) {
+		return blockchainD.addBlock(name, data);
 	}
 
 }

@@ -58,8 +58,8 @@ public class Blockchain {
 	}
 
 	public Blockchain() {
-		this.chain = new ArrayList<Block>();
-		this.chain.add(Block.genesis_block());
+//		this.chain = new ArrayList<Block>();
+//		this.chain.add(Block.genesis_block());
 	}
 
 //	private ValueHolderInterface chainValueHolder;
@@ -82,10 +82,11 @@ public class Blockchain {
 //		return (ArrayList<Block>) this.chainValueHolder.getValue();
 //	}
 
-	public void add_block(String[] data) throws NoSuchAlgorithmException {
+	public Block add_block(String[] data) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), data);
 		this.chain.add(new_block);
 		this.length_of_chain++;
+		return new_block;
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class Blockchain {
 	@Override
 	public String toString() {
 
-		return String.format("\n%5s %15s %15s %15s %15s\n", id, coin_name, date_created, date_last_modified, length_of_chain,
+		return String.format("%5s %15s %15s %15s %15s", id, coin_name, date_created, date_last_modified, length_of_chain,
 				"length", "content");
 //		return "Blockchain: " + this.chain;
 	}
