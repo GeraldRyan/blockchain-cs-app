@@ -2,6 +2,8 @@ package privblock.gerald.ryan.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import privblock.gerald.ryan.dbConnection.DBConnection;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
@@ -9,11 +11,12 @@ import privblock.gerald.ryan.entity.Blockchain;
 public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 
 	@Override
-	public boolean newBlockchain(Blockchain blockchain) {
+	public boolean newBlockchain(String name) {
 		this.connect();
 		try {
+			Blockchain new_blockchain = new Blockchain(name);
 			em.getTransaction().begin();
-			em.persist(blockchain);
+			em.persist(new_blockchain);
 			em.getTransaction().commit();
 			this.disconnect();
 			System.out.println("New Blockchain added");
@@ -33,6 +36,22 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			this.disconnect();
 			return b;
 		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	public Blockchain getBlockchainByName(String name) {
+		try {
+			this.connect();
+			Query query = em.createQuery("select b from Blockchain b where b.coin_name = :name");
+			query.setParameter("name", name);
+			Blockchain blockchain = (Blockchain) query.getSingleResult();
+			this.disconnect();
+			return blockchain;
+		}
+		catch(Exception e) {
 			e.printStackTrace();
 			return null;
 		}

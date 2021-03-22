@@ -14,31 +14,30 @@ public class BlockchainAppMain {
 
 	public static void main(String[] args) throws SQLException, NoSuchAlgorithmException {
 		BlockchainService blockchainApp = new BlockchainService();
-		// BlockApp.connect();your
+		// BlockApp.connect();
 		Blockchain blockchain = null; // this was auto generated. Otherwise had error "Block may not have been
 							// initialized". Why an issue??? TODO = find out
 		int id;
 		/*
-		 * 1. Add an Block to the database 2. Access Block from the database 3. Update
+		 * 1. Register a new Blockchain currency 2. Access Blockchain currency from database 3. Update
 		 * an employee info in the database 4. Remove an employee from the database 5.
 		 * Display all employee info 6. validate employee 7. Update employee salary 8.
 		 * Quit
 		 */
 
 		int choice = 0;
-		while (choice != 8) {
+		while (choice != 5) {
 			menu();
 			choice = sc.nextInt();
 			sc.nextLine();
 			switch (choice) {
 			case 1:
 				System.out.println("\nEnter the name of your new blockchain currency $:");
-				blockchainApp.newBlockchainService(new Blockchain(sc.nextLine()));
+				blockchainApp.newBlockchainService(sc.nextLine());
 				break;
 			case 2:
-				System.out.println("Enter Block ID");
-				id = Integer.parseInt(sc.nextLine());
-				blockchain = blockchainApp.getBlockchainService(id);
+				System.out.println("Enter Blockchain name");
+				blockchain = blockchainApp.getBlockchainService(sc.nextLine());
 				if (blockchain != null) {
 					header();
 					System.out.println(blockchain);
@@ -48,6 +47,8 @@ public class BlockchainAppMain {
 				header();
 				blockchainApp.getAllBlockchainsService().forEach(System.out::println);
 				break;
+			case 4:
+				blockchainApp.getBlockchainService("bitcoin").add_block(new String[] {"dummy", "data"});
 			// case 6:
 			// System.out.println("\nEnter the Employee ID, Name, and Title to be
 			// validated");
@@ -69,7 +70,7 @@ public class BlockchainAppMain {
 			// app.updateEmployeeSalaryService(eid, salary);
 			// System.out.println("\nSalary updated");
 			// break;
-			case 4:
+			case 5:
 				// BlockApp.close();
 				System.out.println("\nLeaving Block Panel...");
 				break;
@@ -83,11 +84,12 @@ public class BlockchainAppMain {
 		System.out.println("1. Register new Blockchain");
 		System.out.println("2. Inspect a Blockchain");
 		System.out.println("3. Display all Blockchain currencies");
-		System.out.println("4. Quit");
+		System.out.println("4. Mine Block with selected chain");
+		System.out.println("5. Quit");
 	}
 
 	public static void header() {
-		System.out.format("\n%5s %15s %15s %15s %15s %15s\n", "ID", "Name", "date created", "last_modified", "length", "content");
+		System.out.format("\n%5s %15s %15s %15s %15s\n", "ID", "COIN_NAME", "DATE_CREATED", "DATE_LAST_MODIFIED", "LENGTH_OF_CHAIN");
 		System.out.println("-".repeat(100));
 	}
 

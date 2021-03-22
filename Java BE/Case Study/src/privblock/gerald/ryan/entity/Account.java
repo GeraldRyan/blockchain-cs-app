@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -12,6 +14,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "account")
 public class Account {
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Id
 	private int id; // primary key
 	int user_id; // foreign key - account holder
@@ -23,9 +26,8 @@ public class Account {
 	@Temporal(value = TemporalType.DATE)
 	Date last_accessed;
 
-	public Account(int id, int user_id, double balance, String currency) {
+	public Account(int user_id, double balance, String currency) {
 		super();
-		this.id = id;
 		this.user_id = user_id;
 		this.balance = balance;
 		this.currency = currency;

@@ -31,9 +31,8 @@ package privblock.gerald.ryan.mains;
 				sc.nextLine();
 				switch (choice) {
 				case 1:
-					System.out.println("\nEnter the Account ID, user_id and currency");
-					Account new_account = new Account(Integer.parseInt(sc.nextLine()), Integer.parseInt(sc.nextLine()),0,
-							sc.nextLine());
+					System.out.println("\nEnter the user_id and currency");
+					Account new_account = new Account(Integer.parseInt(sc.nextLine()),0, sc.nextLine());
 					accountApp.addAccountService(new_account);
 					break;
 				case 2:

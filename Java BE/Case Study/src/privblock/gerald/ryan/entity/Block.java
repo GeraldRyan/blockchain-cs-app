@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.Date; // gets time in ms.
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import privblock.gerald.ryan.utilities.CryptoHash;
 
@@ -26,6 +29,7 @@ public class Block {
 	
 	public static int blockcount = 0;
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	int id;
 	long timestamp;
 	String lastHash;
@@ -33,9 +37,13 @@ public class Block {
 	String[] data;
 	int difficulty;
 	int nonce;
+	@Transient
 	static int GENESIS_DIFFICULTY = 10;
+	@Transient
 	static String[] GENESIS_DATA = new String[] {"Dance","The", "Waltz"};
+	@Transient
 	static String GENESIS_HASH = "Genesis_Hash";
+	@Transient
 	static String GENESIS_LAST_HASH = "Genesis_Last_Hash";
 	
 	
@@ -89,6 +97,7 @@ public class Block {
 				"\nNonce: " + this.nonce
 				+ "\n-----------------------\n";
 	}
+	@Override
 	public String toString() {
 		String datastring = "";
 		for (String s: data) {

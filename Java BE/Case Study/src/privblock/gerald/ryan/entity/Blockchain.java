@@ -1,16 +1,20 @@
 package privblock.gerald.ryan.entity;
+
 //@GeneratedValue(strategy=GenerationType.AUTO)  Consider using this later under ID to auto increment
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,15 +25,15 @@ import privblock.gerald.ryan.entity.Block;
 
 /**
  * 
- * @author Gerald Ryan Blockchain class of blockchain app.
- * Blockchain class. Instantiate blockchain with a name as string
+ * @author Gerald Ryan Blockchain class of blockchain app. Blockchain class.
+ *         Instantiate blockchain with a name as string
  *
  *
  */
 @Entity
 @Table(name = "blockchain")
 public class Blockchain {
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	int id;
 	String coin_name;
@@ -37,26 +41,27 @@ public class Blockchain {
 	long date_last_modified;
 	int length_of_chain;
 //	@Basic(fetch=FetchType.EAGER)
-	@Transient
-	ArrayList<Block> chain = new ArrayList<Block>();
+//	@Transient
+	@OneToMany(targetEntity = Block.class, cascade=CascadeType.PERSIST)
+	List<Block> chain;
 
-	
-	
 	/**
-	 * Constructor function, initializes an ArrayList of Blocks with a valid genesis block. Future blocks are to be mined. 
+	 * Constructor function, initializes an ArrayList of Blocks with a valid genesis
+	 * block. Future blocks are to be mined.
 	 */
 	public Blockchain(String name) {
 		this.coin_name = name;
 		this.date_created = new Date().getTime();
+		this.chain = new ArrayList<Block>();
 		this.chain.add(Block.genesis_block());
 		this.length_of_chain = 1;
 	}
 
 	public Blockchain() {
+		this.chain = new ArrayList<Block>();
 		this.chain.add(Block.genesis_block());
 	}
 
-	
 //	private ValueHolderInterface chainValueHolder;
 //
 //	// Use this get/set pair when configuring your Mapping
@@ -76,7 +81,6 @@ public class Blockchain {
 //	public ArrayList<Block> getChain() {
 //		return (ArrayList<Block>) this.chainValueHolder.getValue();
 //	}
-
 
 	public void add_block(String[] data) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), data);
@@ -143,13 +147,13 @@ public class Blockchain {
 	@Override
 	public String toString() {
 
-		return String.format("\n%5s %15s %15s %15s %15s %15s\n", "ID", "Name", "date created", "last_modified",
+		return String.format("\n%5s %15s %15s %15s %15s\n", id, coin_name, date_created, date_last_modified, length_of_chain,
 				"length", "content");
 //		return "Blockchain: " + this.chain;
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException {
-		Blockchain blockchain = new Blockchain();
+		Blockchain blockchain = new Blockchain("Bitcoin 2");
 //		System.out.println(blockchain);
 		blockchain.add_block(new String[] { "Shakespeare", "wrote", "it" });
 		System.out.println(blockchain);
