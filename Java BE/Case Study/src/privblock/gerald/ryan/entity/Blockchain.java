@@ -45,8 +45,8 @@ public class Blockchain {
 	long date_last_modified;
 	int length_of_chain;
 	@OneToMany(targetEntity = Block.class, cascade=CascadeType.PERSIST)
-//	@JoinTable(name = "BlocksByChain")
-	@JoinColumn(name = "coin_name")
+	@JoinTable(name = "BlocksByChain")
+//	@JoinColumn(name = "coin_name")
 	List<Block> chain;
 
 	/**
