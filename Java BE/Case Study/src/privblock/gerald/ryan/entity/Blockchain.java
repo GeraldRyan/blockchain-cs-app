@@ -8,11 +8,14 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -36,13 +39,14 @@ public class Blockchain {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	int id;
+	@Column(unique=true)
 	String coin_name;
 	long date_created;
 	long date_last_modified;
 	int length_of_chain;
-//	@Basic(fetch=FetchType.EAGER)
-//	@Transient
 	@OneToMany(targetEntity = Block.class, cascade=CascadeType.PERSIST)
+//	@JoinTable(name = "BlocksByChain")
+	@JoinColumn(name = "coin_name")
 	List<Block> chain;
 
 	/**
@@ -86,6 +90,7 @@ public class Blockchain {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), data);
 		this.chain.add(new_block);
 		this.length_of_chain++;
+		this.date_last_modified = new Date().getTime();
 		return new_block;
 	}
 
@@ -98,6 +103,7 @@ public class Blockchain {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public void replace_chain(Blockchain other_blockchain) throws NoSuchAlgorithmException {
+		// TODO how will I implement this? Different localhosts will have different chains?
 		if (other_blockchain.chain.size() <= this.chain.size()) {
 			System.out.println("Cannot replace chain. The incoming chain must be longer");
 			return;

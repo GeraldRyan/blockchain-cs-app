@@ -73,7 +73,7 @@ public class Block {
 	 */
 	public Block(long timestamp, String lastHash, String hash, String[] data, int difficulty, int nonce) {
 		super();
-		this.id = this.blockcount;
+//		this.id = this.blockcount;
 		this.timestamp = timestamp;
 		this.lastHash = lastHash;
 		this.hash = hash;

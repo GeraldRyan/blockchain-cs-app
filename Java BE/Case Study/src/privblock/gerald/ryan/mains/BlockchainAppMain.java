@@ -36,7 +36,8 @@ public class BlockchainAppMain {
 				blockchainApp.newBlockchainService(sc.nextLine());
 				break;
 			case 2:
-				System.out.println("Enter Blockchain name");
+				System.out.println
+				("Enter Blockchain name");
 				blockchain = blockchainApp.getBlockchainService(sc.nextLine());
 				if (blockchain != null) {
 					header();
