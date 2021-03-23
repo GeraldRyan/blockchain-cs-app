@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date; // gets time in ms.
+import java.util.HashMap;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,12 +25,12 @@ import privblock.gerald.ryan.utilities.CryptoHash;
  *
  */
 @Entity
-@Table (name="block")
+@Table(name = "block")
 public class Block {
-	
+
 	public static int blockcount = 0;
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
 	long timestamp;
 	String lastHash;
@@ -39,14 +40,25 @@ public class Block {
 	int nonce;
 	@Transient
 	static int GENESIS_DIFFICULTY = 10;
-	@Transient
-	static String[] GENESIS_DATA = new String[] {"Dance","The", "Waltz"};
+	static long GENESIS_TS = 1;
+//	@Transient
+//	static String[] GENESIS_DATA = new String[] {"Dance","The", "Waltz"};
 	@Transient
 	static String GENESIS_HASH = "Genesis_Hash";
 	@Transient
 	static String GENESIS_LAST_HASH = "Genesis_Last_Hash";
-	
-	
+
+//	@Transient 
+	public static final HashMap<String, Object> GENESIS_DATA = new HashMap<String, Object>();
+	static {
+		GENESIS_DATA.put("timestamp", Block.GENESIS_TS);
+		GENESIS_DATA.put("last_hash", "genesis_last_hash");
+		GENESIS_DATA.put("hash", "genesis_hash");
+		GENESIS_DATA.put("data", new String[] { "dance", "the", "tango" });
+		GENESIS_DATA.put("difficulty", 7);
+		GENESIS_DATA.put("nonce", 1);
+	}
+
 // Nanosecond basis
 //	static long NANOSECONDS = 1;
 //	static long MICROSECONDS = 1000 * NANOSECONDS;
@@ -81,30 +93,31 @@ public class Block {
 		this.difficulty = difficulty;
 		this.nonce = nonce;
 	}
-	
+
 	public Block() {
-		
+
 	}
+
 	public String toStringConsole() {
 		String datastring = "";
-		for (String s: data) {
+		for (String s : data) {
 			datastring = datastring + s + "|--|";
 		}
-		
+
 		return "\n-----------BLOCK--------\ntimestamp: " + this.timestamp + "\nlastHash: " + this.lastHash + "\nhash: "
-				+ this.hash + "\ndifficulty: " + this.getDifficulty() + "\nData: " + 
-				datastring + 
-				"\nNonce: " + this.nonce
-				+ "\n-----------------------\n";
+				+ this.hash + "\ndifficulty: " + this.getDifficulty() + "\nData: " + datastring + "\nNonce: "
+				+ this.nonce + "\n-----------------------\n";
 	}
+
 	@Override
 	public String toString() {
 		String datastring = "";
-		for (String s: data) {
+		for (String s : data) {
 			datastring = datastring + s + "|--|";
 		}
-		
-		return String.format("%5s %5s %10s %15s %15s %15s", id, timestamp, lastHash, hash, datastring, difficulty, nonce);
+
+		return String.format("%5s %5s %10s %15s %15s %15s", id, timestamp, lastHash, hash, datastring, difficulty,
+				nonce);
 	}
 
 	/**
@@ -155,10 +168,12 @@ public class Block {
 		long timestamp = 1;
 		String last_hash = GENESIS_LAST_HASH;
 		String hash = GENESIS_HASH;
-		String[] data = GENESIS_DATA;
+//		String[] data = GENESIS_DATA;
 		int difficulty = GENESIS_DIFFICULTY;
 		int nonce = 0;
-		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
+//		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
+		return new Block((Long)GENESIS_DATA.get("timestamp"), (String)GENESIS_DATA.get("last_hash"), (String)GENESIS_DATA.get("hash"),
+				(String[])GENESIS_DATA.get("data"), (Integer)GENESIS_DATA.get("difficulty"), (Integer)GENESIS_DATA.get("nonce"));
 	}
 
 	/**
@@ -267,20 +282,20 @@ public class Block {
 		Block good_block2 = mine_block(good_block, new String[] { "bar", "foo" });
 		Block good_block3 = mine_block(good_block2, new String[] { "bar", "foo" });
 		Block good_block4 = mine_block(good_block3, new String[] { "bar", "foo" });
-		Block good_block5 = mine_block(good_block4, new String[] {"bar", "foo"});
-		Block good_block6 = mine_block(good_block5, new String[] {"bar", "foo"});
+		Block good_block5 = mine_block(good_block4, new String[] { "bar", "foo" });
+		Block good_block6 = mine_block(good_block5, new String[] { "bar", "foo" });
 		Block good_block7 = mine_block(good_block6, new String[] { "bar", "foo" });
 		Block good_block8 = mine_block(good_block7, new String[] { "bar", "foo" });
 		Block good_block9 = mine_block(good_block8, new String[] { "bar", "foo" });
-		Block good_block10 = mine_block(good_block9, new String[] {"bar", "foo"});
-		Block good_block11 = mine_block(good_block10, new String[] {"bar", "foo"});
+		Block good_block10 = mine_block(good_block9, new String[] { "bar", "foo" });
+		Block good_block11 = mine_block(good_block10, new String[] { "bar", "foo" });
 		Block bad_block1 = Block.mine_block(genesis, new String[] { "zeke", "yeager" });
 		bad_block1.lastHash = "evil data";
 		System.out.println(Block.is_valid_block(bad_block1, genesis));
-		Block bad_block2 = mine_block(good_block9, new String[] {"hello", "Lviv"});
+		Block bad_block2 = mine_block(good_block9, new String[] { "hello", "Lviv" });
 		System.out.println(Block.is_valid_block(bad_block2, good_block8));
-		
-		//		for (int i = 0; i< 10; i++) {
+
+		// for (int i = 0; i< 10; i++) {
 //			Block i = mine_block(good_block[i-1])
 //		}
 	}

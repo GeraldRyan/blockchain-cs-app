@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -46,7 +47,11 @@ public class Blockchain {
 	int length_of_chain;
 	@OneToMany(targetEntity = Block.class, cascade=CascadeType.PERSIST)
 	@JoinTable(name = "BlocksByChain")
-//	@JoinColumn(name = "coin_name")
+//	@JoinColumns({
+//		@JoinColumn(referencedColumnName = "hash"),
+//		@JoinColumn(referencedColumnName= "coin_name")
+//	})
+
 	List<Block> chain;
 
 	/**

@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class AppMain {
 	public static AccountAppMain accountApp = new AccountAppMain();
 	public static BlockAppMain blockApp = new BlockAppMain();
+	public static BlockchainAppMain blockchainApp = new BlockchainAppMain();
 
 	public static Scanner sc = new Scanner(System.in);
 
@@ -32,6 +33,7 @@ public class AppMain {
 				break;
 			case 4:
 				System.out.println("Pulling up blockchain interface");
+				blockchainApp.main(args);
 				break;
 			case 8:
 				System.out.println("\nClosing down");
@@ -47,6 +49,6 @@ public class AppMain {
 		System.out.println("2. Access Users Panel");
 		System.out.println("3. Access Block Panel");
 		System.out.println("4. Access Blockchain Panel");
-		System.out.println("8. Quit");
+		System.out.println("8. Return to main menu");
 	}
 }

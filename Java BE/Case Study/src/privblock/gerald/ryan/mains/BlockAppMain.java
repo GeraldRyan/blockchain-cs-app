@@ -14,8 +14,7 @@ public class BlockAppMain {
 	public static void main(String[] args) throws SQLException, NoSuchAlgorithmException {
 		BlockService BlockApp = new BlockService();
 		// BlockApp.connect();
-		Block Block = null; // this was auto generated. Otherwise had error "Block may not have been
-							// initialized". Why an issue??? TODO = find out
+		Block Block = null;
 		int id;
 		/*
 		 * 1. Add an Block to the database 2. Access Block from the database 3. Update
@@ -33,9 +32,6 @@ public class BlockAppMain {
 			case 1:
 				System.out.println("\nMining Block and adding mined block..");
 				BlockApp.addBlockService(Block.mine_block(Block.genesis_block(), new String[] { "yes", "yes", "yes" }));
-				// TODO make an interface for them to discover last blocks and add to that.
-				// Probably belongs to chain class as opposed to block class, in which case,
-				// keep using genesis blocks (which will ++ the id. oh well).
 				break;
 			case 2:
 				System.out.println("Enter the Block ID");

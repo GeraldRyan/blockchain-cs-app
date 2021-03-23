@@ -15,11 +15,10 @@ public class BlockchainAppMain {
 	public static void main(String[] args) throws SQLException, NoSuchAlgorithmException {
 		BlockchainService blockchainApp = new BlockchainService();
 		// BlockApp.connect();
-		Blockchain blockchain = null; // this was auto generated. Otherwise had error "Block may not have been
-							// initialized". Why an issue??? TODO = find out
+		Blockchain blockchain = null;
 		int id;
 		/*
-		 * 1. Register a new Blockchain currency 2. Access Blockchain currency from database 3. Update
+		 * 1. Register new currency 2. Access currency from database 3. Update
 		 * an employee info in the database 4. Remove an employee from the database 5.
 		 * Display all employee info 6. validate employee 7. Update employee salary 8.
 		 * Quit
@@ -49,18 +48,16 @@ public class BlockchainAppMain {
 				blockchainApp.getAllBlockchainsService().forEach(System.out::println);
 				break;
 			case 4:
-				// TODO Make so doesn't crash system
 				System.out.println("Enter the name of blockchain to mine");
 				String name = sc.nextLine();
 				String[] dummyData = new String[] {"dummy", "data"};
-				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name);
+				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name); //TODO seems wasteful to call function just for test
 				if (blockchain_to_mine == null){
 					System.out.println("The blockchain you selected does not appear to exist in our system");
 					break;
 				}
 				else {
 					blockchainApp.addBlockService(name, dummyData);
-//					blockchain_to_mine.add_block(new String[] {"dummy", "data"});
 				}
 			// case 6:
 			// System.out.println("\nEnter the Employee ID, Name, and Title to be
