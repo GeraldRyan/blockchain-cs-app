@@ -94,8 +94,10 @@ public class Block {
 		this.nonce = nonce;
 	}
 
+	/*
+	 * keep zero-arg constructor for JPA
+	 */
 	public Block() {
-
 	}
 
 	public String toStringConsole() {
