@@ -68,18 +68,26 @@ public class CryptoHash {
 //		System.out.printf("hash is:\n%s\n", messageDigestString);
 		return messageDigestString;
 	}
-	
+
 	public static char[] n_len_array(char c, int n) {
 		char[] ch = new char[n];
-		for (int i = 0; i<n; i++) {
+		for (int i = 0; i < n; i++) {
 			ch[i] = c;
 		}
 		return ch;
 	}
-	
+
+	public static String n_len_string(String s, int n) {
+		String string = new String();
+		for (int i = 0; i < n; i++) {
+			string += s;
+		}
+		return string;
+	}
+
 	public static String n_len_string(char c, int n) {
 		String s = "";
-		for (int i = 0; i<n; i++) {
+		for (int i = 0; i < n; i++) {
 			s += c;
 		}
 		return s;
@@ -120,7 +128,7 @@ public class CryptoHash {
 		String bin_string = hex_to_binary(hex_string);
 		return bin_string;
 	}
-	
+
 	public static char[] string_to_binary_chararray(String non_binary_string) {
 		String binary_string = string_to_binary(non_binary_string);
 		char[] binary_char_array = string_to_charray(binary_string);
@@ -132,7 +140,7 @@ public class CryptoHash {
 		char[] binary_char_array = string_to_charray(binary_string);
 		return binary_char_array;
 	}
-	
+
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 //		c.concat("foo","bar", "bat");
 		String md = getSHA256("foo", "bar", "bat");
