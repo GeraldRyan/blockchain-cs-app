@@ -2,8 +2,10 @@ package privblock.gerald.ryan.mains;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import exceptions.WrongMenuChoiceException;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.service.BlockService;
 
@@ -22,16 +24,21 @@ public class BlockAppMain {
 		 * Display all employee info 6. validate employee 7. Update employee salary 8.
 		 * Quit
 		 */
-
+		menu();
 		int choice = 0;
 		while (choice != 8) {
-			menu();
-			choice = sc.nextInt();
+
+			try {
+				choice = sc.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Input mismatch Exception thrown. Please enter a proper digit");
+			}
 			sc.nextLine();
 			switch (choice) {
 			case 1:
 				System.out.println("\nMining Block and adding mined block..");
 				BlockApp.addBlockService(Block.mine_block(Block.genesis_block(), new String[] { "yes", "yes", "yes" }));
+				menu();
 				break;
 			case 2:
 				System.out.println("Enter the Block ID");
@@ -41,10 +48,12 @@ public class BlockAppMain {
 					header();
 					System.out.println(Block);
 				}
+				menu();
 				break;
 			case 3:
 				header();
 				BlockApp.getAllBlocksService().forEach(System.out::println);
+				menu();
 				break;
 			// case 6:
 			// System.out.println("\nEnter the Employee ID, Name, and Title to be
@@ -70,6 +79,8 @@ public class BlockAppMain {
 			case 4:
 				// BlockApp.close();
 				System.out.println("\nLeaving Block Panel...");
+				break;
+			default:
 				break;
 			}
 		}

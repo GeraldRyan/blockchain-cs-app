@@ -2,6 +2,7 @@ package privblock.gerald.ryan.mains;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import privblock.gerald.ryan.entity.Block;
@@ -18,72 +19,62 @@ public class BlockchainAppMain {
 		Blockchain blockchain = null;
 		int id;
 		/*
-		 * 1. Register new currency 2. Access currency from database 3. Update
-		 * an employee info in the database 4. Remove an employee from the database 5.
+		 * 1. Register new currency 2. Access currency from database 3. Update an
+		 * employee info in the database 4. Remove an employee from the database 5.
 		 * Display all employee info 6. validate employee 7. Update employee salary 8.
 		 * Quit
 		 */
-
+		menu();
 		int choice = 0;
 		while (choice != 5) {
-			menu();
-			choice = sc.nextInt();
+
+			try {
+				choice = sc.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Input mismatch Exception thrown. Please enter a proper digit");
+			}
 			sc.nextLine();
 			switch (choice) {
 			case 1:
 				System.out.println("\nEnter the name of your new blockchain (SuperCoin) instance $:");
 				blockchainApp.newBlockchainService(sc.nextLine());
+				menu();
 				break;
 			case 2:
-				System.out.println
-				("Enter Blockchain instance name");
+				System.out.println("Enter Blockchain instance name");
 				blockchain = blockchainApp.getBlockchainService(sc.nextLine());
 				if (blockchain != null) {
 					header();
 					System.out.println(blockchain);
 				}
+				menu();
 				break;
 			case 3:
 				header();
 				blockchainApp.getAllBlockchainsService().forEach(System.out::println);
+				menu();
 				break;
 			case 4:
 				System.out.println("Enter the name of blockchain instance to mine");
 				String name = sc.nextLine();
-				String[] dummyData = new String[] {"dummy", "data"};
-				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name); //TODO seems wasteful to call function just for test
-				if (blockchain_to_mine == null){
+				String[] dummyData = new String[] { "dummy", "data" };
+				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name); // TODO seems wasteful to call
+																							// function just for test
+				if (blockchain_to_mine == null) {
 					System.out.println("The blockchain instance you selected does not appear to exist in our system");
+					menu();
+					break;
+				} else {
+					blockchainApp.addBlockService(name, dummyData);
+					menu();
 					break;
 				}
-				else {
-					blockchainApp.addBlockService(name, dummyData);
-				}
-			// case 6:
-			// System.out.println("\nEnter the Employee ID, Name, and Title to be
-			// validated");
-			// boolean valid = app.validateEmpService(Integer.parseInt(sc.nextLine()),
-			// sc.nextLine(), sc.nextLine());
-			// if (valid) {
-			// System.out.println("The employee is validated");
-			// } else {
-			// System.out.println("Invalid employee");
-			// }
-			// break;
-			// case 7:
-			// System.out.println("\nEnter employee id of employee to update");
-			// int eid = sc.nextInt();
-			// System.out.println("\nEnter New Salary");
-			// double salary = sc.nextDouble();
-			//// e = app.getEmpService(id);
-			//// e.setSalary(salary);
-			// app.updateEmployeeSalaryService(eid, salary);
-			// System.out.println("\nSalary updated");
-			// break;
 			case 5:
 				// BlockApp.close();
 				System.out.println("\nLeaving Block Panel...");
 				break;
+			default:
+				System.out.println("Surely you know you are out of range. Please try again");
 			}
 		}
 		sc.close();
