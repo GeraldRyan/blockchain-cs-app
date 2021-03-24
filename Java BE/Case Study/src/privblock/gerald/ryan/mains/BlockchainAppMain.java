@@ -31,12 +31,12 @@ public class BlockchainAppMain {
 			sc.nextLine();
 			switch (choice) {
 			case 1:
-				System.out.println("\nEnter the name of your new blockchain currency $:");
+				System.out.println("\nEnter the name of your new blockchain (SuperCoin) instance $:");
 				blockchainApp.newBlockchainService(sc.nextLine());
 				break;
 			case 2:
 				System.out.println
-				("Enter Blockchain name");
+				("Enter Blockchain instance name");
 				blockchain = blockchainApp.getBlockchainService(sc.nextLine());
 				if (blockchain != null) {
 					header();
@@ -48,12 +48,12 @@ public class BlockchainAppMain {
 				blockchainApp.getAllBlockchainsService().forEach(System.out::println);
 				break;
 			case 4:
-				System.out.println("Enter the name of blockchain to mine");
+				System.out.println("Enter the name of blockchain instance to mine");
 				String name = sc.nextLine();
 				String[] dummyData = new String[] {"dummy", "data"};
 				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name); //TODO seems wasteful to call function just for test
 				if (blockchain_to_mine == null){
-					System.out.println("The blockchain you selected does not appear to exist in our system");
+					System.out.println("The blockchain instance you selected does not appear to exist in our system");
 					break;
 				}
 				else {
@@ -91,15 +91,15 @@ public class BlockchainAppMain {
 
 	public static void menu() {
 		System.out.println("\n**Block DataBase App**");
-		System.out.println("1. Register new Blockchain");
-		System.out.println("2. Inspect a Blockchain");
-		System.out.println("3. Display all Blockchain currencies");
+		System.out.println("1. Register new Blockchain instance");
+		System.out.println("2. Inspect a Blockchain instance");
+		System.out.println("3. Display all Blockchain instances");
 		System.out.println("4. Mine Block with selected chain");
 		System.out.println("5. Quit");
 	}
 
 	public static void header() {
-		System.out.format("\n%5s %15s %15s %15s %15s\n", "ID", "COIN_NAME", "DATE_CREATED", "DATE_LAST_MODIFIED",
+		System.out.format("\n%5s %15s %15s %15s %15s\n", "ID", "INSTANCE_NAME", "DATE_CREATED", "DATE_LAST_MODIFIED",
 				"LENGTH_OF_CHAIN");
 		System.out.println("-".repeat(100));
 	}

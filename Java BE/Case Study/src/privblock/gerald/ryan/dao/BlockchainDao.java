@@ -46,7 +46,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 	public Blockchain getBlockchainByName(String name) {
 		try {
 			this.connect();
-			Query query = em.createQuery("select b from Blockchain b where b.coin_name = :name");
+			Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 			query.setParameter("name", name);
 			Blockchain blockchain = (Blockchain) query.getSingleResult();
 			this.disconnect();
@@ -60,7 +60,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 	@Override
 	public boolean addBlock(String name, String[] data) {
 		this.connect();
-		Query query = em.createQuery("select b from Blockchain b where b.coin_name = :name");
+		Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 		query.setParameter("name", name);
 		Blockchain blockchain = (Blockchain) query.getSingleResult();
 		try {

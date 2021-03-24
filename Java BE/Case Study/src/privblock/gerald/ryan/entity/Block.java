@@ -33,8 +33,8 @@ public class Block {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
 	long timestamp;
-	String lastHash;
-	String hash;
+	protected String lastHash;
+	protected String hash;
 	String[] data;
 	int difficulty;
 	int nonce;
@@ -267,6 +267,55 @@ public class Block {
 
 	public int getNonce() {
 		return nonce;
+	}
+	
+	
+
+
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(data);
+		result = prime * result + difficulty;
+		result = prime * result + ((hash == null) ? 0 : hash.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((lastHash == null) ? 0 : lastHash.hashCode());
+		result = prime * result + nonce;
+		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Block other = (Block) obj;
+		if (!Arrays.equals(data, other.data))
+			return false;
+		if (difficulty != other.difficulty)
+			return false;
+		if (hash == null) {
+			if (other.hash != null)
+				return false;
+		} else if (!hash.equals(other.hash))
+			return false;
+		if (lastHash == null) {
+			if (other.lastHash != null)
+				return false;
+		} else if (!lastHash.equals(other.lastHash))
+			return false;
+		if (nonce != other.nonce)
+			return false;
+		if (timestamp != other.timestamp)
+			return false;
+		return true;
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException {

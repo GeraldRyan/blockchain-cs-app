@@ -15,7 +15,7 @@ import org.junit.Test;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.utilities.CryptoHash;
 
-public class TestBlock {
+public class TestBlock extends Block {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -92,31 +92,45 @@ public class TestBlock {
 		Block mined_block = Block.mine_block(easy_block, new String[] { "foo" });
 		assertEquals(mined_block.getDifficulty(), 1); // negative was tested
 	}
-	
+
 	@Test
-	public void testIsValidBlockBadLastHash() {
-		// No way to make a bad hash because can't mutate state directly in java and don't want to make a setter for last hash for security
-		// If way is found, will do. Will consider advice. 
+	public void testIsValidBlockTrue() throws NoSuchAlgorithmException {
+		// No way to make a bad hash because can't mutate state directly in java and
+		// don't want to make a setter for last hash for security
+		// If way is found, will do. Will consider advice.
 		// Want to test that it raises correct exception (which I have to throw as well)
-		assertTrue(true);
+		Block last_block = Block.mine_block(Block.genesis_block(), new String[] { "foo" });
+		Block mined_block = Block.mine_block(last_block, new String[] { "bar" });
+		assertEquals(Block.is_valid_block(last_block, mined_block), true);
 	}
-	
+
+	@Test
+	public void testIsValidBlockBadLastHash() throws NoSuchAlgorithmException {
+		// No way to make a bad hash because can't mutate state directly in java and
+		// don't want to make a setter for last hash for security
+		// If way is found, will do. Will consider advice.
+		// Want to test that it raises correct exception (which I have to throw as well)
+		Block last_block = Block.mine_block(Block.genesis_block(), new String[] { "foo" });
+		Block mined_block = Block.mine_block(last_block, new String[] { "bar" });
+	}
+
 	@Test
 	public void testIsValidBlockBadProofOfWork() {
-		// Has to mutate hash. Impossible in current code base. 
+		// Has to mutate hash. Impossible in current code base.
 		// Want to test that it raises correct exception (which I have to throw as well)
 		assertTrue(true);
 	}
+
 	@Test
 	public void testIsValidBlockJumpedDifficulty() {
-		// Can't mutate difficulty 
+		// Can't mutate difficulty
 		// Want to test that it raises correct exception (which I have to throw as well)
 		assertTrue(true);
 	}
-	
+
 	@Test
 	public void testIsValidBlockBadBlockHash() {
-		// Has to mutate hash. Impossible in current code base. 
+		// Has to mutate hash. Impossible in current code base.
 		// Want to test that it raises correct exception (which I have to throw as well)
 		assertTrue(true);
 	}
