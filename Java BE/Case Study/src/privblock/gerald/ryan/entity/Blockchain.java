@@ -51,10 +51,6 @@ public class Blockchain {
 	@OneToMany(targetEntity = Block.class, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "BlocksByChain")
 	List<Block> chain; // The chain itself
-//	@JoinColumns({
-//		@JoinColumn(referencedColumnName = "hash"),
-//		@JoinColumn(referencedColumnName= "instance_name")
-//	})
 
 
 	/**
