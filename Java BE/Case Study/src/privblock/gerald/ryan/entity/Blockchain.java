@@ -121,7 +121,7 @@ public class Blockchain {
 		// TODO how will I implement this? Different localhosts will have different
 		// chains?
 		if (other_blockchain.chain.size() <= this.chain.size()) {
-			throw new ChainTooShortException("Chain too short to replace.");
+			throw new ChainTooShortException("Chain too short to replace");
 		}
 		if (!Blockchain.is_valid_chain(other_blockchain)) {
 			System.out.println("Cannot replace chain. The incoming chain is invalid");
