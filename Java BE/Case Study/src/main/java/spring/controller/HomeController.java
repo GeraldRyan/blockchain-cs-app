@@ -1,5 +1,7 @@
 package spring.controller;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +46,14 @@ public class HomeController {
 	}
 	
 	@GetMapping("/blockchain/mine")
-	public String getMine(Model model) {
+	public String getMine(Model model) throws NoSuchAlgorithmException {
+		Blockchain bc = new Blockchain("Bitcoin2");
+		for (int i = 0; i < 14; i++) {
+			bc.add_block(String.valueOf(i));
+		}
+		
+		model.addAttribute("foo", "Bar");
+		model.addAttribute("blockchain", bc);
 		return "mine";
 	}
 
