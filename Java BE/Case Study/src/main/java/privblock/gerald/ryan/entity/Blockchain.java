@@ -25,6 +25,8 @@ import javax.persistence.Transient;
 
 import org.eclipse.persistence.indirection.ValueHolderInterface;
 
+import com.google.gson.Gson;
+
 import exceptions.BlocksInChainInvalidException;
 import exceptions.ChainTooShortException;
 import exceptions.GenesisBlockInvalidException;
@@ -194,8 +196,10 @@ public class Blockchain {
 			string_to_return += b.toStringWebAPI();
 		}
 		return string_to_return;
-
-//		return "Blockchain: " + this.chain;
+	}
+	
+	public String toJSONtheChain() {
+		return new Gson().toJson(chain);
 	}
 
 	public int getId() {
