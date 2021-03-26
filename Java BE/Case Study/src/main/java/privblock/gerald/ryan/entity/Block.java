@@ -170,6 +170,40 @@ public class Block {
 		blockcount++;
 		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
 	}
+	
+	 /*
+	  * Overloaded method string scalar
+	  */
+	public static Block mine_block(Block last_block, String dataScalar) throws NoSuchAlgorithmException {
+		String[] data = new String[] {dataScalar};
+		long timestamp = new Date().getTime();
+		String last_hash = last_block.getHash();
+		int difficulty = Block.adjust_difficulty(last_block, timestamp);
+		int nonce = 0;
+		String hash = CryptoHash.getSHA256(timestamp, last_block.getHash(), data, difficulty, nonce);
+
+		String proof_of_work = CryptoHash.n_len_string('0', difficulty);
+		String binary_hash = CryptoHash.hex_to_binary(hash);
+		String binary_hash_work_end = binary_hash.substring(0, difficulty);
+		System.out.println("Difficulty: " + difficulty);
+		System.out.println("Working");
+		while (!proof_of_work.equalsIgnoreCase(binary_hash_work_end)) {
+			nonce += 1;
+			timestamp = new Date().getTime();
+			difficulty = Block.adjust_difficulty(last_block, timestamp);
+			hash = CryptoHash.getSHA256(timestamp, last_block.getHash(), data, difficulty, nonce);
+			proof_of_work = CryptoHash.n_len_string('0', difficulty);
+			binary_hash = CryptoHash.hex_to_binary(hash);
+			binary_hash_work_end = binary_hash.substring(0, difficulty);
+		}
+		System.out.println("Solved at Difficulty: " + difficulty);
+		System.out.println("Proof of work requirement " + proof_of_work);
+		System.out.println("binary_Hash_work_end " + binary_hash_work_end);
+		System.out.println("binary hash " + binary_hash);
+		System.out.println("BLOCK MINED");
+		blockcount++;
+		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
+	}
 
 	/**
 	 * Generate Genesis block

@@ -100,6 +100,14 @@ public class Blockchain {
 		this.date_last_modified = new Date().getTime();
 		return new_block;
 	}
+	
+	public Block add_block(String dataScalar) throws NoSuchAlgorithmException {
+		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), dataScalar);
+		this.chain.add(new_block);
+		this.length_of_chain++;
+		this.date_last_modified = new Date().getTime();
+		return new_block;
+	}
 
 	/**
 	 * Replace the local chain with the incoming chain if the following apply: - the
