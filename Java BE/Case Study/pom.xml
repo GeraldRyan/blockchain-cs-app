@@ -5,7 +5,15 @@
 	<groupId>CaseStudy</groupId>
 	<artifactId>CaseStudy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<spring.version>5.3.5</spring.version>
+	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.persistence/javax.persistence -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
@@ -43,6 +51,13 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -57,7 +57,7 @@ public class BlockchainAppMain {
 			case 4:
 				System.out.println("Enter the name of blockchain instance to mine");
 				String name = sc.nextLine();
-				String[] dummyData = new String[] { "dummy", "data" };
+				String[] dummyData = new String[] { "dummy", "data" };	
 				Blockchain blockchain_to_mine = blockchainApp.getBlockchainService(name); // TODO seems wasteful to call
 																							// function just for test
 				if (blockchain_to_mine == null) {
