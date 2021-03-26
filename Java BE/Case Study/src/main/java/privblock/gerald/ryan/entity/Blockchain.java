@@ -52,7 +52,6 @@ public class Blockchain {
 	@JoinTable(name = "BlocksByChain")
 	List<Block> chain; // The chain itself
 
-
 	/**
 	 * Constructor function, initializes an ArrayList of Blocks with a valid genesis
 	 * block. Future blocks are to be mined.
@@ -109,11 +108,12 @@ public class Blockchain {
 	 * 
 	 * @param chain
 	 * @throws NoSuchAlgorithmException
-	 * @throws ChainTooShortException 
-	 * @throws BlocksInChainInvalidException 
-	 * @throws GenesisBlockInvalidException 
+	 * @throws ChainTooShortException
+	 * @throws BlocksInChainInvalidException
+	 * @throws GenesisBlockInvalidException
 	 */
-	public void replace_chain(Blockchain other_blockchain) throws NoSuchAlgorithmException, ChainTooShortException, GenesisBlockInvalidException, BlocksInChainInvalidException {
+	public void replace_chain(Blockchain other_blockchain) throws NoSuchAlgorithmException, ChainTooShortException,
+			GenesisBlockInvalidException, BlocksInChainInvalidException {
 		// TODO how will I implement this? Different localhosts will have different
 		// chains?
 		if (other_blockchain.chain.size() <= this.chain.size()) {
@@ -123,22 +123,19 @@ public class Blockchain {
 			System.out.println("Cannot replace chain. The incoming chain is invalid");
 			return;
 		}
-		
+
 		try {
 			Blockchain.is_valid_chain(other_blockchain);
 			this.chain = other_blockchain.chain;
 			this.length_of_chain = other_blockchain.length_of_chain;
 			this.date_last_modified = new Date().getTime();
-			System.out.println("Chain replaced with valid longer chain");	
-		}
-		catch(GenesisBlockInvalidException e) {
+			System.out.println("Chain replaced with valid longer chain");
+		} catch (GenesisBlockInvalidException e) {
+			System.out.println(e);
+		} catch (BlocksInChainInvalidException e) {
 			System.out.println(e);
 		}
-		catch(BlocksInChainInvalidException e) {
-			System.out.println(e);	
-		}
 
-		
 //		else {
 //			try {
 //				Blockchain.is_valid_chain(other_blockchain);
@@ -156,10 +153,11 @@ public class Blockchain {
 	 * @param blockchain
 	 * @return
 	 * @throws NoSuchAlgorithmException
-	 * @throws GenesisBlockInvalidException 
-	 * @throws BlocksInChainInvalidException 
+	 * @throws GenesisBlockInvalidException
+	 * @throws BlocksInChainInvalidException
 	 */
-	public static boolean is_valid_chain(Blockchain blockchain) throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
+	public static boolean is_valid_chain(Blockchain blockchain)
+			throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
 		if (!blockchain.chain.get(0).equals(Block.genesis_block())) {
 			System.out.println("The genesis block must be valid");
 			throw new GenesisBlockInvalidException("Genesis Block is invalid");
@@ -175,14 +173,22 @@ public class Blockchain {
 		return true;
 	}
 
-	@Override
-	public String toString() {
+	public String toStringConsole() {
 
 		return String.format("%5s %15s %15s %15s %15s", id, instance_name, date_created, date_last_modified,
 				length_of_chain, "length", "content");
 //		return "Blockchain: " + this.chain;
 	}
 
+	public String toStringBroadcastChain() {
+		String string_to_return = "";
+		for (Block b : chain) {
+			string_to_return += b.toStringWebAPI();
+		}
+		return string_to_return;
+
+//		return "Blockchain: " + this.chain;
+	}
 
 	public int getId() {
 		return id;

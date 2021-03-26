@@ -1,12 +1,13 @@
 package spring.controller;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import privblock.gerald.ryan.entity.Blockchain;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 
@@ -29,10 +30,11 @@ public class HomeController {
 	public String showIndex() {
 		return "index";
 	}
-	
+
 	@GetMapping("/blockchain")
 	public String serveBlockchain(Model model) {
-		
+		Blockchain blockchain = new Blockchain();
+
 		return "blockchain";
 	}
 
@@ -42,8 +44,7 @@ public class HomeController {
 	}
 
 	@PostMapping("/login")
-	public String processInput(@RequestParam("name") String name,
-			@RequestParam("email") String email) {
+	public String processInput(@RequestParam("name") String name, @RequestParam("email") String email) {
 
 		System.out.println(name);
 		System.out.println(email);

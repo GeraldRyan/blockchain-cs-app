@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page import="privblock.gerald.ryan.entity.Blockchain"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,5 +11,13 @@
 	<p>Here is the current longest valid chain according to our intel.</p>
 	<p>However, we are just a node on a peer to peer network. Do ask
 		around</p>
+	<br>
+	<%
+ Blockchain blockchain = new Blockchain("Bitcoin2");
+ %>
+	<h5>Here's what we got</h5>
+	<br>
+	<%=blockchain.toStringBroadcastChain()  %>
+
 </body>
 </html>

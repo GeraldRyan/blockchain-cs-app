@@ -111,6 +111,16 @@ public class Block {
 				+ this.nonce + "\n-----------------------\n";
 	}
 
+	public String toStringWebAPI() {
+		String datastring = "";
+		for (String s : data) {
+			datastring = datastring + s + "||";
+		}
+
+		return String.format("timestamp: %s, lastHash:%s, hash:%s, data:[%s], difficulty:%s", timestamp, lastHash, hash,
+				datastring, difficulty, nonce);
+	}
+
 	@Override
 	public String toString() {
 		String datastring = "";
@@ -174,8 +184,9 @@ public class Block {
 		int difficulty = GENESIS_DIFFICULTY;
 		int nonce = 0;
 //		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
-		return new Block((Long)GENESIS_DATA.get("timestamp"), (String)GENESIS_DATA.get("last_hash"), (String)GENESIS_DATA.get("hash"),
-				(String[])GENESIS_DATA.get("data"), (Integer)GENESIS_DATA.get("difficulty"), (Integer)GENESIS_DATA.get("nonce"));
+		return new Block((Long) GENESIS_DATA.get("timestamp"), (String) GENESIS_DATA.get("last_hash"),
+				(String) GENESIS_DATA.get("hash"), (String[]) GENESIS_DATA.get("data"),
+				(Integer) GENESIS_DATA.get("difficulty"), (Integer) GENESIS_DATA.get("nonce"));
 	}
 
 	/**
@@ -268,11 +279,6 @@ public class Block {
 	public int getNonce() {
 		return nonce;
 	}
-	
-	
-
-
-
 
 	@Override
 	public int hashCode() {

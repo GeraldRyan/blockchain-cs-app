@@ -45,7 +45,7 @@ public class BlockchainAppMain {
 				blockchain = blockchainApp.getBlockchainService(sc.nextLine());
 				if (blockchain != null) {
 					header();
-					System.out.println(blockchain);
+					System.out.println(blockchain.toStringConsole());
 				}
 				menu();
 				break;
