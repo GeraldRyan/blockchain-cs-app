@@ -114,7 +114,7 @@ public class Block {
 	public String toStringWebAPI() {
 		String datastring = "";
 		for (String s : data) {
-			datastring = datastring + s + "||";
+			datastring = datastring + "-[" + s + "]-";
 		}
 
 		return String.format("timestamp: %s, lastHash:%s, hash:%s, data:[%s], difficulty:%s", timestamp, lastHash, hash,
@@ -170,12 +170,12 @@ public class Block {
 		blockcount++;
 		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
 	}
-	
-	 /*
-	  * Overloaded method string scalar
-	  */
+
+	/*
+	 * Overloaded method string scalar
+	 */
 	public static Block mine_block(Block last_block, String dataScalar) throws NoSuchAlgorithmException {
-		String[] data = new String[] {dataScalar};
+		String[] data = new String[] { dataScalar };
 		long timestamp = new Date().getTime();
 		String last_hash = last_block.getHash();
 		int difficulty = Block.adjust_difficulty(last_block, timestamp);
