@@ -39,8 +39,13 @@ public class HomeController {
 
 	@GetMapping("/blockchaindesc")
 	public String serveBlockchaindesc(Model model) {
-		Blockchain blockchain = new Blockchain();
+		Blockchain blockchain = new Blockchain(); // not necessary I think.
 		return "blockchaindesc";
+	}
+	
+	@GetMapping("/blockchain/mine")
+	public String getMine(Model model) {
+		return "mine";
 	}
 
 	@GetMapping("/login")

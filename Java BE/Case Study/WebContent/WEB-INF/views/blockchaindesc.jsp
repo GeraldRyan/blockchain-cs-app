@@ -27,5 +27,8 @@
 	<h5>As JSON</h5>
 	<br>
 	<%=blockchain.toJSONtheChain()%>
+	<br>	
+	<br>
+	<a href="./blockchain/mine">Mine Block</a>
 </body>
 </html>
