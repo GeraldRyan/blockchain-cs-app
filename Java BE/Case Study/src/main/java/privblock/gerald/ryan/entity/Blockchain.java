@@ -198,8 +198,18 @@ public class Blockchain {
 		return string_to_return;
 	}
 	
+	/*
+	 * Uses GSON library to serialize as json string
+	 */
 	public String toJSONtheChain() {
 		return new Gson().toJson(chain);
+	}
+	
+	/*
+	 * Helper method for getting last block (peeking)
+	 */
+	public Block getLastBlock() {
+		return this.getChain().get(getLength_of_chain()-1);
 	}
 
 	public int getId() {

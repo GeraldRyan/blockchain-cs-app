@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.google.gson.Gson;
+
 import privblock.gerald.ryan.utilities.CryptoHash;
 
 /**
@@ -130,6 +132,11 @@ public class Block {
 
 		return String.format("%5s %5s %10s %15s %15s %15s", id, timestamp, lastHash, hash, datastring, difficulty,
 				nonce);
+	}
+	
+	
+	public String toJSONtheBlock() {
+		return new Gson().toJson(this);
 	}
 
 	/**

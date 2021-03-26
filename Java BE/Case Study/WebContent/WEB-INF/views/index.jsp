@@ -11,5 +11,6 @@
 	<a href="./blockchain">See our version of the blockchain</a>
 	<br>
 	<a href="./blockchaindesc">Same as above but with description</a>
+	<h3>${afb}</h3>
 </body>
 </html>

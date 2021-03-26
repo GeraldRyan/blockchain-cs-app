@@ -8,14 +8,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import privblock.gerald.ryan.entity.Blockchain;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 
+import privblock.gerald.ryan.service.BlockService;
+
 //@RequestMapping("/admin")
 @Controller
+@SessionAttributes("blockchain")
 public class HomeController {
+
+	BlockService BlockApp = new BlockService();
 
 //	@RequestMapping("/")
 //	public ModelAndView welcome() {
@@ -28,6 +34,21 @@ public class HomeController {
 //		return new ModelAndView("index");
 //	}
 
+	@ModelAttribute("afb")
+	public String addFooBar() {
+		return "FooAndBar";
+	}
+
+	@ModelAttribute("blockchain")
+	public Blockchain addBlockchain() throws NoSuchAlgorithmException {
+		Blockchain blockchain = new Blockchain("Bitcoin2");
+		for (int i = 0; i < 5; i++) {
+			
+			BlockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
+		}
+		return blockchain;
+	}
+
 	@GetMapping("/")
 	public String showIndex() {
 		return "index";
@@ -35,25 +56,21 @@ public class HomeController {
 
 	@GetMapping("/blockchain")
 	public String serveBlockchain(Model model) {
-		Blockchain blockchain = new Blockchain();
 		return "blockchain";
 	}
 
 	@GetMapping("/blockchaindesc")
-	public String serveBlockchaindesc(Model model) {
-		Blockchain blockchain = new Blockchain(); // not necessary I think.
+	public String serveBlockchaindesc(Model model) throws NoSuchAlgorithmException {
+
 		return "blockchaindesc";
 	}
-	
+
 	@GetMapping("/blockchain/mine")
-	public String getMine(Model model) throws NoSuchAlgorithmException {
-		Blockchain bc = new Blockchain("Bitcoin2");
-		for (int i = 0; i < 14; i++) {
-			bc.add_block(String.valueOf(i));
-		}
-		
+	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
+			throws NoSuchAlgorithmException {
+		blockchain.add_block("FOOBARFORTHEWIN");
+		BlockApp.addBlockService(blockchain.add_block("RUBARB NOW"));
 		model.addAttribute("foo", "Bar");
-		model.addAttribute("blockchain", bc);
 		return "mine";
 	}
 

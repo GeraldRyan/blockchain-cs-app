@@ -12,23 +12,22 @@
 	<p>However, we are just a node on a peer to peer network. Do ask
 		around</p>
 	<br>
-	<%
-	Blockchain blockchain = new Blockchain("Bitcoin2");
-	for (int i = 0; i < 4; i++) {
-		blockchain.add_block(String.valueOf(i));
-	}
-	%>
+
 	<h5>Here's what we got</h5>
 	<br>
-	<%=blockchain.toStringBroadcastChain()%>
+	<%
+	Blockchain bc = (Blockchain) request.getAttribute("blockchain");
+	%>
+	<%=bc.toStringBroadcastChain()%>
 
 	<br>
 	<br>
 	<h5>As JSON</h5>
 	<br>
-	<%=blockchain.toJSONtheChain()%>
-	<br>	
+	<%=bc.toJSONtheChain()%>
+	<br>
 	<br>
 	<a href="./blockchain/mine">Mine Block</a>
+	<h3>${afb}</h3>
 </body>
 </html>
