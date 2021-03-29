@@ -24,7 +24,7 @@ public class PlayMain {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
+
 		PubNubApp pubnub = new PubNubApp();
 		Thread.sleep(1000);
 		pubnub.publish("general", "World 0");
@@ -32,13 +32,16 @@ public class PlayMain {
 		pubnub.publish("Hello", "Won't see 1");
 		Thread.sleep(1000);
 		pubnub.subscribe("Hello");
+		pubnub.publish("TEST_CHANNEL", "from test channel");
+		pubnub.publish("BLOCK_CHANNEL", "from BLOCK channel");
+		Thread.sleep(1000);
 		Thread.sleep(1000);
 		pubnub.publish("Hello", "Will see 2");
 		Thread.sleep(1000);
 		pubnub.unsubscribe("Hello");
 		Thread.sleep(1000);
 		pubnub.publish("Hello", "Won't see 3");
-		pubnub.publish("general", new String[] {"Dance", "With", "Me"});
+		pubnub.publish("general", new String[] { "Dance", "With", "Me" });
 
 	}
 
