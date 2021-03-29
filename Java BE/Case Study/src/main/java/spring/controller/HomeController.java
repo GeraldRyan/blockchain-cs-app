@@ -20,6 +20,7 @@ import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.service.BlockService;
 import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
+import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
@@ -59,6 +60,11 @@ public class HomeController {
 			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
 		}
 		return blockchain;
+	}
+	
+	@ModelAttribute("pubnubapp")
+	public PubNubApp addPubNub() throws InterruptedException {
+		return new PubNubApp();
 	}
 
 	@GetMapping("/")

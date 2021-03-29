@@ -33,22 +33,52 @@ import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResu
 public class PubNubApp {
 	private static String publish_key = "pub-c-74f31a3f-e3da-4cbe-81a6-02e2ba8744bd";
 	private static String subscribe_key = "sub-c-1e6d4f2c-9012-11eb-968e-467c259650fa";
+	private PubNub pn;
 
 	/*
 	 * Not being used, may want to implement later
 	 */
-	public PubNubApp(PNConfiguration pnconfiguration) {
-		this.publish_key = "pub-c-74f31a3f-e3da-4cbe-81a6-02e2ba8744bd";
-		this.subscribe_key = "sub-c-1e6d4f2c-9012-11eb-968e-467c259650fa";
+	public PubNubApp(PNConfiguration pnConfiguration) {
+		this.pn = new PubNub(pnConfiguration);
 	}
 
 	/*
-	 * used experimentally
+	 * Default constructor. Subscribes to general channel automatically.
 	 */
-	public PubNubApp() {
-
+	public PubNubApp() throws InterruptedException {
+		PNConfiguration pnConfiguration = new PNConfiguration();
+		pnConfiguration.setSubscribeKey(subscribe_key);
+		pnConfiguration.setPublishKey(publish_key);
+		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		this.pn = new PubNub(pnConfiguration);
+		this.pn.addListener(new PubNubSubCallback());
+		Thread.sleep(1000);
+		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
+		
 	}
 
+	/*
+	 * For publishing, what else.
+	 */
+	public void publish(String channel, String[] message) throws PubNubException {
+		this.pn.publish().channel(channel).message(message).sync();
+	}
+	/*
+	 * Just an overload. Maybe can delete one of these at later date, tbd. 
+	 */
+	public void publish(String channel, Object message) throws PubNubException {
+		this.pn.publish().channel(channel).message(message).sync();
+	}
+	
+	public void subscribe(String channel) {
+		this.pn.subscribe().channels(Collections.singletonList(channel)).execute();
+	}
+	public void unsubscribe(String channel) {
+		this.pn.unsubscribe().channels(Collections.singletonList(channel)).execute();
+	}
+	
+	
+	
 	public static PubNub createConfiguredPubNubInstance() {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
@@ -91,36 +121,7 @@ public class PubNubApp {
 
 		pubnub.publish().channel(TEST_CHANNEL).message(new String("Test message led zeppelin")).sync();
 		System.out.println("End run");
-		//
-//		pubnub.addListener(new SubscribeCallback() {
-//		    @Override
-//		    public void status(PubNub pubnub, PNStatus status) {
-//		        if (status.getCategory() == PNStatusCategory.PNConnectedCategory){
-//		            complexData data = new complexData();
-//		            data.fieldA = "Awesome";
-//		            data.fieldB = 10;
-//		            pubnub.setPresenceState()
-//		                .channels(Arrays.asList("awesomeChannel"))
-//		                .channelGroups(Arrays.asList("awesomeChannelGroup"))
-//		                .state(data).async(new PNCallback<PNSetStateResult>() {
-//		                    @Override
-//		                    public void onResponse(PNSetStateResult result, PNStatus status) {
-//		                        // handle set state response
-//		                    }
-//		                });
-//		        }
-//		    }
-//
-//		    @Override
-//		    public void message(PubNub pubnub, PNMessageResult message) {
-//
-//		    }
-//
-//		    @Override
-//		    public void presence(PubNub pubnub, PNPresenceEventResult presence) {
-//
-//		    }
-//		});
+
 	}
 
 }

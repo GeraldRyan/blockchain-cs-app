@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallback {
 	@Override
 	public void status(PubNub pubnub, PNStatus status) {
-		System.out.println("status called");
+		System.out.println("pubnub listener heard something");
 		switch (status.getOperation()) {
 		// combine unsubscribe and subscribe handling for ease of use
 		case PNSubscribeOperation:
@@ -73,13 +73,15 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 	// Messages
 	@Override
 	public void message(PubNub pubnub, PNMessageResult message) {
-		System.out.println("messages called");
+		System.out.println("-- Incoming Transmission -");
 		String messagePublisher = message.getPublisher();
 		System.out.println("Message publisher: " + messagePublisher);
 		System.out.println("Message Payload: " + message.getMessage());
 		System.out.println("Message Subscription: " + message.getSubscription());
 		System.out.println("Message Channel: " + message.getChannel());
 		System.out.println("Message timetoken: " + message.getTimetoken());
+		System.out.println("-- End Transmission -");
+		System.out.println();
 	}
 
 	// Presence
