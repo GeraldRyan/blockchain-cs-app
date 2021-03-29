@@ -27,6 +27,8 @@ import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 
+import privblock.gerald.ryan.entity.Block;
+
 /*
  * This is an important class made by me (Gerald). Can't call it pubnub because that's taken by pubnub itself. 
  * Use this class to create your pubnub instances.  
@@ -39,12 +41,12 @@ public class PubNubApp {
 	private PubNub pn;
 	String TEST_CHANNEL;
 	String BLOCK_CHANNEL;
-	HashMap<String, String> CHANNELS;
+	public HashMap<String, String> CHANNELS;
 
 	/*
 	 * Not being used, may want to implement later
 	 */
-	public PubNubApp(PNConfiguration pnConfiguration) {
+	public PubNubApp(PNConfiguration pnConfiguration) throws InterruptedException {
 		this.pn = new PubNub(pnConfiguration);
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
@@ -52,6 +54,20 @@ public class PubNubApp {
 		CHANNELS.put("BLOCK", "BLOCK_CHANNEL");
 		CHANNELS.put("TEST", "TEST_CHANNEL");
 		CHANNELS.put("GENERAL", "general");
+		this.pn = new PubNub(pnConfiguration);
+		this.pn.addListener(new PubNubSubCallback());
+		Thread.sleep(1000);
+//		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
+//		this.pn.subscribe().channels(channels).execute();
+		this.pn.subscribe().channels(new ArrayList<String>(CHANNELS.values())).execute();
+	}
+
+	public HashMap<String, String> getCHANNELS() {
+		return CHANNELS;
+	}
+
+	public void setCHANNELS(HashMap<String, String> cHANNELS) {
+		CHANNELS = cHANNELS;
 	}
 
 	/*
@@ -99,8 +115,16 @@ public class PubNubApp {
 		this.pn.subscribe().channels(Collections.singletonList(channel)).execute();
 	}
 
+	public void subscribe(List<String> channels) {
+		this.pn.subscribe().channels(channels).execute();
+	}
+
 	public void unsubscribe(String channel) {
 		this.pn.unsubscribe().channels(Collections.singletonList(channel)).execute();
+	}
+
+	public void unsubscribeAll(List<String> channels) {
+		this.pn.unsubscribe().channels(channels).execute();
 	}
 
 	public static PubNub createConfiguredPubNubInstance() {
@@ -126,6 +150,13 @@ public class PubNubApp {
 		pubnub.addListener(new PubNubSubCallback());
 		pubnub.subscribe().channels(Collections.singletonList(channel));
 		pubnub.publish().channel(channel).message(message).sync();
+	}
+
+	/*
+	 * Broadcasts a block object to all nodes
+	 */
+	public void broadcastBlock(Block block) throws PubNubException {
+		this.publish(this.CHANNELS.get("BLOCK"), block.toJSONtheBlock());
 	}
 
 	public static void main(String[] args) throws PubNubException, InterruptedException {

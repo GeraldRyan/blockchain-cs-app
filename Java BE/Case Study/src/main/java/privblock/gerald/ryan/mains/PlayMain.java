@@ -5,6 +5,7 @@ import java.util.Collections;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 
+import privblock.gerald.ryan.entity.Block;
 import pubsub.PubNubApp;
 import pubsub.PubNubSubCallback;
 
@@ -42,6 +43,8 @@ public class PlayMain {
 		Thread.sleep(1000);
 		pubnub.publish("Hello", "Won't see 3");
 		pubnub.publish("general", new String[] { "Dance", "With", "Me" });
+		pubnub.publish(pubnub.CHANNELS.get("BLOCK"), "I'm in the block");
+		pubnub.publish(pubnub.CHANNELS.get("BLOCK"), Block.genesis_block());
 
 	}
 
