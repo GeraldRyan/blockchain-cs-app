@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.pubnub.api.PubNubException;
+
 import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.Message;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 
@@ -29,7 +32,11 @@ public class HomeController {
 
 	BlockService blockApp = new BlockService();
 	BlockchainService blockchainApp = new BlockchainService();
+	PubNubApp pnapp;
 
+	public HomeController() throws InterruptedException {
+		pnapp = new PubNubApp();
+	}
 //	@RequestMapping("/")
 //	public ModelAndView welcome() {
 //		ModelAndView mav = new ModelAndView("index");
@@ -45,7 +52,7 @@ public class HomeController {
 	public String addFooBar() {
 		return "FooAndBar";
 	}
-	
+
 //	@ModelAttribute("blockdata")
 //	public BlockData addBlockData() {
 //		
@@ -61,7 +68,7 @@ public class HomeController {
 		}
 		return blockchain;
 	}
-	
+
 	@ModelAttribute("pubnubapp")
 	public PubNubApp addPubNub() throws InterruptedException {
 		return new PubNubApp();
@@ -134,6 +141,41 @@ public class HomeController {
 	public String processData(@ModelAttribute("blockdata") BlockData blockdata) {
 		System.out.println(blockdata.getBlockdata());
 		return "data";
+	}
+
+	@GetMapping("/publish")
+	public String getPublish(Model model) {
+		model.addAttribute("message", new Message());
+		return "publish";
+	}
+
+//	String messages;
+
+	@PostMapping("/publish")
+	public String getPublish(@ModelAttribute("message") Message message, Model model)
+			throws InterruptedException, PubNubException {
+
+		System.out.println("Publish post mapping ran");
+//		messages += message.getMessage() + "\n";
+		pnapp.publish(message.getChannel(), message.getMessage());
+		model.addAttribute("display", message.getMessage());
+//		model.addAttribute("display", messages);
+		return "publish";
+	}
+
+	@GetMapping("/subscribe")
+	public String getSubscribe() {
+		return "subscribe";
+	}
+
+	@PostMapping("/subscribe")
+	public String subToChannel(@RequestParam("channel") String channel) throws InterruptedException, PubNubException {
+		pnapp.subscribe(channel);
+		System.out.println("Publish post mapping ran");
+//		messages += message.getMessage() + "\n";
+
+//		model.addAttribute("display", messages);
+		return "subscribe";
 	}
 
 }
