@@ -6,7 +6,7 @@ import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
 
 public interface BlockchainDaoI {
-	public boolean newBlockchain(String name);
+	public Blockchain newBlockchain(String name);
 	public boolean addBlock(String name, String[] data);
 	public boolean replaceChain(Blockchain chain);
 	public List<Blockchain> getAllBlockchains();

@@ -1,5 +1,7 @@
 package spring.controller;
 
+//select instance_name,b.id,hash,data from blockchain c inner join blocksbychain bc on c.id=bc.blockchain_id inner join block b on bc.chain_id=b.id;
+
 import java.security.NoSuchAlgorithmException;
 
 import org.springframework.stereotype.Controller;
@@ -10,18 +12,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 
 import privblock.gerald.ryan.service.BlockService;
+import privblock.gerald.ryan.service.BlockchainService;
+import privblock.gerald.ryan.utilities.StringUtils;
 
 //@RequestMapping("/admin")
 @Controller
 @SessionAttributes("blockchain")
 public class HomeController {
 
-	BlockService BlockApp = new BlockService();
+	BlockService blockApp = new BlockService();
+	BlockchainService blockchainApp = new BlockchainService();
 
 //	@RequestMapping("/")
 //	public ModelAndView welcome() {
@@ -38,13 +44,19 @@ public class HomeController {
 	public String addFooBar() {
 		return "FooAndBar";
 	}
+	
+//	@ModelAttribute("blockdata")
+//	public BlockData addBlockData() {
+//		
+//		
+//		return "FooAndBar";
+//	}
 
 	@ModelAttribute("blockchain")
 	public Blockchain addBlockchain() throws NoSuchAlgorithmException {
-		Blockchain blockchain = new Blockchain("Bitcoin2");
+		Blockchain blockchain = blockchainApp.newBlockchainService(StringUtils.RandomStringLenN(5));
 		for (int i = 0; i < 5; i++) {
-			
-			BlockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
+			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
 		}
 		return blockchain;
 	}
@@ -61,15 +73,22 @@ public class HomeController {
 
 	@GetMapping("/blockchaindesc")
 	public String serveBlockchaindesc(Model model) throws NoSuchAlgorithmException {
-
+		model.addAttribute("blockdata", new BlockData());
 		return "blockchaindesc";
+	}
+
+	@PostMapping("/blockchaindesc")
+	public String save(@ModelAttribute("blockdata") BlockData blockData) {
+		System.out.println(blockData.getBlockdata());
+		return "redirect:/blockchain/mine";
 	}
 
 	@GetMapping("/blockchain/mine")
 	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
 			throws NoSuchAlgorithmException {
-		blockchain.add_block("FOOBARFORTHEWIN");
-		BlockApp.addBlockService(blockchain.add_block("RUBARB NOW"));
+//		blockchain.add_block("FOOBARFORTHEWIN");
+		String stubbedData = "STUBBED DATA";
+		blockApp.addBlockService(blockchain.add_block(stubbedData));
 		model.addAttribute("foo", "Bar");
 		return "mine";
 	}
@@ -97,6 +116,18 @@ public class HomeController {
 	public String registerUser(@ModelAttribute("user") User user) {
 		System.out.println(user.toString());
 		return "index";
+	}
+
+	@GetMapping("/data")
+	public String getData(Model model) {
+		model.addAttribute("blockdata", new BlockData());
+		return "data";
+	}
+
+	@PostMapping("/data")
+	public String processData(@ModelAttribute("blockdata") BlockData blockdata) {
+		System.out.println(blockdata.getBlockdata());
+		return "data";
 	}
 
 }

@@ -136,7 +136,7 @@ public class Block {
 	
 	
 	public String toJSONtheBlock() {
-		return new Gson().toJson(this);
+		return new Gson().toJson(this).trim();
 	}
 
 	/**

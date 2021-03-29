@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="privblock.gerald.ryan.entity.Blockchain"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,6 +28,17 @@
 	<%=bc.toJSONtheChain()%>
 	<br>
 	<br>
+
+
+	<form:form action="./blockchaindesc" modelAttribute="blockdata" method="post">
+		<form:label path="blockdata">Block Data </form:label>
+		<form:input type="text" path="blockdata" />
+		<br />
+		<br />
+		<input type="submit" value="Post">
+	</form:form>
+
+
 	<a href="./blockchain/mine">Mine Block</a>
 	<h3>${afb}</h3>
 </body>

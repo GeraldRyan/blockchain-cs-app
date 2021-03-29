@@ -9,7 +9,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 public class BlockchainService {
 	private BlockchainDao blockchainD = new BlockchainDao();
 
-	public boolean newBlockchainService(String name) {
+	public Blockchain newBlockchainService(String name) {
 		return blockchainD.newBlockchain(name);
 	}
 

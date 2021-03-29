@@ -8,13 +8,12 @@
 <title>Index Page</title>
 </head>
 <body>
-	<%
-	Blockchain blockchain = new Blockchain("Bitcoin2");
+<%-- 	<%Blockchain blockchain = new Blockchain("Bitcoin2");
 	for (int i = 0; i < 4; i++) {
 		blockchain.add_block(String.valueOf(i));
 	}
-	%>
-
-	<%=blockchain.toJSONtheChain()%>
+	%><%=blockchain.toJSONtheChain()%> --%>
+		${blockchain.toJSONtheChain()}
+		
 </body>
 </html>

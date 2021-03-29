@@ -45,7 +45,7 @@ public class Blockchain {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	int id;
-	@Column(unique = true) // doesn't need to be unique but why not
+	@Column // (unique = true) doesn't need to be unique but why not
 	String instance_name;
 	long date_created;
 	long date_last_modified;
@@ -200,9 +200,10 @@ public class Blockchain {
 	
 	/*
 	 * Uses GSON library to serialize as json string
+	 * Trim is not necessary. My json formatters on chrome were not working with this so I thought it might be necessary. 
 	 */
 	public String toJSONtheChain() {
-		return new Gson().toJson(chain);
+		return new Gson().toJson(chain).trim();
 	}
 	
 	/*

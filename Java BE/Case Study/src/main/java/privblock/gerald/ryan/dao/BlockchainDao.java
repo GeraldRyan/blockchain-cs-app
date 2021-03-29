@@ -12,7 +12,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 
 	@Override
-	public boolean newBlockchain(String name) {
+	public Blockchain newBlockchain(String name) {
 		this.connect();
 		try {
 			Blockchain new_blockchain = new Blockchain(name);
@@ -21,11 +21,11 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			em.getTransaction().commit();
 			this.disconnect();
 			System.out.println("New Blockchain added");
-			return true;
+			return new_blockchain;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 
