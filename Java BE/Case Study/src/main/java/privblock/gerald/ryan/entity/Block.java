@@ -96,6 +96,28 @@ public class Block {
 		this.difficulty = difficulty;
 		this.nonce = nonce;
 	}
+	
+	/**
+	 * A utility constructor for recreating (cloning) block.
+	 * 
+	 * @param timestamp
+	 * @param lastHash
+	 * @param hash
+	 * @param data
+	 * @param difficulty
+	 * @param nonce
+	 */
+	public Block(int id, long timestamp, String lastHash, String hash, String[] data, int difficulty, int nonce) {
+		super();
+		this.id = id;
+		this.timestamp = timestamp;
+		this.lastHash = lastHash;
+		this.hash = hash;
+		this.data = data;
+		this.difficulty = difficulty;
+		this.nonce = nonce;
+	}
+		
 
 	/*
 	 * keep zero-arg constructor for JPA

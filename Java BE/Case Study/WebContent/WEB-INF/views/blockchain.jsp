@@ -2,14 +2,14 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="privblock.gerald.ryan.entity.Blockchain"%>
 
-<!-- This is not working. can remove if it doens't work as well as the jar file from lib folder -->
+
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json"%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Index Page</title>
+<title></title>
 <link rel="stylesheet" href="./blockchain.css" type="text/css"></link>
 </head>
 </body>

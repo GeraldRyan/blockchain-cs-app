@@ -217,6 +217,7 @@ public class Blockchain {
 		}
 		return true;
 	}
+	
 
 	/*
 	 * overloaded method that just takes the chain not the blockchain
@@ -269,6 +270,10 @@ public class Blockchain {
 	public String toJSONtheChain() {
 		return new Gson().toJson(chain);
 	}
+	
+	public ArrayList fromJSONtheChain(String json) {
+		return new Gson().fromJson(json, ArrayList.class);
+	}
 
 	/*
 	 * Helper method for getting last block (peeking)
@@ -303,6 +308,7 @@ public class Blockchain {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 		Blockchain blockchain = new Blockchain("Bitcoin 2");
+		System.out.println(blockchain.fromJSONtheChain(blockchain.toJSONtheChain()));
 //		System.out.println(blockchain);
 		blockchain.add_block(new String[] { "Shakespeare", "wrote", "it" });
 		System.out.println(blockchain);
