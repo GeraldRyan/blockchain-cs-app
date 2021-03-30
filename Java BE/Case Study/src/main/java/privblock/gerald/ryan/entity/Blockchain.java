@@ -267,7 +267,7 @@ public class Blockchain {
 	 * necessary.
 	 */
 	public String toJSONtheChain() {
-		return new Gson().toJson(chain).trim();
+		return new Gson().toJson(chain);
 	}
 
 	/*

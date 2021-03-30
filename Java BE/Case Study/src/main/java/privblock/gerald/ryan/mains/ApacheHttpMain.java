@@ -13,7 +13,7 @@ public class ApacheHttpMain {
 
 	public static void main(String[] args) {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet("http://localhost:8080/CaseStudy/blockchain/");
+		HttpGet httpGet = new HttpGet("http://httpbin.org/get");
 		CloseableHttpResponse response1;
 		try {
 			response1 = httpclient.execute(httpGet);
@@ -24,7 +24,7 @@ public class ApacheHttpMain {
 			while (sc.hasNext()) {
 				System.out.println(sc.nextLine());
 			}
-			System.out.println(entity1.getContent());
+//			System.out.println(entity1.getContent());
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
