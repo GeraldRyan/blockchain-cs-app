@@ -107,7 +107,8 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 		System.out.println("-- End Transmission -");
 		System.out.println();
 		if (message.getChannel().equals("BLOCK_CHANNEL")) { // CHANNELS.get("BLOCK")
-			//NECESSARY OR ELSE IT'S IN THIS FORMAT "{\"restaurant\":{\"id\":\"abc-012\",\"name\":\"good restaurant\"}"
+			// NECESSARY OR ELSE IT'S IN THIS FORMAT
+			// "{\"restaurant\":{\"id\":\"abc-012\",\"name\":\"good restaurant\"}"
 			String block_string = message.getMessage().toString().replaceAll("^\"|\"$|", "").replace("\\", "");
 //			String clean_block_string = block_string.replaceAll("^\"|\"$|", "").replace("\\", "");
 //			System.out.println("_____________________________-");
@@ -124,7 +125,7 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 					| BlocksInChainInvalidException e) {
 				// TODO Auto-generated catch block
 				System.out.println("DID NOT REPLACE CHAIN");
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}

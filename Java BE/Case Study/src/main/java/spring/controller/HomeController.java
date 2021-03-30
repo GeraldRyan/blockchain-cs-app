@@ -63,11 +63,12 @@ public class HomeController {
 
 	@ModelAttribute("blockchain")
 	public Blockchain addBlockchain() throws NoSuchAlgorithmException, InterruptedException {
-		Blockchain blockchain = blockchainApp.newBlockchainService(StringUtils.RandomStringLenN(5));
-		for (int i = 0; i < 5; i++) {
-			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
-		}
-		pnapp = new PubNubApp();
+//		Blockchain blockchain = blockchainApp.newBlockchainService(StringUtils.RandomStringLenN(5));
+//		for (int i = 0; i < 2; i++) {
+//			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
+//		}
+		Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
+		pnapp = new PubNubApp(blockchain);
 		return blockchain;
 	}
 
