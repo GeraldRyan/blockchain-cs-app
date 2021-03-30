@@ -128,12 +128,14 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			try {
 				this.blockchain.replace_chain(potential_chain);
 				System.out.println("Successfully replaced the local chain");
-			} catch (NoSuchAlgorithmException | ChainTooShortException | GenesisBlockInvalidException
-					| BlocksInChainInvalidException e) {
-				// TODO Auto-generated catch block
-
-				System.out.println("DID NOT REPLACE CHAIN");
+			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
+			} catch (ChainTooShortException e) {
+				System.err.println("DID NOT REPLACE CHAIN. CHAIN TOO SHORT");
+			} catch (BlocksInChainInvalidException e) {
+				System.err.println("DID NOT REPLACE CHAIN. At least one of the blocks in the chain is not valid");
+			} catch (GenesisBlockInvalidException e) {
+				System.err.println("DID NOT REPLACE CHAIN. Genesis block invalid exception");
 			}
 		}
 	}
