@@ -31,13 +31,17 @@ public class PlayMain {
 		BlockchainService blockchainApp = new BlockchainService();
 
 		// get blockchain from database
-		Blockchain top_blockchain = blockchainApp.getTopBlockchain();
-//		Blockchain new_blockchain = new Blockchain(StringUtils.RandomStringLenN(5));
-
-		PubNubApp pubnub = new PubNubApp(top_blockchain);
-		System.out.println(top_blockchain.toStringMeta());
+//		Blockchain blockchain = blockchainApp.getTopBlockchain();
+//		Blockchain blockchain = new Blockchain(StringUtils.RandomStringLenN(5));
+		Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
+		
+		// This automatically subscribes to BLOCK_CHANNEL channel that listens to block broadcasts
+		// Just by instantiating this, you get the subscription and results
+		PubNubApp pubnub = new PubNubApp(blockchain);
+		
+//		System.out.println(blockchain.toStringMeta());
 		Thread.sleep(1000);
-		pubnub.publish("general", "World 0");
+//		pubnub.publish("general", "World");
 //		System.out.println("End");
 //		pubnub.publish("Hello", "Won't see 1");
 //		Thread.sleep(1000);
@@ -49,11 +53,10 @@ public class PlayMain {
 //		Thread.sleep(1000);
 //		pubnub.unsubscribe("Hello");
 //		Thread.sleep(1000);
-		pubnub.publish("Hello", "Won't see 3");
-		pubnub.publish("general", new String[] { "Dance", "With", "Me" });
-		System.out.println("HERE");
-		System.out.println(Block.genesis_block().toJSONtheBlock());
-		pubnub.publish(pubnub.CHANNELS.get("BLOCK"), Block.genesis_block().toJSONtheBlock());
+//		pubnub.publish("Hello", "Won't see 3");
+//		pubnub.publish("general", new String[] { "Dance", "With", "Me" });
+//		System.out.println(Block.genesis_block().toJSONtheBlock());
+//		pubnub.publish(pubnub.CHANNELS.get("BLOCK"), Block.genesis_block().toJSONtheBlock());
 
 	}
 

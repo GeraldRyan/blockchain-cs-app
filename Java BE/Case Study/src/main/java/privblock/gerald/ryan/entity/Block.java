@@ -302,7 +302,6 @@ public class Block {
 			return false;
 			// throw exception: the block hash must be correct
 		}
-		System.out.println("You have mined a valid block");
 		return true;
 	}
 

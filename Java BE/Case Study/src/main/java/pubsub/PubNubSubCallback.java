@@ -23,6 +23,8 @@ import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.utilities.StringUtils;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -112,18 +114,24 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			String block_string = message.getMessage().toString().replaceAll("^\"|\"$|", "").replace("\\", "");
 //			String clean_block_string = block_string.replaceAll("^\"|\"$|", "").replace("\\", "");
 //			System.out.println("_____________________________-");
-			List<Block> potential_chain = this.blockchain.getChain();
+			ArrayList<Block> potential_chain = new ArrayList<Block>(blockchain.getChain());
+//			System.arraycopy(blockchain.getChain().toArray(), 0, potential_chain, 0, blockchain.getChain().size());
 			System.out.println(block_string);
 //			Block deserialized_block = Block.fromJsonToBlock(block_string.toString());
-			Gson gson = new Gson();
-			Block deserialized_block = gson.fromJson(block_string, Block.class);
+			Block deserialized_block = new Gson().fromJson(block_string, Block.class);
+			System.out.println(potential_chain.equals(this.blockchain.getChain()));
 			potential_chain.add(deserialized_block);
+			System.out.println(potential_chain.hashCode());
+			System.out.println(blockchain.getChain().hashCode());
+			System.out.println(blockchain.getChain().size());
+			System.out.println(potential_chain.size());
 			try {
 				this.blockchain.replace_chain(potential_chain);
 				System.out.println("Successfully replaced the local chain");
 			} catch (NoSuchAlgorithmException | ChainTooShortException | GenesisBlockInvalidException
 					| BlocksInChainInvalidException e) {
 				// TODO Auto-generated catch block
+
 				System.out.println("DID NOT REPLACE CHAIN");
 				e.printStackTrace();
 			}

@@ -160,6 +160,7 @@ public class Blockchain {
 			GenesisBlockInvalidException, BlocksInChainInvalidException {
 		// TODO how will I implement this? Different localhosts will have different
 		// chains?
+		System.out.println(other_chain.size() + " " + this.chain.size());
 		if (other_chain.size() <= this.chain.size()) {
 			throw new ChainTooShortException("Chain too short to replace");
 		}
