@@ -79,6 +79,14 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 	}
 
 	@Override
+	public Blockchain getTopBlockchain() {
+		this.connect();
+		Query query = em.createQuery("select b from Blockchain b");
+		Blockchain blockchain = (Blockchain) query.setMaxResults(1).getSingleResult();
+		return blockchain;
+	}
+
+	@Override
 	public boolean replaceChain(Blockchain chain) {
 		// TODO Auto-generated method stub
 		return false;

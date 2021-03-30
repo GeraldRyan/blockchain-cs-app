@@ -11,6 +11,7 @@ public interface BlockchainDaoI {
 	public boolean replaceChain(Blockchain chain);
 	public List<Blockchain> getAllBlockchains();
 	public Blockchain getBlockchainById(int id);
+	public Blockchain getTopBlockchain();
 	public Block getBlockById(int id); 
 	public Block getBlockByHash(String hash); // is it a long? TODO Implement // could overload method if types differ
 	public Blockchain getBlockchainByName(String name);

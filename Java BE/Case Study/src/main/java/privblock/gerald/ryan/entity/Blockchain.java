@@ -102,7 +102,7 @@ public class Blockchain {
 		this.date_last_modified = new Date().getTime();
 		return new_block;
 	}
-	
+
 	public Block add_block(String dataScalar) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), dataScalar);
 		this.chain.add(new_block);
@@ -138,6 +138,40 @@ public class Blockchain {
 			Blockchain.is_valid_chain(other_blockchain);
 			this.chain = other_blockchain.chain;
 			this.length_of_chain = other_blockchain.length_of_chain;
+			this.date_last_modified = new Date().getTime();
+			System.out.println("Chain replaced with valid longer chain");
+		} catch (GenesisBlockInvalidException e) {
+			System.out.println(e);
+		}
+	}
+
+	/**
+	 * Replace the local chain with the incoming chain if the following apply: - the
+	 * incoming chain is longer than the local one - the incoming chain is formatted
+	 * properly
+	 * 
+	 * @param chain
+	 * @throws NoSuchAlgorithmException
+	 * @throws ChainTooShortException
+	 * @throws BlocksInChainInvalidException
+	 * @throws GenesisBlockInvalidException
+	 */
+	public void replace_chain(List<Block> other_chain) throws NoSuchAlgorithmException, ChainTooShortException,
+			GenesisBlockInvalidException, BlocksInChainInvalidException {
+		// TODO how will I implement this? Different localhosts will have different
+		// chains?
+		if (other_chain.size() <= this.chain.size()) {
+			throw new ChainTooShortException("Chain too short to replace");
+		}
+		if (!Blockchain.is_valid_chain(other_chain)) {
+			System.out.println("Cannot replace chain. The incoming chain is invalid");
+			return;
+		}
+
+		try {
+			Blockchain.is_valid_chain(other_chain);
+			this.chain = other_chain;
+			this.length_of_chain = other_chain.size();
 			this.date_last_modified = new Date().getTime();
 			System.out.println("Chain replaced with valid longer chain");
 		} catch (GenesisBlockInvalidException e) {
@@ -183,10 +217,38 @@ public class Blockchain {
 		return true;
 	}
 
+	/*
+	 * overloaded method that just takes the chain not the blockchain
+	 */
+	public static boolean is_valid_chain(List<Block> other_chain)
+			throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
+		if (!other_chain.get(0).equals(Block.genesis_block())) {
+			System.out.println("The genesis block must be valid");
+			throw new GenesisBlockInvalidException("Genesis Block is invalid");
+		}
+		for (int i = 1; i < other_chain.size(); i++) {
+			Block current_block = other_chain.get(i);
+			Block last_block = other_chain.get(i - 1);
+			if (!Block.is_valid_block(last_block, current_block)) {
+//				System.out.println("At least one of the blocks in the chain is not valid");
+				throw new BlocksInChainInvalidException("At least one of the blocks in the chain is not valid");
+			}
+		}
+		return true;
+	}
+
 	public String toStringConsole() {
 
 		return String.format("%5s %15s %15s %15s %15s", id, instance_name, date_created, date_last_modified,
 				length_of_chain, "length", "content");
+//		return "Blockchain: " + this.chain;
+	}
+
+	public String toStringMeta() {
+
+		return String.format(
+				"Blockchain Metadata: id: %s instance: %s date_created: %s date_modified: %s length of chain: %s", id,
+				instance_name, date_created, date_last_modified, length_of_chain);
 //		return "Blockchain: " + this.chain;
 	}
 
@@ -197,20 +259,21 @@ public class Blockchain {
 		}
 		return string_to_return;
 	}
-	
+
 	/*
-	 * Uses GSON library to serialize as json string
-	 * Trim is not necessary. My json formatters on chrome were not working with this so I thought it might be necessary. 
+	 * Uses GSON library to serialize as json string Trim is not necessary. My json
+	 * formatters on chrome were not working with this so I thought it might be
+	 * necessary.
 	 */
 	public String toJSONtheChain() {
 		return new Gson().toJson(chain).trim();
 	}
-	
+
 	/*
 	 * Helper method for getting last block (peeking)
 	 */
 	public Block getLastBlock() {
-		return this.getChain().get(getLength_of_chain()-1);
+		return this.getChain().get(getLength_of_chain() - 1);
 	}
 
 	public int getId() {

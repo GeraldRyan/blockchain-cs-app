@@ -18,6 +18,12 @@ public class StringUtils {
 		String generatedString = buffer.toString();
 		return generatedString;
 	}
+	
+//	public static String removeQuotesAndUnescape(String uncleanJson) {
+//	    String noQuotes = uncleanJson.replaceAll("^\"|\"$", "");
+//
+//	    return StringEscapeUtils.unescapeJava(noQuotes);
+//	}
 
 }
 

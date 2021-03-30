@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.pubnub.api.PubNubException;
 
+import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.entity.Message;
@@ -35,7 +36,7 @@ public class HomeController {
 	PubNubApp pnapp;
 
 	public HomeController() throws InterruptedException {
-		pnapp = new PubNubApp();
+//		pnapp = new PubNubApp(); // moved to @modelAttribute new blockchain
 	}
 //	@RequestMapping("/")
 //	public ModelAndView welcome() {
@@ -61,11 +62,12 @@ public class HomeController {
 //	}
 
 	@ModelAttribute("blockchain")
-	public Blockchain addBlockchain() throws NoSuchAlgorithmException {
+	public Blockchain addBlockchain() throws NoSuchAlgorithmException, InterruptedException {
 		Blockchain blockchain = blockchainApp.newBlockchainService(StringUtils.RandomStringLenN(5));
 		for (int i = 0; i < 5; i++) {
 			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
 		}
+		pnapp = new PubNubApp();
 		return blockchain;
 	}
 
@@ -98,11 +100,13 @@ public class HomeController {
 
 	@GetMapping("/blockchain/mine")
 	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
-			throws NoSuchAlgorithmException {
+			throws NoSuchAlgorithmException, PubNubException {
 //		blockchain.add_block("FOOBARFORTHEWIN");
 		String stubbedData = "STUBBED DATA";
-		blockApp.addBlockService(blockchain.add_block(stubbedData));
+		Block new_block = blockchain.add_block(stubbedData);
+		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
+		pnapp.broadcastBlock(new_block);
 		return "mine";
 	}
 

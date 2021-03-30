@@ -28,6 +28,7 @@ import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
 
 import privblock.gerald.ryan.entity.Block;
+import privblock.gerald.ryan.entity.Blockchain;
 
 /*
  * This is an important class made by me (Gerald). Can't call it pubnub because that's taken by pubnub itself. 
@@ -42,11 +43,12 @@ public class PubNubApp {
 	String TEST_CHANNEL;
 	String BLOCK_CHANNEL;
 	public HashMap<String, String> CHANNELS;
+	public Blockchain blockchain;
 
 	/*
 	 * Not being used, may want to implement later
 	 */
-	public PubNubApp(PNConfiguration pnConfiguration) throws InterruptedException {
+	public PubNubApp(PNConfiguration pnConfiguration, Blockchain blockchain) throws InterruptedException {
 		this.pn = new PubNub(pnConfiguration);
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
@@ -55,7 +57,7 @@ public class PubNubApp {
 		CHANNELS.put("TEST", "TEST_CHANNEL");
 		CHANNELS.put("GENERAL", "general");
 		this.pn = new PubNub(pnConfiguration);
-		this.pn.addListener(new PubNubSubCallback());
+		this.pn.addListener(new PubNubSubCallback(blockchain));
 		Thread.sleep(1000);
 //		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
 //		this.pn.subscribe().channels(channels).execute();
@@ -74,6 +76,30 @@ public class PubNubApp {
 	 * Default constructor. Subscribes to general, TEST_CHANNEL and BLOCK_CHANNEL
 	 * channels automatically.
 	 */
+	public PubNubApp(Blockchain blockchain) throws InterruptedException {
+		this.blockchain = blockchain;
+		PNConfiguration pnConfiguration = new PNConfiguration();
+		pnConfiguration.setSubscribeKey(subscribe_key);
+		pnConfiguration.setPublishKey(publish_key);
+		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		TEST_CHANNEL = "TEST_CHANNEL";
+		BLOCK_CHANNEL = "BLOCK_CHANNEL";
+		ArrayList<String> channels = new ArrayList();
+		channels.add(TEST_CHANNEL); // duplicate functionality
+		channels.add(BLOCK_CHANNEL);
+		channels.add("general");
+		CHANNELS = new HashMap<String, String>();
+		CHANNELS.put("BLOCK", "BLOCK_CHANNEL");
+		CHANNELS.put("TEST", "TEST_CHANNEL");
+		CHANNELS.put("GENERAL", "general");
+		this.pn = new PubNub(pnConfiguration);
+		this.pn.addListener(new PubNubSubCallback(blockchain));
+		Thread.sleep(1000);
+//		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
+//		this.pn.subscribe().channels(channels).execute();
+		this.pn.subscribe().channels(new ArrayList<String>(CHANNELS.values())).execute();
+	}
+
 	public PubNubApp() throws InterruptedException {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);

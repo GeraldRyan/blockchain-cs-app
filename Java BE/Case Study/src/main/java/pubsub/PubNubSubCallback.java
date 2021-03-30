@@ -1,5 +1,8 @@
 package pubsub;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
 import com.pubnub.api.PubNub;
 import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.message_actions.PNMessageAction;
@@ -11,6 +14,17 @@ import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.pubnub.api.models.consumer.pubsub.PNSignalResult;
 import com.pubnub.api.models.consumer.pubsub.files.PNFileEventResult;
 import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResult;
+
+import exceptions.BlocksInChainInvalidException;
+import exceptions.ChainTooShortException;
+import exceptions.GenesisBlockInvalidException;
+import privblock.gerald.ryan.entity.Block;
+import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.utilities.StringUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 /*
@@ -19,6 +33,16 @@ import org.jetbrains.annotations.NotNull;
  * Use it by passing pubnub instance pubnub.addlistener(new PubNubSubCallback()). Takes zero args but you can make it take specified args. 
  */
 public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallback {
+	Blockchain blockchain;
+
+	public PubNubSubCallback(Blockchain blockchain) {
+		this.blockchain = blockchain;
+	}
+
+	public PubNubSubCallback() {
+		this.blockchain = new Blockchain(StringUtils.RandomStringLenN(5));
+	}
+
 	@Override
 	public void status(PubNub pubnub, PNStatus status) {
 		System.out.println("pubnub listener heard something");
@@ -82,6 +106,27 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 		System.out.println("Message timetoken: " + message.getTimetoken());
 		System.out.println("-- End Transmission -");
 		System.out.println();
+		if (message.getChannel().equals("BLOCK_CHANNEL")) { // CHANNELS.get("BLOCK")
+			//NECESSARY OR ELSE IT'S IN THIS FORMAT "{\"restaurant\":{\"id\":\"abc-012\",\"name\":\"good restaurant\"}"
+			String block_string = message.getMessage().toString().replaceAll("^\"|\"$|", "").replace("\\", "");
+//			String clean_block_string = block_string.replaceAll("^\"|\"$|", "").replace("\\", "");
+//			System.out.println("_____________________________-");
+			List<Block> potential_chain = this.blockchain.getChain();
+			System.out.println(block_string);
+//			Block deserialized_block = Block.fromJsonToBlock(block_string.toString());
+			Gson gson = new Gson();
+			Block deserialized_block = gson.fromJson(block_string, Block.class);
+			potential_chain.add(deserialized_block);
+			try {
+				this.blockchain.replace_chain(potential_chain);
+				System.out.println("Successfully replaced the local chain");
+			} catch (NoSuchAlgorithmException | ChainTooShortException | GenesisBlockInvalidException
+					| BlocksInChainInvalidException e) {
+				// TODO Auto-generated catch block
+				System.out.println("DID NOT REPLACE CHAIN");
+//				e.printStackTrace();
+			}
+		}
 	}
 
 	// Presence

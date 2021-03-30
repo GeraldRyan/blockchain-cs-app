@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import privblock.gerald.ryan.utilities.CryptoHash;
 
@@ -123,8 +124,7 @@ public class Block {
 				datastring, difficulty, nonce);
 	}
 
-	@Override
-	public String toString() {
+	public String toStringFormatted() {
 		String datastring = "";
 		for (String s : data) {
 			datastring = datastring + s + "|--|";
@@ -133,10 +133,19 @@ public class Block {
 		return String.format("%5s %5s %10s %15s %15s %15s", id, timestamp, lastHash, hash, datastring, difficulty,
 				nonce);
 	}
-	
-	
+
 	public String toJSONtheBlock() {
-		return new Gson().toJson(this).trim();
+		System.out.println("COMPARE THIS WITH MINEDINSTNACE");
+		String jsonBlock = new Gson().toJson(this);
+		System.out.println(jsonBlock);
+		return jsonBlock;
+	}
+
+	public static Block fromJsonToBlock(String jsonel) {
+		Gson gson = new Gson();
+		Block block_restored = gson.fromJson(jsonel, Block.class);
+		return block_restored;
+
 	}
 
 	/**

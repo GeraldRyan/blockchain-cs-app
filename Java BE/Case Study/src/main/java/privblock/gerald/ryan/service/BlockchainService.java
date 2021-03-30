@@ -17,12 +17,16 @@ public class BlockchainService {
 		return blockchainD.getBlockchainByName(name);
 	}
 
-	public List<Blockchain> getAllBlockchainsService(){
+	public List<Blockchain> getAllBlockchainsService() {
 		return blockchainD.getAllBlockchains();
 	}
-	
+
 	public boolean addBlockService(String name, String[] data) {
 		return blockchainD.addBlock(name, data);
+	}
+
+	public Blockchain getTopBlockchain() {
+		return blockchainD.getTopBlockchain();
 	}
 
 }
