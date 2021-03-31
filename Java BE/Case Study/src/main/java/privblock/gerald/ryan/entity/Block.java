@@ -57,7 +57,7 @@ public class Block {
 		GENESIS_DATA.put("timestamp", Block.GENESIS_TS);
 		GENESIS_DATA.put("last_hash", "genesis_last_hash");
 		GENESIS_DATA.put("hash", "genesis_hash");
-		GENESIS_DATA.put("data", new String[] { "GENSIS", "GENESIS", "GENESIS" });
+		GENESIS_DATA.put("data", new String[] { "GENESIS", "GENESIS", "GENESIS" });
 		GENESIS_DATA.put("difficulty", 7);
 		GENESIS_DATA.put("nonce", 1);
 	}
