@@ -3,6 +3,7 @@ package privblock.gerald.ryan.dao;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import privblock.gerald.ryan.dbConnection.DBConnection;
@@ -43,18 +44,13 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 	}
 
 	@Override
-	public Blockchain getBlockchainByName(String name) {
-		try {
-			this.connect();
-			Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
-			query.setParameter("name", name);
-			Blockchain blockchain = (Blockchain) query.getSingleResult();
-			this.disconnect();
-			return blockchain;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	public Blockchain getBlockchainByName(String name) throws NoResultException {
+		this.connect();
+		Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
+		query.setParameter("name", name);
+		Blockchain blockchain = (Blockchain) query.getSingleResult();
+		this.disconnect();
+		return blockchain;
 	}
 
 	@Override

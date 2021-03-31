@@ -4,6 +4,8 @@ package spring.controller;
 
 import java.security.NoSuchAlgorithmException;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.entity.Message;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
-
+import privblock.gerald.ryan.initializors.Initializer;
 import privblock.gerald.ryan.service.BlockService;
 import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
@@ -33,7 +35,7 @@ public class HomeController {
 
 	BlockService blockApp = new BlockService();
 	BlockchainService blockchainApp = new BlockchainService();
-	PubNubApp pnapp;
+	PubNubApp pnapp = new PubNubApp();
 
 	public HomeController() throws InterruptedException {
 //		pnapp = new PubNubApp(); // moved to @modelAttribute new blockchain
@@ -54,28 +56,32 @@ public class HomeController {
 		return "FooAndBar";
 	}
 
-//	@ModelAttribute("blockdata")
-//	public BlockData addBlockData() {
-//		
-//		
-//		return "FooAndBar";
-//	}
-
+	/*
+	 * Pulls up beancoin blockchain on startup. [Note to self: what is startup? Is
+	 * it session based? What is session? Define the terms]
+	 * 
+	 * If no beancoin exists, create one and populate it with initial values
+	 */
 	@ModelAttribute("blockchain")
 	public Blockchain addBlockchain() throws NoSuchAlgorithmException, InterruptedException {
-//		Blockchain blockchain = blockchainApp.newBlockchainService(StringUtils.RandomStringLenN(5));
-//		for (int i = 0; i < 2; i++) {
-//			blockApp.addBlockService(blockchain.add_block(String.valueOf(i)));
-//		}
-		Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
-		pnapp = new PubNubApp(blockchain);
-		return blockchain;
+		try {
+			Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
+			pnapp = new PubNubApp(blockchain);
+			System.out.println("Pulling up your beancoin from our records");
+			return blockchain;
+		} catch (NoResultException e) {
+			System.err.println("Creating new beancoin");
+			Blockchain blockchain = blockchainApp.newBlockchainService("beancoin");
+			Initializer.loadBC("beancoin");
+			Blockchain populated_blockchain = blockchainApp.getBlockchainService("beancoin");
+			return populated_blockchain;
+		}
 	}
 
-	@ModelAttribute("pubnubapp")
-	public PubNubApp addPubNub() throws InterruptedException {
-		return new PubNubApp();
-	}
+//	@ModelAttribute("pubnubapp")
+//	public PubNubApp addPubNub() throws InterruptedException {
+//		return new PubNubApp();
+//	}
 
 	@GetMapping("/")
 	public String showIndex() {
