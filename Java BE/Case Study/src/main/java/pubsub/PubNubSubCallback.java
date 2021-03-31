@@ -20,6 +20,7 @@ import exceptions.ChainTooShortException;
 import exceptions.GenesisBlockInvalidException;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
 
 import java.security.NoSuchAlgorithmException;
@@ -36,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallback {
 	Blockchain blockchain;
+	BlockchainService blockchainApp = new BlockchainService();
 
 	public PubNubSubCallback(Blockchain blockchain) {
 		this.blockchain = blockchain;
@@ -127,6 +129,7 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			System.out.println(potential_chain.size());
 			try {
 				this.blockchain.replace_chain(potential_chain);
+				blockchainApp.replaceChainService("beancoin", potential_chain);
 				System.out.println("Successfully replaced the local chain");
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();

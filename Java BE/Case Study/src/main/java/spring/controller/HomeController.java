@@ -61,9 +61,12 @@ public class HomeController {
 	 * it session based? What is session? Define the terms]
 	 * 
 	 * If no beancoin exists, create one and populate it with initial values
+	 * 
+	 * Also syncs blockchain so should be updated
 	 */
 	@ModelAttribute("blockchain")
 	public Blockchain addBlockchain() throws NoSuchAlgorithmException, InterruptedException {
+//		System.err.println("addBlockchain called at controller");
 		try {
 			Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
 			pnapp = new PubNubApp(blockchain);
@@ -77,6 +80,13 @@ public class HomeController {
 			return populated_blockchain;
 		}
 	}
+	
+
+	public void refreshChain(Model model) {
+		System.err.println("Refreshing Blockchain???");
+		Blockchain newer_blockchain = blockchainApp.getBlockchainService("beancoin");
+		((Blockchain) model.getAttribute("blockchain")).setChain(newer_blockchain.getChain());
+	}
 
 //	@ModelAttribute("pubnubapp")
 //	public PubNubApp addPubNub() throws InterruptedException {
@@ -89,7 +99,8 @@ public class HomeController {
 	}
 
 	@GetMapping("/blockchain")
-	public String serveBlockchain(Model model) {
+	public String serveBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException {
+		refreshChain(model);
 		return "blockchain";
 	}
 
@@ -107,13 +118,14 @@ public class HomeController {
 
 	@GetMapping("/blockchain/mine")
 	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
-			throws NoSuchAlgorithmException, PubNubException {
+			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
 //		blockchain.add_block("FOOBARFORTHEWIN");
-		String stubbedData = "STUBBED DATA";
+		String stubbedData = "STUBBED DATA FROM MAIN";
 		Block new_block = blockchain.add_block(stubbedData);
 		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
 		pnapp.broadcastBlock(new_block);
+		addBlockchain();
 		return "mine";
 	}
 

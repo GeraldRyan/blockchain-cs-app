@@ -50,7 +50,7 @@ public class Blockchain {
 	long date_created;
 	long date_last_modified;
 	int length_of_chain;
-	@OneToMany(targetEntity = Block.class, cascade = CascadeType.PERSIST)
+	@OneToMany(targetEntity = Block.class, cascade = CascadeType.PERSIST, orphanRemoval=true)
 	@JoinTable(name = "BlocksByChain")
 	List<Block> chain; // The chain itself
 
@@ -191,6 +191,26 @@ public class Blockchain {
 //		}
 	}
 
+	public boolean willReplace(List<Block> other_chain) throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
+// TODO how will I implement this? Different localhosts will have different
+// chains?
+		System.out.println(other_chain.size() + " " + this.chain.size());
+		if (other_chain.size() <= this.chain.size()) {
+			return false;
+		}
+		if (!Blockchain.is_valid_chain(other_chain)) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * Should this exist in ideal world? 
+	 */
+	public void setChain(List<Block> chain) {
+		this.chain = chain;
+	}
+
 	/**
 	 * Validate the incoming chain. Enforce the following rules: - the chain must
 	 * start with the genesis block - blocks must be formatted correctly
@@ -217,7 +237,6 @@ public class Blockchain {
 		}
 		return true;
 	}
-	
 
 	/*
 	 * overloaded method that just takes the chain not the blockchain
@@ -270,7 +289,7 @@ public class Blockchain {
 	public String toJSONtheChain() {
 		return new Gson().toJson(chain);
 	}
-	
+
 	public ArrayList fromJSONtheChain(String json) {
 		return new Gson().fromJson(json, ArrayList.class);
 	}
