@@ -24,7 +24,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			em.getTransaction().begin();
 			em.persist(new_blockchain);
 			em.getTransaction().commit();
-			this.disconnect();
+
 			System.out.println("New Blockchain added");
 			return new_blockchain;
 		} catch (Exception e) {
@@ -53,7 +53,9 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 		Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 		query.setParameter("name", name);
 		Blockchain blockchain = (Blockchain) query.getSingleResult();
-		this.disconnect();
+
+		System.out.println("I HYPOTHESIZE THIS CHAIN IS OUT OF ORDER");
+		System.out.println(blockchain.toJSONtheChain());
 		return blockchain;
 	}
 
@@ -68,7 +70,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			Block new_block = blockchain.add_block(data);
 			em.persist(new_block);
 			em.getTransaction().commit();
-			this.disconnect();
+
 			System.out.println("Returning true");
 			return true;
 		} catch (NoSuchAlgorithmException e) {
@@ -83,6 +85,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 		this.connect();
 		Query query = em.createQuery("select b from Blockchain b");
 		Blockchain blockchain = (Blockchain) query.setMaxResults(1).getSingleResult();
+		this.disconnect();
 		return blockchain;
 	}
 
@@ -94,35 +97,33 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 		Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 		query.setParameter("name", name);
 		Blockchain blockchain = (Blockchain) query.getSingleResult();
+//		blockchain.replace_chain(new_chain);
+//		em.merge(blockchain);
 		System.out.println("GOING TO REPLACE CHAIN AS SERVICE");
-//		Query jq = em.createQuery("select c from Blocksbychain c where c.blockchain_id = 1");
-//		List<Object> jqr = jq.getResultList();
-//		System.out.println(jqr.toString());
-			
-//		if (blockchain.willReplace(new_chain)) {
-	
-//			System.out.println("WILL REPLACE CHAIN");
-//			// going to be replaced by new chain (lifecycle method), so let's clean up DB,
-//			// trusting will be restored
-//			// or atomically rolled back. Can we really trust in practice? Maybe not
-//			for (Block b : new_chain) {
-//				Block emblock = em.find(Block.class, b.getTimestamp());
-//				if (emblock != null) {
-//					System.out.println("Should remove block");
-//					System.out.println(emblock.toJSONtheBlock());
-//					em.remove(emblock);
-//					em.getTransaction().commit();
-//				}
-//			}
-//		}
-		// now cleaned tables (with cascading) should be no primary key collisions
+
+		// THIS LONG BLOCK IS BECAUSE I COULDN'T FIND A MORE NATURAL WAY. I KEEP GETTING
+		// ERRORS.
+		// I JUST WANT TO OVERWRITE THE CHAIN OR DO A SMART MERGE
+		// INSTEAD IT TRIES TO APPEND. I HAVE TO WRITE AN EMPTY SET TO DB AND COMMIT IT
+		// AND THEN REPOPULATE IT. ALTERNATELY I COULD MAYBE DO A NATIVE QUERY AND
+		// TRUNCATE
+		// REGARDLESS IT DOESN'T SEEM TO SMARTLY MERGE THE TWO CHAINS
+		// -- IT SHOULD BE EASY WHEN THE NEW CHAIN IS AN EXTENSION, VS A FORK
+		// -- HANDLING THE "FORK" POTENTIAL OF BLOCKCHAIN ADDS TO THE COMPLEXITY IN
+		// WHICH CASE EASIEST TO TRUNCATE AND START FRESH
 		if (blockchain.willReplace(new_chain)) {
 			blockchain.setChain(null);
 			em.getTransaction().commit();
-		em.getTransaction().begin();
-		blockchain.replace_chain(new_chain);
-		em.getTransaction().commit();
+			em.getTransaction().begin();
+			Query query2 = em.createQuery("select b from Blockchain b where b.instance_name = :name");
+			query.setParameter("name", name);
+			Blockchain blockchain2 = (Blockchain) query.getSingleResult();
+			blockchain2.setChain(new_chain);
+			em.getTransaction().commit();
+			this.disconnect();
+			return true;
 		}
+		em.getTransaction().commit();
 		this.disconnect();
 		return true;
 	}
@@ -137,6 +138,8 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			this.disconnect();
 		}
 	}
 

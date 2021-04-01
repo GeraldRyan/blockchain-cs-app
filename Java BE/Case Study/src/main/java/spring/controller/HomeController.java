@@ -3,6 +3,9 @@ package spring.controller;
 //select instance_name,b.id,hash,data from blockchain c inner join blocksbychain bc on c.id=bc.blockchain_id inner join block b on bc.chain_id=b.id;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.persistence.NoResultException;
 
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.pubnub.api.PubNubException;
 
+import exceptions.BlocksInChainInvalidException;
+import exceptions.ChainTooShortException;
+import exceptions.GenesisBlockInvalidException;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
@@ -72,7 +78,7 @@ public class HomeController {
 			pnapp = new PubNubApp(blockchain);
 			System.out.println("Pulling up your beancoin from our records");
 			return blockchain;
-		} catch (NoResultException e) {
+		} catch (Exception e) {
 			System.err.println("Creating new beancoin");
 			Blockchain blockchain = blockchainApp.newBlockchainService("beancoin");
 			Initializer.loadBC("beancoin");
@@ -80,12 +86,24 @@ public class HomeController {
 			return populated_blockchain;
 		}
 	}
-	
 
 	public void refreshChain(Model model) {
-		System.err.println("Refreshing Blockchain???");
-		Blockchain newer_blockchain = blockchainApp.getBlockchainService("beancoin");
-		((Blockchain) model.getAttribute("blockchain")).setChain(newer_blockchain.getChain());
+		System.err.println("Refreshing Blockchain from local database");
+		Blockchain newer_blockchain_from_db = blockchainApp.getBlockchainService("beancoin");
+		try {
+			// Database for some reason loads ArrayList<Block> unsorted. Manually resorting it here upon load. 
+			ArrayList<Block> new_chain = new ArrayList<Block>(newer_blockchain_from_db.getChain());
+			System.out.println("RE-SORTING ArrayList<Block>");
+			// I believe I have to make a new chain instance for mutation. Won't mutate Blockchain.chain property? 
+			Collections.sort(new_chain, Comparator.comparingLong(Block::getTimestamp));
+			/* Are setter methods secure for chain replacement? Could replace with invalid chain. Should use replaceChain
+			 * method, incorporating this into that, but struggling with JPA and loading in order. 
+			 */
+			((Blockchain) model.getAttribute("blockchain")).setChain(new_chain);
+		} catch (Exception e) {
+			System.out.println("CAN'T SORT IT FOR SOME REASON");
+			e.printStackTrace();
+		}
 	}
 
 //	@ModelAttribute("pubnubapp")
@@ -99,7 +117,8 @@ public class HomeController {
 	}
 
 	@GetMapping("/blockchain")
-	public String serveBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException {
+	public String serveBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException,
+			ChainTooShortException, GenesisBlockInvalidException, BlocksInChainInvalidException {
 		refreshChain(model);
 		return "blockchain";
 	}
@@ -120,12 +139,11 @@ public class HomeController {
 	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
 			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
 //		blockchain.add_block("FOOBARFORTHEWIN");
-		String stubbedData = "STUBBED DATA FROM MAIN";
+		String stubbedData = "MAIN INSTANCE STUBBED DATA";
 		Block new_block = blockchain.add_block(stubbedData);
 		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
 		pnapp.broadcastBlock(new_block);
-		addBlockchain();
 		return "mine";
 	}
 

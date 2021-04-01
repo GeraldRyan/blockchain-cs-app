@@ -50,8 +50,8 @@ public class Blockchain {
 	long date_created;
 	long date_last_modified;
 	int length_of_chain;
-	@OneToMany(targetEntity = Block.class, cascade = CascadeType.PERSIST, orphanRemoval=true)
-	@JoinTable(name = "BlocksByChain")
+	@OneToMany(targetEntity = Block.class, cascade = CascadeType.ALL, orphanRemoval=true)
+//	@JoinTable(name = "blocks")
 	List<Block> chain; // The chain itself
 
 	/**
@@ -144,6 +144,26 @@ public class Blockchain {
 			System.out.println(e);
 		}
 	}
+	
+	/**
+	 * 
+	 * Sorts the arraylist by timestamp, putting it (back) in the order it should be in and naturally is in,
+	 * but sometimes network requets or database pulls with JPA can break the order. This fixes humpty dumpty where necessary.
+	 * 
+	 * As such, this is not an ideal method. It's a fixer method that shouldn't be needed, though if code gets fixed
+	 * Might still be worth keeping around in the toolbelt. 
+	 * 
+	 * If ArrayList<Block> is not in order, it's not a real blockchain, and even though you have the set of blocks in the chain
+	 * with enough info to make it recreatable, in the current form, replace_chain won't work
+	 */
+//	public static void sort_arrayList(Blockchain blockchain) {
+//		blockchain.getChain().sort((b1, b2) -> (int)(b1.getTimestamp() - b2.getTimestamp()));
+////		blockchain.getChain().get(0).getTimestamp()
+//	}
+//	
+//	public int compareTimestamps() {
+//		
+//	}
 
 	/**
 	 * Replace the local chain with the incoming chain if the following apply: - the
