@@ -65,7 +65,10 @@ public class Blockchain {
 		this.chain.add(Block.genesis_block());
 		this.length_of_chain = 1;
 	}
-
+	
+	/**
+	 * Zero arg constructor for java bean
+	 */
 	public Blockchain() {
 //		this.chain = new ArrayList<Block>();
 //		this.chain.add(Block.genesis_block());
@@ -95,6 +98,14 @@ public class Blockchain {
 //		return (ArrayList<Block>) this.chainValueHolder.getValue();
 //	}
 
+	/**
+	 * Adds block to blockchain by calling block class's static mine_block method.
+	 * This ensures block is valid in itself, and is attached to end of local chain, ensuring chain is valid.
+	 * 
+	 * @param data
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
 	public Block add_block(String[] data) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), data);
 		this.chain.add(new_block);
@@ -103,6 +114,14 @@ public class Blockchain {
 		return new_block;
 	}
 
+	/**
+	 * Adds block to blockchain by calling block class's static mine_block method.
+	 * This ensures block is valid in itself, and is attached to end of local chain, ensuring chain is valid.
+	 * 
+	 * @param data
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
 	public Block add_block(String dataScalar) throws NoSuchAlgorithmException {
 		Block new_block = Block.mine_block(this.chain.get(this.chain.size() - 1), dataScalar);
 		this.chain.add(new_block);
@@ -211,9 +230,17 @@ public class Blockchain {
 //		}
 	}
 
+	/** 
+	 * This is a checker method that checks whether the chain will replace, in case it is required for lifecycle actions
+	 * In practice, this is used for flushing the databse's join table for JPA in the @OneToMany object due to fact no way was yet found
+	 * to update the chain by strict replacement [errors such as duplicate key are found if not flushed]
+	 * @param other_chain
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws GenesisBlockInvalidException
+	 * @throws BlocksInChainInvalidException
+	 */
 	public boolean willReplace(List<Block> other_chain) throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
-// TODO how will I implement this? Different localhosts will have different
-// chains?
 		System.out.println(other_chain.size() + " " + this.chain.size());
 		if (other_chain.size() <= this.chain.size()) {
 			return false;
@@ -224,8 +251,11 @@ public class Blockchain {
 		return true;
 	}
 
-	/*
-	 * Should this exist in ideal world? 
+	/**
+	 * Setter method for chain of blockchain instance.
+	 * Probably should not exist. Probably a major blockchain security breech and definitely should not be necessary, but..
+	 * has been necessary for project for refreshing instance of blockchain in memory in Spring MVC controller for display in page.
+	 * If new way is found to sync, can maybe refactor this out. 
 	 */
 	public void setChain(List<Block> chain) {
 		this.chain = chain;
@@ -258,8 +288,16 @@ public class Blockchain {
 		return true;
 	}
 
-	/*
-	 * overloaded method that just takes the chain not the blockchain
+
+	/**
+	 * Validate the incoming chain. Enforce the following rules: - the chain must
+	 * start with the genesis block - blocks must be formatted correctly
+	 * 
+	 * @param blockchain
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws GenesisBlockInvalidException
+	 * @throws BlocksInChainInvalidException
 	 */
 	public static boolean is_valid_chain(List<Block> other_chain)
 			throws NoSuchAlgorithmException, GenesisBlockInvalidException, BlocksInChainInvalidException {
@@ -278,19 +316,24 @@ public class Blockchain {
 		return true;
 	}
 
+	/**
+	 * returns headerless console customized string output
+	 * @return
+	 */
 	public String toStringConsole() {
-
 		return String.format("%5s %15s %15s %15s %15s", id, instance_name, date_created, date_last_modified,
 				length_of_chain, "length", "content");
-//		return "Blockchain: " + this.chain;
 	}
 
+	
+	/**
+	 * Returns blockchain's metadata information as a string
+	 * @return
+	 */
 	public String toStringMeta() {
-
 		return String.format(
 				"Blockchain Metadata: id: %s instance: %s date_created: %s date_modified: %s length of chain: %s", id,
 				instance_name, date_created, date_last_modified, length_of_chain);
-//		return "Blockchain: " + this.chain;
 	}
 
 	public String toStringBroadcastChain() {
@@ -301,10 +344,8 @@ public class Blockchain {
 		return string_to_return;
 	}
 
-	/*
-	 * Uses GSON library to serialize as json string Trim is not necessary. My json
-	 * formatters on chrome were not working with this so I thought it might be
-	 * necessary.
+	/**
+	 * Uses GSON library to serialize blockchain chain as json string.
 	 */
 	public String toJSONtheChain() {
 		return new Gson().toJson(chain);
@@ -314,7 +355,7 @@ public class Blockchain {
 		return new Gson().fromJson(json, ArrayList.class);
 	}
 
-	/*
+	/**
 	 * Helper method for getting last block (peeking)
 	 */
 	public Block getLastBlock() {

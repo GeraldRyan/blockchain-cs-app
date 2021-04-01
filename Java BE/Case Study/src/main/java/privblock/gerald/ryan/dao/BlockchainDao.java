@@ -60,7 +60,7 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 	}
 
 	@Override
-	public boolean addBlock(String name, String[] data) {
+	public Block addBlock(String name, String[] data) {
 		this.connect();
 		Query query = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 		query.setParameter("name", name);
@@ -72,11 +72,11 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 			em.getTransaction().commit();
 
 			System.out.println("Returning true");
-			return true;
+			return new_block;
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 

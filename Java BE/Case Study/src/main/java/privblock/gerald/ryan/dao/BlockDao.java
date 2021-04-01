@@ -18,7 +18,7 @@ public class BlockDao extends DBConnection implements BlockDaoI {
 	}
 
 	@Override
-	public Block getBlock(int id) {
+	public Block getBlock(long id) {
 		this.connect();
 		Block b = em.find(Block.class, id);
 		this.disconnect();

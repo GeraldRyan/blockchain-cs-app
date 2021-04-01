@@ -8,6 +8,10 @@ import privblock.gerald.ryan.entity.Account;
 public class AccountService {
 	private AccountDao AccountD = new AccountDao();
 	
+	/**
+	 * Add new user Account
+	 * @param account
+	 */
 	public void addAccountService(Account account) {
 		AccountD.addAccount(account);
 	}

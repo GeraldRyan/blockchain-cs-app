@@ -8,7 +8,7 @@ public interface BlockDaoI {
 
 	public void addBlock(Block block);
 
-	public Block getBlock(int id); // should really get by hash via query or by timestamp - get block by unique identifier
+	public Block getBlock(long id); 
 	
 	public static Block findBlockByHash(long hashcode) {
 		return null;

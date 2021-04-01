@@ -23,20 +23,19 @@ import privblock.gerald.ryan.utilities.CryptoHash;
  * 
  * @author Gerald Ryan Block Class of blockchain app
  *
- *         Description: The block hash is the result of the timestamp, the
- *         last_hash, the data, the difficulty and the nonce
+ *         Description: A block is a building block of a blockchain, and in the case of a cryptocurrency, contains as data a list of transactions. 
+ *         The block hash (here using SHA-256) is the result of the timestamp, the
+ *         last_hash, the data, the difficulty and the nonce.
  *
  */
 @Entity
 @Table(name = "block")
 public class Block {
 
-	public static int blockcount = 0;
+//	public static int blockcount = 0;
 	@Id
 	long timestamp;
 	protected String hash;
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	int id;
 	protected String lastHash;
 	String[] data;
 	int difficulty;
@@ -119,18 +118,23 @@ public class Block {
 //	}
 //		
 
-	/*
-	 * keep zero-arg constructor for JPA
+	/**
+	 * Zero-arg block constructor for bean creation
 	 */
 	public Block() {
 	}
 
+	
+	/** 
+	 * 
+	 * Prints a header-conforming console adapted output string in the form
+	 * @return
+	 */
 	public String toStringConsole() {
 		String datastring = "";
 		for (String s : data) {
 			datastring = datastring + s + "|--|";
 		}
-
 		return "\n-----------BLOCK--------\ntimestamp: " + this.timestamp + "\nlastHash: " + this.lastHash + "\nhash: "
 				+ this.hash + "\ndifficulty: " + this.getDifficulty() + "\nData: " + datastring + "\nNonce: "
 				+ this.nonce + "\n-----------------------\n";
@@ -141,7 +145,6 @@ public class Block {
 		for (String s : data) {
 			datastring = datastring + "-[" + s + "]-";
 		}
-
 		return String.format("timestamp: %s, lastHash:%s, hash:%s, data:[%s], difficulty:%s", timestamp, lastHash, hash,
 				datastring, difficulty, nonce);
 	}
@@ -163,6 +166,11 @@ public class Block {
 		return jsonBlock;
 	}
 
+	/** Deserialize a valid JSON string with GSON and convert it back into valid block
+	 * 
+	 * @param jsonel
+	 * @return
+	 */
 	public static Block fromJsonToBlock(String jsonel) {
 		Gson gson = new Gson();
 		Block block_restored = gson.fromJson(jsonel, Block.class);
@@ -205,12 +213,17 @@ public class Block {
 		System.out.println("binary_Hash_work_end " + binary_hash_work_end);
 		System.out.println("binary hash " + binary_hash);
 		System.out.println("BLOCK MINED");
-		blockcount++;
 		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
 	}
 
-	/*
-	 * Overloaded method string scalar
+	/**
+	 * Mine a block based on given last block and data until a block hash is found
+	 * that meets the leading 0's Proof of Work requirement.
+	 * 
+	 * @param last_block
+	 * @param data
+	 * @return
+	 * @throws NoSuchAlgorithmException
 	 */
 	public static Block mine_block(Block last_block, String dataScalar) throws NoSuchAlgorithmException {
 		String[] data = new String[] { dataScalar };
@@ -239,12 +252,11 @@ public class Block {
 		System.out.println("binary_Hash_work_end " + binary_hash_work_end);
 		System.out.println("binary hash " + binary_hash);
 		System.out.println("BLOCK MINED");
-		blockcount++;
 		return new Block(timestamp, last_hash, hash, data, difficulty, nonce);
 	}
 
 	/**
-	 * Generate Genesis block
+	 * Generates Genesis block with hard coded data that will be identical for all instances of blockchain
 	 * 
 	 * @return
 	 */
@@ -423,9 +435,6 @@ public class Block {
 		Block bad_block2 = mine_block(good_block9, new String[] { "hello", "Lviv" });
 		System.out.println(Block.is_valid_block(bad_block2, good_block8));
 
-		// for (int i = 0; i< 10; i++) {
-//			Block i = mine_block(good_block[i-1])
-//		}
 	}
 
 }

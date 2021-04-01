@@ -140,8 +140,10 @@ public class HomeController {
 			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
 //		blockchain.add_block("FOOBARFORTHEWIN");
 		String stubbedData = "MAIN INSTANCE STUBBED DATA";
-		Block new_block = blockchain.add_block(stubbedData);
-		blockApp.addBlockService(new_block);
+		String[] stubbedDataV = {"MAIN INSTANCE STUBBED DATA"};
+		//		Block new_block = blockchain.add_block(stubbedData);
+		Block new_block = blockchainApp.addBlockService("beancoin", stubbedDataV);
+//		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
 		pnapp.broadcastBlock(new_block);
 		return "mine";

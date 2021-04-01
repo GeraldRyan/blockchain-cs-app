@@ -12,7 +12,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 
 public interface BlockchainDaoI {
 	public Blockchain newBlockchain(String name);
-	public boolean addBlock(String name, String[] data);
+	public Block addBlock(String name, String[] data);
 	public boolean replaceChain(String blockchain, ArrayList<Block> new_chain) throws NoSuchAlgorithmException, ChainTooShortException, GenesisBlockInvalidException, BlocksInChainInvalidException;
 	public List<Blockchain> getAllBlockchains();
 	public Blockchain getBlockchainById(int id);

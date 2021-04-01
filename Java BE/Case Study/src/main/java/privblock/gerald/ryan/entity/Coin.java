@@ -1,5 +1,11 @@
 package privblock.gerald.ryan.entity;
 
+/**
+ * Not used. Considered using as coin (blockchain) - making factory on top of instance making factory within blockchain class.
+ * Open for completion 
+ * @author User
+ *
+ */
 public class Coin {
 
 	// Future class of perhaps a database creator. Create a new database for each

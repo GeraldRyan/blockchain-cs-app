@@ -1,5 +1,11 @@
 package privblock.gerald.ryan.entity;
 
+/**
+ * Not used. Considered using as coin (blockchain) - making factory on top of instance making factory within blockchain class.
+ * Open for completion 
+ * @author User
+ *
+ */
 public class Message {
 	String message;
 	String channel;
