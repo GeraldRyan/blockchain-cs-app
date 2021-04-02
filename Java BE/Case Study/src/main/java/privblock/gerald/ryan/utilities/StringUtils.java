@@ -1,5 +1,10 @@
 package privblock.gerald.ryan.utilities;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
 public class StringUtils {
@@ -18,8 +23,45 @@ public class StringUtils {
 		String generatedString = buffer.toString();
 		return generatedString;
 	}
-	
 
+	/**
+	 * Powerful method for converting a string array into a byte array directly
+	 * through streaming objects. Worthy of further study
+	 * 
+	 * @param strArray
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] stringArrayToByteArray(String[] strArray) throws IOException {
+
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+		objectOutputStream.writeObject(strArray);
+		objectOutputStream.flush();
+		objectOutputStream.close();
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	public static String[] byteArrayToStringArray(byte[] byteArray) throws ClassNotFoundException, IOException {
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+		final ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+		final String[] stringArray = (String[]) objectInputStream.readObject();
+		objectInputStream.close();
+		return stringArray;
+	}
+
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		final String[] stringArray = { "foo", "bar", "baz" };
+		System.out.println(stringArray.toString());
+		for (String s : stringArray) {
+			System.out.println(s);
+		}
+		byte[] byteArray = StringUtils.stringArrayToByteArray(stringArray);
+		String[] reconstitutedStringArray = StringUtils.byteArrayToStringArray(byteArray);
+		for (String s : reconstitutedStringArray) {
+			System.out.println(s);
+		}
+	}
 
 //	public static String removeQuotesAndUnescape(String uncleanJson) {
 //	    String noQuotes = uncleanJson.replaceAll("^\"|\"$", "");

@@ -81,7 +81,15 @@ public class Wallet {
 		return signatureBytes;
 	}
 
-	public boolean verifySignature(byte[] signatureBytes, byte[] data)
+	public static boolean verifySignature(byte[] signatureBytes, byte[] data, PublicKey publickey)
+			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException {
+		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
+		sig.initVerify(publickey);
+		sig.update(data);
+		return sig.verify(signatureBytes);
+	}
+	
+	public static boolean verifySignature(byte[] signatureBytes, String[] data, PublicKey publickey)
 			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException {
 		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
 		sig.initVerify(publickey);
@@ -99,7 +107,7 @@ public class Wallet {
 		byte[] signatureBytes = wallet1.sign("CATSMEOW".getBytes("UTF-8"));
 		System.out.println("Signature:" + new org.apache.commons.codec.binary.Base64().encodeToString(signatureBytes));
 		System.out.println("Was it signed properly? Expect true. Drumroll... -> "
-				+ wallet1.verifySignature(signatureBytes, "CATSMEOW".getBytes("UTF-8")));
+				+ wallet1.verifySignature(signatureBytes, "CATSMEOW".getBytes("UTF-8"), wallet1.getPublickey()));
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,
