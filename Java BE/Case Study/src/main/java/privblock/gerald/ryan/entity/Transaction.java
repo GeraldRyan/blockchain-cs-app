@@ -117,13 +117,36 @@ public class Transaction {
 		return input;
 	}
 
-	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,
-			InvalidAlgorithmParameterException, InvalidKeyException, IOException {
-		Wallet senderWallet = Wallet.createWallet();
-		System.out.println(senderWallet.getBalance());
-		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);
-		System.out.println(t1.toString());
-//		Transaction t2 = new Transaction(senderWallet, "sdfsdf", 1000);
+	/**
+	 * Update transaction with existing or new recipient
+	 * 
+	 * @param senderWallet
+	 * @param recipientAddress
+	 * @param amount
+	 * @throws TransactionAmountExceedsBalance
+	 * @throws IOException
+	 * @throws SignatureException
+	 * @throws NoSuchProviderException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 */
+	public void update(Wallet senderWallet, String recipientAddress, double amount)
+			throws TransactionAmountExceedsBalance, InvalidKeyException, NoSuchAlgorithmException,
+			NoSuchProviderException, SignatureException, IOException {
+		if (amount > (double) this.output.get(senderWallet.getAddress())) {
+			throw new TransactionAmountExceedsBalance(
+					"Transaction amount exceeds existing balance after prior transactions");
+		}
+
+		if (this.output.containsKey(recipientAddress)) {
+			this.output.put(recipientAddress, (double) this.output.get(recipientAddress) + amount);
+		} else {
+			this.output.put(recipientAddress, amount);
+		}
+		this.output.put(senderWallet.getAddress(), (double) this.output.get(senderWallet.getAddress()) - amount);
+		this.amount += amount;
+		// sign input over again
+		this.input = this.createInput(senderWallet, output);
 	}
 
 	@Override
@@ -156,9 +179,19 @@ public class Transaction {
 		this.input = input;
 	}
 
-//	// output
-//	String addressTo;
-
-	// as bundles
+	public static void main(String[] args)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
+			InvalidKeyException, IOException, SignatureException, TransactionAmountExceedsBalance {
+		Wallet senderWallet = Wallet.createWallet();
+		System.out.println(senderWallet.getBalance());
+		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);
+		System.out.println(t1.toString());
+		t1.update(senderWallet, "recipientWalletAddress1920", 20);
+		System.out.println(t1.toString());
+		t1.update(senderWallet, "theneighbors", 99);
+		System.out.println(t1.toString());
+		t1.update(senderWallet, "place I can't afford", 999);
+		System.out.println(t1.toString());
+	}
 
 }
