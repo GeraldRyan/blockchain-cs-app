@@ -87,8 +87,8 @@ public class Transaction {
 		}
 		HashMap<String, Object> output = new HashMap<String, Object>();
 		output.put(recipientAddress, amount);
-		output.put(senderWallet.getAddress(), senderWallet.getBalance() - amount);
-		return null;
+		output.put(senderWallet.getAddress(), (senderWallet.getBalance() - amount));
+		return output;
 	}
 
 	/**
@@ -121,8 +121,15 @@ public class Transaction {
 			InvalidAlgorithmParameterException, InvalidKeyException, IOException {
 		Wallet senderWallet = Wallet.createWallet();
 		System.out.println(senderWallet.getBalance());
-		Transaction t1 = new Transaction(senderWallet, "sdfsdf", 1000);
+		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);
+		System.out.println(t1.toString());
 //		Transaction t2 = new Transaction(senderWallet, "sdfsdf", 1000);
+	}
+
+	@Override
+	public String toString() {
+		return "Transaction [uuid=" + uuid + ", senderWallet=" + senderWallet + ", recipientAddress=" + recipientAddress
+				+ ", amount=" + amount + ", output=" + output + ", input=" + input + "]";
 	}
 
 	public void setUuid(String uuid) {
