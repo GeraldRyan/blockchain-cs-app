@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import exceptions.InvalidTransactionException;
 import exceptions.TransactionAmountExceedsBalance;
 import privblock.gerald.ryan.utilities.StringUtils;
 
@@ -149,6 +151,34 @@ public class Transaction {
 		this.input = this.createInput(senderWallet, output);
 	}
 
+	/**
+	 * Validate a transaction. For invalid transactions, raises
+	 * InvalidTransactionException
+	 * 
+	 * @param transaction
+	 * @return
+	 * @throws InvalidTransactionException
+	 * @throws IOException
+	 * @throws NoSuchProviderException
+	 * @throws NoSuchAlgorithmException
+	 * @throws SignatureException
+	 * @throws InvalidKeyException
+	 */
+	public static boolean is_valid_transaction(Transaction transaction) throws InvalidTransactionException,
+			InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+		double sumOfTransactions = transaction.output.values().stream().mapToDouble(t -> (double) t).sum();
+		System.out.println("Sum of values " + sumOfTransactions);
+		if (sumOfTransactions != (double) transaction.input.get("amount")) {
+			throw new InvalidTransactionException("Value mismatch of propsed transactions");
+		}
+		if (!Wallet.verifySignature((byte[]) transaction.input.get("signature"), transaction.output,
+				(PublicKey) transaction.input.get("publicKey"))) {
+			System.err.println("Signature not valid!");
+			throw new InvalidTransactionException("Invalid Signature");
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Transaction [uuid=" + uuid + ", senderWallet=" + senderWallet + ", recipientAddress=" + recipientAddress
@@ -179,19 +209,21 @@ public class Transaction {
 		this.input = input;
 	}
 
-	public static void main(String[] args)
-			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
-			InvalidKeyException, IOException, SignatureException, TransactionAmountExceedsBalance {
+	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,
+			InvalidAlgorithmParameterException, InvalidKeyException, IOException, SignatureException,
+			TransactionAmountExceedsBalance, InvalidTransactionException {
 		Wallet senderWallet = Wallet.createWallet();
 		System.out.println(senderWallet.getBalance());
 		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);
-		System.out.println(t1.toString());
-		t1.update(senderWallet, "recipientWalletAddress1920", 20);
-		System.out.println(t1.toString());
-		t1.update(senderWallet, "theneighbors", 99);
-		System.out.println(t1.toString());
-		t1.update(senderWallet, "place I can't afford", 999);
-		System.out.println(t1.toString());
+//		System.out.println(t1.toString());
+//		t1.update(senderWallet, "recipientWalletAddress1920", 20);
+//		System.out.println(t1.toString());
+//		t1.update(senderWallet, "theneighbors", 99);
+//		System.out.println(t1.toString());
+////		t1.update(senderWallet, "place I can't afford", 999);
+//		System.out.println(t1.toString());
+		System.out.println("Is it valid?");
+		System.out.println(Transaction.is_valid_transaction(t1));
 	}
 
 }
