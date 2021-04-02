@@ -111,10 +111,15 @@ public class BlockchainDao extends DBConnection implements BlockchainDaoI {
 		// -- IT SHOULD BE EASY WHEN THE NEW CHAIN IS AN EXTENSION, VS A FORK
 		// -- HANDLING THE "FORK" POTENTIAL OF BLOCKCHAIN ADDS TO THE COMPLEXITY IN
 		// WHICH CASE EASIEST TO TRUNCATE AND START FRESH
+		
+		
+		
+		// Try Flush
 		if (blockchain.willReplace(new_chain)) {
 			blockchain.setChain(null);
 			em.getTransaction().commit();
 			em.getTransaction().begin();
+//			em.flush();
 			Query query2 = em.createQuery("select b from Blockchain b where b.instance_name = :name");
 			query.setParameter("name", name);
 			Blockchain blockchain2 = (Blockchain) query.getSingleResult();
