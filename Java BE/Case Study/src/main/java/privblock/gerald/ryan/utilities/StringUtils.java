@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Random;
+import java.util.UUID;
 
 public class StringUtils {
 
@@ -25,8 +26,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * Powerful method for converting a string array into a byte array directly
-	 * through streaming objects. Worthy of further study
+	 * Method for converting a string array into a byte array directly
+	 * through streaming objects. Can replace with below? 
 	 * 
 	 * @param strArray
 	 * @return
@@ -37,6 +38,24 @@ public class StringUtils {
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
 		objectOutputStream.writeObject(strArray);
+		objectOutputStream.flush();
+		objectOutputStream.close();
+		return byteArrayOutputStream.toByteArray();
+	}
+	
+	/**
+	 * Converts a object into a byte array directly
+	 * through streaming objects. 
+	 * 
+	 * @param strArray
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] objectToByteArray(Object obj) throws IOException {
+
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		final ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+		objectOutputStream.writeObject(obj);
 		objectOutputStream.flush();
 		objectOutputStream.close();
 		return byteArrayOutputStream.toByteArray();
@@ -61,6 +80,10 @@ public class StringUtils {
 		for (String s : reconstitutedStringArray) {
 			System.out.println(s);
 		}
+	}
+	
+	public static String getUUID8() {
+		return String.valueOf(UUID.randomUUID()).substring(0, 8);
 	}
 
 //	public static String removeQuotesAndUnescape(String uncleanJson) {

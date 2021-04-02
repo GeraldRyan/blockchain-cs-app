@@ -1,5 +1,6 @@
 package privblock.gerald.ryan.entity;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -19,6 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+
+import com.google.gson.Gson;
 
 import privblock.gerald.ryan.utilities.StringUtils;
 
@@ -81,6 +84,30 @@ public class Wallet {
 		return signatureBytes;
 	}
 
+	// can sign wallet object
+	public byte[] sign(Object dataObj) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
+			SignatureException, IOException {
+		byte[] data = StringUtils.objectToByteArray(dataObj);
+		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
+		sig.initSign(privatekey);
+		sig.update(data);
+		byte[] signatureBytes = sig.sign();
+		System.out.println("Data has been successfully signed");
+		return signatureBytes;
+	}
+
+	/**
+	 * Verifies signature of data of given public key
+	 * 
+	 * @param signatureBytes
+	 * @param data
+	 * @param publickey
+	 * @return
+	 * @throws SignatureException
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidKeyException
+	 */
 	public static boolean verifySignature(byte[] signatureBytes, byte[] data, PublicKey publickey)
 			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException {
 		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
@@ -88,14 +115,31 @@ public class Wallet {
 		sig.update(data);
 		return sig.verify(signatureBytes);
 	}
-	
-	public static boolean verifySignature(byte[] signatureBytes, String[] data, PublicKey publickey)
-			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException {
+
+	/*
+	 * Verifies without having to convert data to byte array on client side
+	 */
+	public static boolean verifySignature(byte[] signatureBytes, String[] dataStr, PublicKey publickey)
+			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
+			IOException {
+		byte[] data = StringUtils.stringArrayToByteArray(dataStr);
 		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
 		sig.initVerify(publickey);
 		sig.update(data);
 		return sig.verify(signatureBytes);
+	}
 
+	/*
+	 * Verifies without having to convert data to byte array on client side
+	 */
+	public static boolean verifySignature(byte[] signatureBytes, Object obj, PublicKey publickey)
+			throws SignatureException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
+			IOException {
+		byte[] data = StringUtils.objectToByteArray(obj);
+		Signature sig = Signature.getInstance("SHA256withECDSA", "SunEC");
+		sig.initVerify(publickey);
+		sig.update(data);
+		return sig.verify(signatureBytes);
 	}
 
 	public static void testSign() throws NoSuchAlgorithmException, NoSuchProviderException,

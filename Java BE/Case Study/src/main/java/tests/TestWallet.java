@@ -1,5 +1,7 @@
 package tests;
 
+// TODO test Digital Signature works 
+
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -28,7 +30,7 @@ public class TestWallet {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		
 	}
 
 }
