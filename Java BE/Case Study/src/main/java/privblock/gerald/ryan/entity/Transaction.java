@@ -7,11 +7,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.google.gson.Gson;
 
 import exceptions.InvalidTransactionException;
 import exceptions.TransactionAmountExceedsBalance;
@@ -207,6 +210,45 @@ public class Transaction {
 
 	public void setInput(HashMap<String, Object> input) {
 		this.input = input;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public Wallet getSenderWallet() {
+		return senderWallet;
+	}
+
+	public String getRecipientAddress() {
+		return recipientAddress;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public HashMap<String, Object> getOutput() {
+		return output;
+	}
+
+	public HashMap<String, Object> getInput() {
+		return input;
+	}
+	
+	/**
+	 * Uses GSON library to serialize blockchain chain as json string.
+	 */
+	public String toJSONtheTransaction() {
+		return new Gson().toJson(this);
+	}
+
+	public Transaction fromJSONTheTransaction(String json) {
+		return new Gson().fromJson(json, Transaction.class);
+	}
+	
+	public static Transaction fromJSONTheTransactionStatic(String json) {
+		return new Gson().fromJson(json, Transaction.class);
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,

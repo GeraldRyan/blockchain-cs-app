@@ -10,9 +10,16 @@
 	<h1>Transact on the blockchain</h1>
 	<a href="/CaseStudy/">Home</a>
 	<br>
-	<a href="/blockchain/">See our version of the blockchain</a>
+	<a href="/CaseStudy/blockchain/">See our version of the blockchain</a>
 	<br>
-	<a href="/blockchaindesc/">Same as above but with description</a>
-	<h3>${afb}</h3>
+	<a href="/CaseStudy/blockchaindesc/">Same as above but with description</a>
+	
+	<form action="/CaseStudy/wallet/transaction">
+	<h1>Not broken yet</h1>
+	Address to send money to <input type="text" name="address"><br><br>
+	Amount to send<input type="text" name="amount"><br><br>
+	<input type="submit" name="submit">  
+	</form>	
+	
 </body>
 </html>
