@@ -1,8 +1,11 @@
 package spring.controller;
 
+import java.security.InvalidAlgorithmParameterException;
+
 //select instance_name,b.id,hash,data from blockchain c inner join blocksbychain bc on c.id=bc.blockchain_id inner join block b on bc.chain_id=b.id;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +31,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.entity.Message;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
+import privblock.gerald.ryan.entity.Wallet;
 import privblock.gerald.ryan.initializors.Initializer;
 import privblock.gerald.ryan.service.BlockService;
 import privblock.gerald.ryan.service.BlockchainService;
@@ -87,17 +91,36 @@ public class HomeController {
 		}
 	}
 
+	/**
+	 * Preload site with wallet object
+	 * 
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidAlgorithmParameterException
+	 */
+	@ModelAttribute("wallet")
+	public Wallet addWallet()
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+		Wallet wallet = Wallet.createWallet();
+		return wallet;
+	}
+
 	public void refreshChain(Model model) {
 		System.err.println("Refreshing Blockchain from local database");
 		Blockchain newer_blockchain_from_db = blockchainApp.getBlockchainService("beancoin");
 		try {
-			// Database for some reason loads ArrayList<Block> unsorted. Manually resorting it here upon load. 
+			// Database for some reason loads ArrayList<Block> unsorted. Manually resorting
+			// it here upon load.
 			ArrayList<Block> new_chain = new ArrayList<Block>(newer_blockchain_from_db.getChain());
 			System.out.println("RE-SORTING ArrayList<Block>");
-			// I believe I have to make a new chain instance for mutation. Won't mutate Blockchain.chain property? 
+			// I believe I have to make a new chain instance for mutation. Won't mutate
+			// Blockchain.chain property?
 			Collections.sort(new_chain, Comparator.comparingLong(Block::getTimestamp));
-			/* Are setter methods secure for chain replacement? Could replace with invalid chain. Should use replaceChain
-			 * method, incorporating this into that, but struggling with JPA and loading in order. 
+			/*
+			 * Are setter methods secure for chain replacement? Could replace with invalid
+			 * chain. Should use replaceChain method, incorporating this into that, but
+			 * struggling with JPA and loading in order.
 			 */
 			((Blockchain) model.getAttribute("blockchain")).setChain(new_chain);
 		} catch (Exception e) {
@@ -111,8 +134,16 @@ public class HomeController {
 //		return new PubNubApp();
 //	}
 
+	@Development // does nothing just a markup annotation
+	public void consoleModelProperties(Model model) {
+		System.out.println("Model class is " + model.getClass());
+		System.out.println(model.toString());
+
+	}
+
 	@GetMapping("/")
-	public String showIndex() {
+	public String showIndex(Model model) {
+		consoleModelProperties(model);
 		return "index";
 	}
 
@@ -140,13 +171,20 @@ public class HomeController {
 			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
 //		blockchain.add_block("FOOBARFORTHEWIN");
 		String stubbedData = "MAIN INSTANCE STUBBED DATA";
-		String[] stubbedDataV = {"MAIN INSTANCE STUBBED DATA"};
-		//		Block new_block = blockchain.add_block(stubbedData);
+		String[] stubbedDataV = { "MAIN INSTANCE STUBBED DATA" };
+		// Block new_block = blockchain.add_block(stubbedData);
 		Block new_block = blockchainApp.addBlockService("beancoin", stubbedDataV);
 //		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
 		pnapp.broadcastBlock(new_block);
 		return "mine";
+	}
+
+	@GetMapping("/wallet/transact")
+	public String getTransact() {
+		
+		return "transact";
+
 	}
 
 	@GetMapping("/login")

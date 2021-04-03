@@ -7,13 +7,12 @@
 <title>Index Page</title>
 </head>
 <body>
-	<h1>Welcome to the blockchain</h1>
-	<a href="./blockchain">See our version of the blockchain</a>
+	<h1>Transact on the blockchain</h1>
+	<a href="/CaseStudy/">Home</a>
 	<br>
-	<a href="./blockchaindesc">Same as above but with description</a>
+	<a href="/blockchain/">See our version of the blockchain</a>
 	<br>
-	<a href="./wallet/transact">Transact on the blockchain</a>
-
+	<a href="/blockchaindesc/">Same as above but with description</a>
 	<h3>${afb}</h3>
 </body>
 </html>
