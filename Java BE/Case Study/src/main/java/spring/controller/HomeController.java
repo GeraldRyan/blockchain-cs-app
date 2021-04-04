@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -154,11 +156,12 @@ public class HomeController {
 		return "index";
 	}
 
-	@GetMapping("/blockchain")
+	@RequestMapping(value = "blockchain", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
 	public String serveBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException,
 			ChainTooShortException, GenesisBlockInvalidException, BlocksInChainInvalidException {
 		refreshChain(model);
-		return "blockchain";
+		return ((Blockchain) model.getAttribute("blockchain")).toJSONtheChain();
 	}
 
 	@GetMapping("/blockchaindesc")

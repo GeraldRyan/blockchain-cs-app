@@ -348,6 +348,7 @@ public class Blockchain {
 	 * Uses GSON library to serialize blockchain chain as json string.
 	 */
 	public String toJSONtheChain() {
+//		return "[{\"name\": \"foo\", \"amount\": 4}]";
 		return new Gson().toJson(chain);
 	}
 
