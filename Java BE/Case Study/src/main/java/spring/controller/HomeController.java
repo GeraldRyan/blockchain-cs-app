@@ -11,6 +11,7 @@ import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -193,18 +195,19 @@ public class HomeController {
 		return "transact";
 	}
 
-	
 	@PostMapping("/wallet/transact")
-	public String postTransact(@ModelAttribute("wallet") Wallet w)
+	@ResponseBody
+	public String postTransact(Model model, @RequestBody Map<String, Object> body, @ModelAttribute("wallet") Wallet w)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-//		Transaction t1 = new Transaction(w, "654s", 100);
-//		System.out.println(t1.toString());
-		return "transact";
+		System.out.printf("Address in post %s\n", body);
+		Transaction t1 = new Transaction(w, (String) body.get("address"), (double) ((Integer) body.get("amount")));
+		return t1.toString();
+//		return "transaction";
 	}
-	
+
 	@GetMapping("/wallet/transaction")
-	public String postTransaction(@ModelAttribute("wallet") Wallet w, Model model, @RequestParam("address") String address,
-			@RequestParam("amount") double amount, HttpServletRequest request)
+	public String postTransaction(@ModelAttribute("wallet") Wallet w, Model model,
+			@RequestParam("address") String address, @RequestParam("amount") double amount, HttpServletRequest request)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		System.err.println("REQUEST PARAMS");
 		System.err.println(address);

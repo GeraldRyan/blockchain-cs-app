@@ -20,6 +20,13 @@ import exceptions.InvalidTransactionException;
 import exceptions.TransactionAmountExceedsBalance;
 import privblock.gerald.ryan.utilities.StringUtils;
 
+
+/* TODO ? Stop serializing entire Wallet and Transaction objects here and elsewhere. Serialize only the necessary data - address, balance, public key
+ * etc. Is this bad? Does it tightly couple? Does it break cross platform usage? The Java dependent wallet object is serialized and signed but 
+ * what about when a python user is using the app? Suppose he has the keys and everything, and the address to send to. Can he properly sign it with his
+ * pythonic implementation? Maybe or maybe it breaks code. Customize serialization. Just go for simple JSON.
+ */
+
 /**
  * Document an exchange of currency from a sender to one or more recipients
  * 

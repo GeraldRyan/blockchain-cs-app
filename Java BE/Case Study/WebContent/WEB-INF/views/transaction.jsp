@@ -12,6 +12,8 @@
 	<br>
 	<h2>You made a transaction</h2>
 	<p>Transaction amount: ${transaction }</p>
+	<p>amount amount: ${address}</p>
+	<p>Address amount: ${address}</p>
 	<a href="/CaseStudy/blockchain/">See our version of the blockchain</a>
 	<br>
 	<a href="/CaseStudy/blockchaindesc/">Same as above but with
