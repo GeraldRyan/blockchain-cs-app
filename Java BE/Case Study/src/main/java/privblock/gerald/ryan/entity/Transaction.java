@@ -231,7 +231,7 @@ public class Transaction {
 		PublicKey restoredPK = Wallet.restorePK((byte[]) transaction.getInput().get("publicKeyByte"));
 //		PublicKey restoredPK = Wallet.restorePK((String) transaction.getInput().get("publicKeyB64"));
 //		PublicKey originalPK = (PublicKey) transaction.input.get("publicKey"); // Don't want to wire this clunky thing
-																				// over network
+		// over network
 		double sumOfTransactions = transaction.output.values().stream().mapToDouble(t -> (double) t).sum();
 		System.out.println("Sum of values " + sumOfTransactions);
 		if (sumOfTransactions != (double) transaction.input.get("amount")) {
@@ -357,9 +357,8 @@ public class Transaction {
 	}
 
 	/**
-	 * Deserialize a transaction's JSON into a dictionary of transaction data** (NOT
-	 * A PERFECT TRANSACTION OBJECT THO ** DOES NOT INCLUDE WALLET AND SO ON, BUT
-	 * ENOUGH TO RE-CREATE. WILL IT BREAK CODE?
+	 * Restore a Transaction instance (sans Wallet object) from JSON serialized Data
+	 * Data you get over the wire/REST API
 	 * 
 	 * @param transactionJSON
 	 * @return

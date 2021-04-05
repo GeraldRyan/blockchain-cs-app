@@ -112,7 +112,7 @@ public class PubNubApp {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
-		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		pnConfiguration.setUuid("BEANMASTER"); // unique UUID
 		this.transactionPool = transactionPool;
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
@@ -167,7 +167,7 @@ public class PubNubApp {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
-		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		pnConfiguration.setUuid("BEANMASTER"); // unique UUID
 
 		return new PubNub(pnConfiguration);
 
@@ -177,7 +177,7 @@ public class PubNubApp {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
-		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		pnConfiguration.setUuid("BEANMASTER"); // unique UUID
 
 		PubNub pubnub = new PubNub(pnConfiguration);
 
@@ -209,7 +209,7 @@ public class PubNubApp {
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
-		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		pnConfiguration.setUuid("BEANMASTER"); // unique UUID
 
 		PubNub pubnub = new PubNub(pnConfiguration);
 

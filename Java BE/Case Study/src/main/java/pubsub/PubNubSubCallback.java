@@ -20,12 +20,16 @@ import exceptions.ChainTooShortException;
 import exceptions.GenesisBlockInvalidException;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.Transaction;
 import privblock.gerald.ryan.entity.TransactionPool;
 import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
 
+import java.io.IOException;
 import java.nio.channels.Channels;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -151,9 +155,18 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			} catch (GenesisBlockInvalidException e) {
 				System.err.println("DID NOT REPLACE CHAIN. Genesis block invalid exception");
 			}
-		} else if (message.getChannel() == CHANNELS.get("TRANSACTION")) {
+		} else if (message.getChannel().equals("TRANSACTION")) {
 			System.out.println("RECEIVED NEW TRANSACTION FROM THE NETWORK");
 			System.out.println(message.getMessage());
+			try {
+				Transaction tRestored = Transaction.fromJSONToTransaction(message.getMessage().toString()); // TODO Error here, fix escapes
+				// in Message Payload: "{\"output\":{\"juli\":999.0,\"36e5e5ee\":1.0},\"in
+				System.err.println("I'm here and I got this UUID");
+				System.out.println(tRestored.getUuid());
+			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

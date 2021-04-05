@@ -210,7 +210,7 @@ public class HomeController {
 	public String getTransact(@ModelAttribute("wallet") Wallet w)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 //		Transaction t1 = new Transaction(w, "654s", 100);
-//		System.out.println(t1.toString());
+
 		return "transact";
 	}
 
@@ -224,7 +224,14 @@ public class HomeController {
 		hm.put("status", 200);
 		hm.put("data", t1.toJSONtheTransaction());
 //		return new Gson().toJson(hm); // this would work but gson adds escape slashes and breaks json prettier
-		return t1.toJSONtheTransaction();
+//		System.out.println(t1.toString());
+		try {
+			pnapp.broadcastTransaction(t1);
+		} catch (PubNubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return t1.toJSONtheTransaction(); // response body
 //		return "transaction";
 	}
 
