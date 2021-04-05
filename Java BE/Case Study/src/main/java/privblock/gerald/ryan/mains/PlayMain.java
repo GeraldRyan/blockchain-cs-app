@@ -7,6 +7,7 @@ import com.pubnub.api.PubNubException;
 
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.TransactionPool;
 import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
 import pubsub.PubNubApp;
@@ -34,11 +35,12 @@ public class PlayMain {
 //		Blockchain blockchain = blockchainApp.getTopBlockchain();
 //		Blockchain blockchain = new Blockchain(StringUtils.RandomStringLenN(5));
 		Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
-		
-		// This automatically subscribes to BLOCK_CHANNEL channel that listens to block broadcasts
+
+		// This automatically subscribes to BLOCK_CHANNEL channel that listens to block
+		// broadcasts
 		// Just by instantiating this, you get the subscription and results
-		PubNubApp pubnub = new PubNubApp(blockchain);
-		
+		PubNubApp pubnub = new PubNubApp(blockchain, new TransactionPool());
+
 //		System.out.println(blockchain.toStringMeta());
 		Thread.sleep(1000);
 //		pubnub.publish("general", "World");

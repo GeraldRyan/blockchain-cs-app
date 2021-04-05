@@ -56,6 +56,20 @@ public class Wallet {
 		this.address = address;
 	}
 
+	/**
+	 * used to recreate what's known of wallet without the private key info
+	 * @param balance
+	 * @param publickey
+	 * @param address
+	 */
+	public Wallet(double balance, PublicKey publickey, String address) {
+		super();
+		this.balance = balance;
+		this.privatekey = privatekey;
+		this.publickey = null;
+		this.address = address;
+	}
+
 	public static Wallet createWallet()
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
 		String address = String.valueOf(UUID.randomUUID()).substring(0, 8);
@@ -133,7 +147,7 @@ public class Wallet {
 		return sig.verify(signatureBytes);
 	}
 
-	/*
+	/**
 	 * Verifies without having to convert data to byte array on client side
 	 */
 	public static boolean verifySignature(byte[] signatureBytes, Object obj, PublicKey publickey)
@@ -186,7 +200,6 @@ public class Wallet {
 	public String toString() {
 		return "Wallet [balance=" + balance + ", publickey=" + publickey + ", address=" + address + "]";
 	}
-	
 
 	public void setBalance(double balance) {
 		this.balance = balance;

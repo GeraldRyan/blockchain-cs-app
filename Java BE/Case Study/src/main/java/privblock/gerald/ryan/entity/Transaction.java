@@ -1,6 +1,7 @@
 package privblock.gerald.ryan.entity;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -10,6 +11,7 @@ import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,6 +19,8 @@ import javax.persistence.Id;
 import org.springframework.util.Base64Utils;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import exceptions.InvalidTransactionException;
@@ -80,6 +84,25 @@ public class Transaction {
 		System.out.println("Valid New Transaction created");
 	}
 
+	// used for recreating a transaction instance without sender wallet
+	// as is reconstructed from over the wire
+	public Transaction(String recipientAddress, double amount, String uuid, HashMap<String, Object> output,
+			HashMap<String, Object> input)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException {
+		super();
+		this.uuid = uuid;
+		this.output = output;
+		this.input = input;
+		this.senderWallet = null;
+		this.recipientAddress = recipientAddress;
+		this.amount = amount;
+		System.out.println("Valid Transaction Record created (no wallet required)");
+	}
+
+	public static Transaction createPublicTransactionFromJSON() {
+		return null;
+	}
+
 	public Transaction() {
 	}
 
@@ -97,6 +120,8 @@ public class Transaction {
 			throws TransactionAmountExceedsBalance {
 		if (amount > senderWallet.getBalance()) {
 			System.out.println("Amount exceeds balance");
+			// TODO handle this exception to avoid 500 internal server error when requesting
+			// more than amount
 			throw new TransactionAmountExceedsBalance("The transaction amount exceeds the current balance");
 		}
 		HashMap<String, Object> output = new HashMap<String, Object>();
@@ -131,11 +156,13 @@ public class Transaction {
 		input.put("timestamp", new Date().getTime());
 		input.put("amount", senderWallet.getBalance());
 		input.put("address", senderWallet.getAddress());
+		input.put("publicKey", senderWallet.getPublickey()); // TODO make a function to restore public key
+		input.put("signature", bytesignature); // will remove also when can convert
 		input.put("publicKeyB64", publicKeyString);
 //		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
 		input.put("publicKeyFormat", senderWallet.getPublickey().getFormat());
 		// sign off on the transactions, by digitally signing the transactions.
-//		input.put("signatureByte", bytesignature);
+//		input.put("signatureByte", bytesignature); // cool to have but makes JSON display long vertical
 		input.put("signatureString", Base64Utils.encodeToString(bytesignature));
 		return input;
 	}
@@ -187,6 +214,24 @@ public class Transaction {
 	 */
 	public static boolean is_valid_transaction(Transaction transaction) throws InvalidTransactionException,
 			InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+
+		double sumOfTransactions = transaction.output.values().stream().mapToDouble(t -> (double) t).sum();
+		System.out.println("Sum of values " + sumOfTransactions);
+		if (sumOfTransactions != (double) transaction.input.get("amount")) {
+			throw new InvalidTransactionException("Value mismatch of propsed transactions");
+		}
+		if (!Wallet.verifySignature((byte[]) transaction.input.get("signature"), transaction.output,
+				(PublicKey) transaction.input.get("publicKey"))) {
+			System.err.println("Signature not valid!");
+			throw new InvalidTransactionException("Invalid Signature");
+		}
+		return true;
+	}
+
+	public static boolean is_valid_transactionReconstructPK(Transaction transaction) throws InvalidTransactionException,
+			InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+		PublicKey reconstructedPK = null;
+
 		double sumOfTransactions = transaction.output.values().stream().mapToDouble(t -> (double) t).sum();
 		System.out.println("Sum of values " + sumOfTransactions);
 		if (sumOfTransactions != (double) transaction.input.get("amount")) {
@@ -272,6 +317,55 @@ public class Transaction {
 		return new Gson().toJson(serializeThisBundle);
 	}
 
+	/**
+	 * Deserialize a transaction's JSON into a dictionary of transaction data** (NOT
+	 * A PERFECT TRANSACTION OBJECT THO ** DOES NOT INCLUDE WALLET AND SO ON, BUT
+	 * ENOUGH TO RE-CREATE. WILL IT BREAK CODE?
+	 * 
+	 * @param transactionJSON
+	 * @return
+	 * @throws IOExceptionlinked        tree map to hashmap
+	 * @throws NoSuchProviderException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 */
+	static public Transaction fromJSONToTransaction(String transactionJSON)
+			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
+		Type type = new TypeToken<HashMap<String, Object>>() {
+		}.getType();
+		Map<String, Object> info = new Gson().fromJson(transactionJSON, type);
+//		for (String key : info.keySet()) {
+//			System.out.println("key: " + key);
+//			System.out.println("value: " + info.get(key));
+//		}
+		System.out.println(info.getClass());
+		System.out.println(info.get("input").getClass());
+//		HashMap<String, Object> hm = new Gson().fromJson(info, type)
+		LinkedTreeMap inputLTM = (LinkedTreeMap) info.get("input");
+		LinkedTreeMap outputLTM = (LinkedTreeMap) info.get("output");
+		HashMap<String, Object> input = new HashMap<String, Object>();
+		HashMap<String, Object> output = new HashMap<String, Object>();
+		// NEEDED BECAUSE GOOGLE GSON IS WIERD- RETURNS LINKEDHASHTREE
+		for (Object key : inputLTM.keySet()) {
+//			System.out.println(key);
+			input.put((String) key, inputLTM.get(key));
+		}
+		for (Object key : outputLTM.keySet()) {
+//			System.out.println(key);
+			output.put((String) key, outputLTM.get(key));
+		}
+		// NEEDED BECAUSE GOOGLE GSON IS WIERD- RETURNS LINKEDHASHTREE
+
+//		String senderAddress = (String) input.get("address");
+//		double senderWalletBalance = (double) output.get(senderAddress);
+		String recipientAddress = (String) info.get("address");
+		double amount = (double) info.get("amount");
+		String uuid = (String) info.get("UUID");
+
+		Transaction t = new Transaction(recipientAddress, amount, uuid, output, input);
+		return t;
+	}
+
 	public Transaction fromJSONTheTransaction(String json) {
 		return new Gson().fromJson(json, Transaction.class);
 	}
@@ -343,6 +437,12 @@ public class Transaction {
 //		System.out.println(t1.toString());
 		System.out.println("Is it valid?");
 		System.out.println(Transaction.is_valid_transaction(t1));
+		System.err.println("PRINTING t1.TOJSON");
+		String jsonified = t1.toJSONtheTransaction();
+		System.err.println("Deserializing and restoring ");
+		Transaction t1r = Transaction.fromJSONToTransaction(jsonified);
+		System.out.println(t1);
+		System.out.println(t1r);
 	}
 
 }

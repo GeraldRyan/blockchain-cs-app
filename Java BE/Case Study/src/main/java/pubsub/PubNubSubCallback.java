@@ -151,9 +151,9 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			} catch (GenesisBlockInvalidException e) {
 				System.err.println("DID NOT REPLACE CHAIN. Genesis block invalid exception");
 			}
-		}
-		else if (message.getChannel() == CHANNELS.get("TRANSACTION")) {
-			System.out.println("NEW TRANSACTION RECEIVED");
+		} else if (message.getChannel() == CHANNELS.get("TRANSACTION")) {
+			System.out.println("RECEIVED NEW TRANSACTION FROM THE NETWORK");
+			System.out.println(message.getMessage());
 		}
 	}
 
