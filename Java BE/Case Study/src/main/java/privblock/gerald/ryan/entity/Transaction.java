@@ -280,6 +280,54 @@ public class Transaction {
 		return new Gson().fromJson(json, Transaction.class);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(amount);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((input == null) ? 0 : input.hashCode());
+		result = prime * result + ((output == null) ? 0 : output.hashCode());
+		result = prime * result + ((recipientAddress == null) ? 0 : recipientAddress.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Transaction other = (Transaction) obj;
+		if (Double.doubleToLongBits(amount) != Double.doubleToLongBits(other.amount))
+			return false;
+		if (input == null) {
+			if (other.input != null)
+				return false;
+		} else if (!input.equals(other.input))
+			return false;
+		if (output == null) {
+			if (other.output != null)
+				return false;
+		} else if (!output.equals(other.output))
+			return false;
+		if (recipientAddress == null) {
+			if (other.recipientAddress != null)
+				return false;
+		} else if (!recipientAddress.equals(other.recipientAddress))
+			return false;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
+
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,
 			InvalidAlgorithmParameterException, InvalidKeyException, IOException, SignatureException,
 			TransactionAmountExceedsBalance, InvalidTransactionException {
