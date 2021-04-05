@@ -29,6 +29,10 @@ import privblock.gerald.ryan.utilities.StringUtils;
  * An individual wallet for a miner. Keeps track of miner's balance. Allows
  * miner to authorize Transactions.
  * 
+ * NOTE- HAVING A SETTER FOR ADDRESS FIELD WILL BREAK THIS BEAN related to
+ * instantiating new transactions with request param page. setAddress() breaks
+ * bean. Maybe setThisAddress will work fine but setAddress will break the
+ * 
  * @author User
  *
  */
@@ -190,10 +194,6 @@ public class Wallet {
 
 	public String getAddress() {
 		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
 	}
 
 	public static double getSTARTING_BALANCE() {

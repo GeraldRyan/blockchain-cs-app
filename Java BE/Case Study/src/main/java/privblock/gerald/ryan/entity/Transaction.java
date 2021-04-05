@@ -14,12 +14,14 @@ import java.util.HashMap;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.springframework.util.Base64Utils;
+
 import com.google.gson.Gson;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import exceptions.InvalidTransactionException;
 import exceptions.TransactionAmountExceedsBalance;
 import privblock.gerald.ryan.utilities.StringUtils;
-
 
 /* TODO ? Stop serializing entire Wallet and Transaction objects here and elsewhere. Serialize only the necessary data - address, balance, public key
  * etc. Is this bad? Does it tightly couple? Does it break cross platform usage? The Java dependent wallet object is serialized and signed but 
@@ -39,7 +41,7 @@ public class Transaction {
 //	long id;
 	@Id
 	String uuid; // could have also gone with ye olde timestamp
-	Wallet senderWallet;
+	Wallet senderWallet; // should this be transient? Can it be?
 	String recipientAddress;
 	double amount;
 	/**
@@ -100,6 +102,10 @@ public class Transaction {
 		HashMap<String, Object> output = new HashMap<String, Object>();
 		output.put(recipientAddress, amount);
 		output.put(senderWallet.getAddress(), (senderWallet.getBalance() - amount));
+		for (String key : output.keySet()) {
+			System.err.println("key" + key);
+			System.err.println("value" + output.get(key));
+		}
 		return output;
 	}
 
@@ -119,13 +125,18 @@ public class Transaction {
 	public static HashMap<String, Object> createInput(Wallet senderWallet, HashMap<String, Object> output)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException,
 			IOException {
+		String publicKeyString = Base64Utils.encodeToString(senderWallet.getPublickey().getEncoded());
+		byte[] bytesignature = senderWallet.sign(output);
 		HashMap<String, Object> input = new HashMap<String, Object>();
 		input.put("timestamp", new Date().getTime());
 		input.put("amount", senderWallet.getBalance());
 		input.put("address", senderWallet.getAddress());
-		input.put("publicKey", senderWallet.getPublickey());
+		input.put("publicKeyB64", publicKeyString);
+		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
+		input.put("publicKeyFormat", senderWallet.getPublickey().getFormat());
 		// sign off on the transactions, by digitally signing the transactions.
-		input.put("signature", senderWallet.sign(output));
+		input.put("signatureByte", bytesignature);
+		input.put("signatureString", Base64Utils.encodeToString(bytesignature));
 		return input;
 	}
 
@@ -242,18 +253,30 @@ public class Transaction {
 	public HashMap<String, Object> getInput() {
 		return input;
 	}
-	
+
 	/**
 	 * Uses GSON library to serialize blockchain chain as json string.
 	 */
+
 	public String toJSONtheTransaction() {
-		return new Gson().toJson(this);
+
+		HashMap<String, Object> serializeThisBundle = new HashMap<String, Object>();
+		HashMap<String, Object> inputClone = (HashMap<String, Object>) input.clone();
+		HashMap<String, Object> outputClone = (HashMap<String, Object>) output.clone();
+		inputClone.remove("wallet");
+		serializeThisBundle.put("publicKey", "TODO");
+		serializeThisBundle.put("input", inputClone);
+		serializeThisBundle.put("output", output);
+		serializeThisBundle.put("UUID", uuid);
+		serializeThisBundle.put("amount", amount);
+		serializeThisBundle.put("address", recipientAddress);
+		return new Gson().toJson(serializeThisBundle);
 	}
 
 	public Transaction fromJSONTheTransaction(String json) {
 		return new Gson().fromJson(json, Transaction.class);
 	}
-	
+
 	public static Transaction fromJSONTheTransactionStatic(String json) {
 		return new Gson().fromJson(json, Transaction.class);
 	}
@@ -262,7 +285,7 @@ public class Transaction {
 			InvalidAlgorithmParameterException, InvalidKeyException, IOException, SignatureException,
 			TransactionAmountExceedsBalance, InvalidTransactionException {
 		Wallet senderWallet = Wallet.createWallet();
-		System.out.println(senderWallet.getBalance());
+
 		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);
 //		System.out.println(t1.toString());
 //		t1.update(senderWallet, "recipientWalletAddress1920", 20);

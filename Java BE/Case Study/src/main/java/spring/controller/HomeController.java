@@ -208,7 +208,8 @@ public class HomeController {
 //		return "transaction";
 	}
 
-	@GetMapping("/wallet/transaction")
+	@RequestMapping(value = "/wallet/transaction", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
 	public String postTransaction(@ModelAttribute("wallet") Wallet w, Model model,
 			@RequestParam("address") String address, @RequestParam("amount") double amount, HttpServletRequest request)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
@@ -220,7 +221,8 @@ public class HomeController {
 		System.out.println(t1.getAmount());
 		// Transaction t1 = new Transaction(w, address, amount);
 //		System.out.println(t1.toString());
-		return "transaction";
+//		return "transaction";
+		return t1.toJSONtheTransaction();
 
 	}
 
