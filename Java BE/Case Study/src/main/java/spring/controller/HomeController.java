@@ -40,6 +40,7 @@ import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.entity.Message;
 import privblock.gerald.ryan.entity.Transaction;
+import privblock.gerald.ryan.entity.TransactionPool;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.entity.Wallet;
@@ -77,7 +78,14 @@ public class HomeController {
 		return "FooAndBar";
 	}
 
-	/*
+	@ModelAttribute("transactionpool")
+	public TransactionPool initTransactionPool() {
+		return new TransactionPool();
+	}
+	
+
+
+	/**
 	 * Pulls up beancoin blockchain on startup. [Note to self: what is startup? Is
 	 * it session based? What is session? Define the terms]
 	 * 
@@ -86,11 +94,11 @@ public class HomeController {
 	 * Also syncs blockchain so should be updated
 	 */
 	@ModelAttribute("blockchain")
-	public Blockchain addBlockchain() throws NoSuchAlgorithmException, InterruptedException {
+	public Blockchain addBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException {
 //		System.err.println("addBlockchain called at controller");
 		try {
 			Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
-			pnapp = new PubNubApp(blockchain);
+			PubNubApp pnapp = new PubNubApp(blockchain, (TransactionPool) model.getAttribute("transactionpool"));
 			System.out.println("Pulling up your beancoin from our records");
 			return blockchain;
 		} catch (Exception e) {
@@ -216,7 +224,7 @@ public class HomeController {
 		hm.put("status", 200);
 		hm.put("data", t1.toJSONtheTransaction());
 //		return new Gson().toJson(hm); // this would work but gson adds escape slashes and breaks json prettier
-		 return t1.toJSONtheTransaction();
+		return t1.toJSONtheTransaction();
 //		return "transaction";
 	}
 

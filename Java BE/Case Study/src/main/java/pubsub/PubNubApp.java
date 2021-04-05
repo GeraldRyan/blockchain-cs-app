@@ -29,6 +29,8 @@ import com.pubnub.api.models.consumer.pubsub.message_actions.PNMessageActionResu
 
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.Transaction;
+import privblock.gerald.ryan.entity.TransactionPool;
 
 /*
  * This is an important class made by me (Gerald). Can't call it pubnub because that's taken by pubnub itself. 
@@ -44,20 +46,24 @@ public class PubNubApp {
 	String BLOCK_CHANNEL;
 	public HashMap<String, String> CHANNELS;
 	public Blockchain blockchain;
+	TransactionPool transactionPool;
 
 	/*
 	 * Not being used, may want to implement later
 	 */
-	public PubNubApp(PNConfiguration pnConfiguration, Blockchain blockchain) throws InterruptedException {
+	public PubNubApp(PNConfiguration pnConfiguration, Blockchain blockchain, TransactionPool transactionPool)
+			throws InterruptedException {
 		this.pn = new PubNub(pnConfiguration);
+		this.transactionPool = transactionPool;
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
 		CHANNELS = new HashMap<String, String>();
 		CHANNELS.put("BLOCK", "BLOCK_CHANNEL");
 		CHANNELS.put("TEST", "TEST_CHANNEL");
 		CHANNELS.put("GENERAL", "general");
+		CHANNELS.put("TRANSACTION", "TRANSACTION");
 		this.pn = new PubNub(pnConfiguration);
-		this.pn.addListener(new PubNubSubCallback(blockchain));
+		this.pn.addListener(new PubNubSubCallback(blockchain, CHANNELS, transactionPool));
 		Thread.sleep(1000);
 //		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
 //		this.pn.subscribe().channels(channels).execute();
@@ -76,12 +82,13 @@ public class PubNubApp {
 	 * Default constructor. Subscribes to general, TEST_CHANNEL and BLOCK_CHANNEL
 	 * channels automatically.
 	 */
-	public PubNubApp(Blockchain blockchain) throws InterruptedException {
+	public PubNubApp(Blockchain blockchain, TransactionPool transactionPool) throws InterruptedException {
 		this.blockchain = blockchain;
 		PNConfiguration pnConfiguration = new PNConfiguration();
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
 		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		this.transactionPool = transactionPool;
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
 		ArrayList<String> channels = new ArrayList();
@@ -92,8 +99,9 @@ public class PubNubApp {
 		CHANNELS.put("BLOCK", "BLOCK_CHANNEL");
 		CHANNELS.put("TEST", "TEST_CHANNEL");
 		CHANNELS.put("GENERAL", "general");
+		CHANNELS.put("TRANSACTION", "TRANSACTION");
 		this.pn = new PubNub(pnConfiguration);
-		this.pn.addListener(new PubNubSubCallback(blockchain));
+		this.pn.addListener(new PubNubSubCallback(blockchain, CHANNELS, transactionPool));
 		Thread.sleep(1000);
 //		this.pn.subscribe().channels(Collections.singletonList("general")).execute();
 //		this.pn.subscribe().channels(channels).execute();
@@ -105,6 +113,7 @@ public class PubNubApp {
 		pnConfiguration.setSubscribeKey(subscribe_key);
 		pnConfiguration.setPublishKey(publish_key);
 		pnConfiguration.setUuid("sdfdvsdvsdv"); // unique UUID
+		this.transactionPool = transactionPool;
 		TEST_CHANNEL = "TEST_CHANNEL";
 		BLOCK_CHANNEL = "BLOCK_CHANNEL";
 		ArrayList<String> channels = new ArrayList();
@@ -115,6 +124,7 @@ public class PubNubApp {
 		CHANNELS.put("BLOCK", "BLOCK_CHANNEL");
 		CHANNELS.put("TEST", "TEST_CHANNEL");
 		CHANNELS.put("GENERAL", "general");
+		CHANNELS.put("TRANSACTION", "TRANSACTION");
 		this.pn = new PubNub(pnConfiguration);
 		this.pn.addListener(new PubNubSubCallback());
 		Thread.sleep(1000);
@@ -178,11 +188,20 @@ public class PubNubApp {
 		pubnub.publish().channel(channel).message(message).sync();
 	}
 
-	/*
+	/**
 	 * Broadcasts a block object to all nodes
 	 */
 	public void broadcastBlock(Block block) throws PubNubException {
 		this.publish(this.CHANNELS.get("BLOCK"), block.toJSONtheBlock());
+	}
+
+	/**
+	 * Broadcasts transaction to the network
+	 * 
+	 * @throws PubNubException
+	 */
+	public void broadcastTransaction(Transaction transaction) throws PubNubException {
+		this.publish(this.CHANNELS.get("TRANSACTION"), transaction.toJSONtheTransaction());
 	}
 
 	public static void main(String[] args) throws PubNubException, InterruptedException {

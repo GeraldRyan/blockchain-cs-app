@@ -20,27 +20,36 @@ import exceptions.ChainTooShortException;
 import exceptions.GenesisBlockInvalidException;
 import privblock.gerald.ryan.entity.Block;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.TransactionPool;
 import privblock.gerald.ryan.service.BlockchainService;
 import privblock.gerald.ryan.utilities.StringUtils;
 
+import java.nio.channels.Channels;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-/*
- * GR- This is an important class that provides a callback function for setting up a pub nub listener
- * Implemnet the methods below to achieve the effects/responses you desire. Use this as a template as you will if you don't want to change this original. 
- * Use it by passing pubnub instance pubnub.addlistener(new PubNubSubCallback()). Takes zero args but you can make it take specified args. 
+/**
+ * GR- This is an important class that provides a callback function for setting
+ * up a pub nub listener Implemnet the methods below to achieve the
+ * effects/responses you desire. Use this as a template as you will if you don't
+ * want to change this original. Use it by passing pubnub instance
+ * pubnub.addlistener(new PubNubSubCallback()). Takes zero args but you can make
+ * it take specified args.
  */
 public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallback {
 	Blockchain blockchain;
 	BlockchainService blockchainApp = new BlockchainService();
+	HashMap<String, String> CHANNELS;
+	TransactionPool transactionPool;
 
-	public PubNubSubCallback(Blockchain blockchain) {
+	public PubNubSubCallback(Blockchain blockchain, HashMap<String, String> CHANNELS, TransactionPool transactionPool) {
 		this.blockchain = blockchain;
+		this.CHANNELS = CHANNELS;
 	}
 
 	public PubNubSubCallback() {
@@ -98,7 +107,9 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 		}
 	}
 
-	// Messages
+	/**
+	 * This part of callback is called when a message is received
+	 */
 	@Override
 	public void message(PubNub pubnub, PNMessageResult message) {
 		System.out.println("-- Incoming Transmission -");
@@ -140,6 +151,9 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			} catch (GenesisBlockInvalidException e) {
 				System.err.println("DID NOT REPLACE CHAIN. Genesis block invalid exception");
 			}
+		}
+		else if (message.getChannel() == CHANNELS.get("TRANSACTION")) {
+			System.out.println("NEW TRANSACTION RECEIVED");
 		}
 	}
 
