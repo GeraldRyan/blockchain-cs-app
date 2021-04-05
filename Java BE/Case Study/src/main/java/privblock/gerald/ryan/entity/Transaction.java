@@ -1,13 +1,21 @@
 package privblock.gerald.ryan.entity;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,10 +164,10 @@ public class Transaction {
 		input.put("timestamp", new Date().getTime());
 		input.put("amount", senderWallet.getBalance());
 		input.put("address", senderWallet.getAddress());
-		input.put("publicKey", senderWallet.getPublickey()); // TODO make a function to restore public key
+//		input.put("publicKey", senderWallet.getPublickey()); // TODO make a function to restore public key
 		input.put("signature", bytesignature); // will remove also when can convert
 		input.put("publicKeyB64", publicKeyString);
-//		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
+		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
 		input.put("publicKeyFormat", senderWallet.getPublickey().getFormat());
 		// sign off on the transactions, by digitally signing the transactions.
 //		input.put("signatureByte", bytesignature); // cool to have but makes JSON display long vertical
@@ -211,17 +219,30 @@ public class Transaction {
 	 * @throws NoSuchAlgorithmException
 	 * @throws SignatureException
 	 * @throws InvalidKeyException
+	 * @throws CertificateException
+	 * @throws InvalidKeySpecException
+	 * @throws InvalidAlgorithmParameterException
 	 */
 	public static boolean is_valid_transaction(Transaction transaction) throws InvalidTransactionException,
-			InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-
+			InvalidKeyException, SignatureException, NoSuchAlgorithmException, NoSuchProviderException, IOException,
+			CertificateException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+		Transaction twrongPK = new Transaction(Wallet.createWallet(), "foo", (double) 100);
+//		PublicKey restoredPK = Wallet.restorePK((byte[]) twrongPK.getInput().get("publicKeyByte")); // THROWS EXPECTED @SIGNATURE NOT VALID!!!
+		PublicKey restoredPK = Wallet.restorePK((byte[]) transaction.getInput().get("publicKeyByte"));
+//		PublicKey restoredPK = Wallet.restorePK((String) transaction.getInput().get("publicKeyB64"));
+//		PublicKey originalPK = (PublicKey) transaction.input.get("publicKey"); // Don't want to wire this clunky thing
+																				// over network
 		double sumOfTransactions = transaction.output.values().stream().mapToDouble(t -> (double) t).sum();
 		System.out.println("Sum of values " + sumOfTransactions);
 		if (sumOfTransactions != (double) transaction.input.get("amount")) {
 			throw new InvalidTransactionException("Value mismatch of propsed transactions");
 		}
-		if (!Wallet.verifySignature((byte[]) transaction.input.get("signature"), transaction.output,
-				(PublicKey) transaction.input.get("publicKey"))) {
+//		if (!Wallet.verifySignature((byte[]) transaction.input.get("signature"), transaction.output,
+//				originalPK)) {
+//			System.err.println("Signature not valid!");
+//			throw new InvalidTransactionException("Invalid Signature");
+//		}
+		if (!Wallet.verifySignature((byte[]) transaction.input.get("signature"), transaction.output, restoredPK)) {
 			System.err.println("Signature not valid!");
 			throw new InvalidTransactionException("Invalid Signature");
 		}
@@ -299,10 +320,28 @@ public class Transaction {
 		return input;
 	}
 
+	// DID NOT WORK AND FOUND OTHER METHOD (didn't try super hard but found other
+	// method)
+//	public static PublicKey restorePublicKeyObj(byte[] pk) throws CertificateException {
+//		CertificateFactory f = CertificateFactory.getInstance("X.509");
+//		X509Certificate certificate = (X509Certificate) f.generateCertificate(new ByteArrayInputStream(pk));
+//		PublicKey publicKey = certificate.getPublicKey();
+//
+//		return publicKey;
+//	}
+	// DID NOT WORK AND FOUND OTHER METHOD (didn't try super hard but found other
+	// method)
+//	public static PublicKey restorePublicKeyObj(String pk) throws CertificateException {
+//		CertificateFactory f = CertificateFactory.getInstance("X.509");
+//		X509Certificate certificate = (X509Certificate) f
+//				.generateCertificate(new ByteArrayInputStream(pk.getBytes(StandardCharsets.UTF_8)));
+//		PublicKey publicKey = certificate.getPublicKey();
+//		return publicKey;
+//	}
+
 	/**
 	 * Uses GSON library to serialize blockchain chain as json string.
 	 */
-
 	public String toJSONtheTransaction() {
 
 		HashMap<String, Object> serializeThisBundle = new HashMap<String, Object>();
@@ -422,9 +461,10 @@ public class Transaction {
 		return true;
 	}
 
-	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException,
-			InvalidAlgorithmParameterException, InvalidKeyException, IOException, SignatureException,
-			TransactionAmountExceedsBalance, InvalidTransactionException {
+	public static void main(String[] args)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
+			InvalidKeyException, IOException, SignatureException, TransactionAmountExceedsBalance,
+			InvalidTransactionException, CertificateException, InvalidKeySpecException {
 		Wallet senderWallet = Wallet.createWallet();
 
 		Transaction t1 = new Transaction(senderWallet, "recipientWalletAddress1920", 15);

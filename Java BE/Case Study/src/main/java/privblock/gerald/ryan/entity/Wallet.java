@@ -2,8 +2,10 @@ package privblock.gerald.ryan.entity;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +17,8 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Set;
 import java.util.UUID;
@@ -192,6 +196,27 @@ public class Wallet {
 				.getAttribute("SupportedCurves"));
 	}
 
+	/**
+	 * Restores a public key object from either a string or a byte[] as transmitted over the wire
+	 * @param pk
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidKeySpecException
+	 */
+	public static PublicKey restorePK(byte[] pk)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+		KeyFactory keyFactory = KeyFactory.getInstance("EC", "SunEC");
+		PublicKey pkRestored = keyFactory.generatePublic(new X509EncodedKeySpec(pk, "EC"));
+		return pkRestored;
+	}
+	public static PublicKey restorePK(String pk)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+		KeyFactory keyFactory = KeyFactory.getInstance("EC", "SunEC");
+		PublicKey pkRestored = keyFactory.generatePublic(new X509EncodedKeySpec(pk.getBytes(StandardCharsets.UTF_8), "EC"));
+		return pkRestored;
+	}
+	
 	public double getBalance() {
 		return balance;
 	}
