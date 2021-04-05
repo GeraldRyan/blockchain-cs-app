@@ -11,6 +11,7 @@ import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.NoResultException;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.google.gson.Gson;
 import com.pubnub.api.PubNubException;
 
 import exceptions.BlocksInChainInvalidException;
@@ -170,6 +172,12 @@ public class HomeController {
 		return "blockchaindesc";
 	}
 
+	@GetMapping("/wallet")
+	public String getWallet(Model model) {
+
+		return "wallet";
+	}
+
 	@PostMapping("/blockchaindesc")
 	public String save(@ModelAttribute("blockdata") BlockData blockData) {
 		System.out.println(blockData.getBlockdata());
@@ -204,7 +212,11 @@ public class HomeController {
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		System.out.printf("Address in post %s\n", body);
 		Transaction t1 = new Transaction(w, (String) body.get("address"), (double) ((Integer) body.get("amount")));
-		return t1.toString();
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		hm.put("status", 200);
+		hm.put("data", t1.toJSONtheTransaction());
+//		return new Gson().toJson(hm); // this would work but gson adds escape slashes and breaks json prettier
+		 return t1.toJSONtheTransaction();
 //		return "transaction";
 	}
 
@@ -222,6 +234,7 @@ public class HomeController {
 		// Transaction t1 = new Transaction(w, address, amount);
 //		System.out.println(t1.toString());
 //		return "transaction";
+
 		return t1.toJSONtheTransaction();
 
 	}

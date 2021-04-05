@@ -184,9 +184,9 @@ public class Wallet {
 
 	@Override
 	public String toString() {
-		return "Wallet [balance=" + balance + ", privatekey=" + privatekey + ", publickey=" + publickey + ", address="
-				+ address + "]";
+		return "Wallet [balance=" + balance + ", publickey=" + publickey + ", address=" + address + "]";
 	}
+	
 
 	public void setBalance(double balance) {
 		this.balance = balance;

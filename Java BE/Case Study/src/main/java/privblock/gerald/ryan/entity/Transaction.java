@@ -132,10 +132,10 @@ public class Transaction {
 		input.put("amount", senderWallet.getBalance());
 		input.put("address", senderWallet.getAddress());
 		input.put("publicKeyB64", publicKeyString);
-		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
+//		input.put("publicKeyByte", senderWallet.getPublickey().getEncoded());
 		input.put("publicKeyFormat", senderWallet.getPublickey().getFormat());
 		// sign off on the transactions, by digitally signing the transactions.
-		input.put("signatureByte", bytesignature);
+//		input.put("signatureByte", bytesignature);
 		input.put("signatureString", Base64Utils.encodeToString(bytesignature));
 		return input;
 	}
@@ -264,7 +264,6 @@ public class Transaction {
 		HashMap<String, Object> inputClone = (HashMap<String, Object>) input.clone();
 		HashMap<String, Object> outputClone = (HashMap<String, Object>) output.clone();
 		inputClone.remove("wallet");
-		serializeThisBundle.put("publicKey", "TODO");
 		serializeThisBundle.put("input", inputClone);
 		serializeThisBundle.put("output", output);
 		serializeThisBundle.put("UUID", uuid);

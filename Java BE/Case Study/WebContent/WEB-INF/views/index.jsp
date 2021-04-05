@@ -12,6 +12,8 @@
 	<br>
 	<a href="./blockchaindesc">Same as above but with description</a>
 	<br>
+	<a href="./wallet/">Your wallet</a>
+	<br>
 	<a href="./wallet/transact">Transact on the blockchain</a>
 
 	<h3>${afb}</h3>
