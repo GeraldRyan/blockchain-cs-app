@@ -121,7 +121,7 @@
 					directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b"
 					prefix="localhost_access_log" suffix=".txt" />
 
-				<Context docBase="CaseStudy" path="/CaseStudy"
+				<Context docBase="CaseStudy" path="/"
 					reloadable="true" source="org.eclipse.jst.jee.server:CaseStudy" />
 			</Host>
 		</Engine>

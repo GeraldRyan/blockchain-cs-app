@@ -20,7 +20,7 @@
 	<br> public key: ${wallet.getPublickey().toString() }
 	<br>
 	<br>
-	<a href="/CaseStudy/wallet/transact/">Make a transaction</a>
+	<a href="/wallet/transact/">Make a transaction</a>
 	<br>
 	<p>Or send a post request to (/wallet/transact") in the following
 		JSON format</p>

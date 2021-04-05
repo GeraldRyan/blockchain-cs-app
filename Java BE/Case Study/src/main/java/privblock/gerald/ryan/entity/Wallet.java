@@ -87,6 +87,8 @@ public class Wallet {
 		return wallet;
 	}
 
+
+	
 	/**
 	 * Generate a signature based on data using local private key
 	 * 

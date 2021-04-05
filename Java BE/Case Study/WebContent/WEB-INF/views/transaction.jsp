@@ -10,18 +10,18 @@
 </head>
 <body>
 	<h1>Transact on the blockchain</h1>
-	<a href="/CaseStudy/">Home</a>
+	<a href="/">Home</a>
 	<br>
 	<h2>You made a transaction</h2>
 	${transaction.toJSONtheTransaction() }
 
 	<br>
-	<a href="/CaseStudy/blockchain/">See our version of the blockchain</a>
+	<a href="/blockchain/">See our version of the blockchain</a>
 	<br>
-	<a href="/CaseStudy/blockchaindesc/">Same as above but with
+	<a href="/blockchaindesc/">Same as above but with
 		description</a>
 
-	<form action="/CaseStudy/wallet/transact">
+	<form action="/wallet/transact">
 		Address to send money to <input type="text" name="address"><br>
 		<br> Amount to send<input type="text" name="amount"><br>
 		<br> <input type="submit" name="submit">

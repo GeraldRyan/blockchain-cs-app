@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes("blockchain")
+@SessionAttributes({ "blockchain", "wallet", "randomnumber" })
 public class HomeController {
 
 	BlockService blockApp = new BlockService();
@@ -78,12 +79,15 @@ public class HomeController {
 		return "FooAndBar";
 	}
 
+	@ModelAttribute("randomnumber")
+	public String randomUUID() {
+		return String.valueOf(UUID.randomUUID()).substring(0, 8);
+	}
+
 	@ModelAttribute("transactionpool")
 	public TransactionPool initTransactionPool() {
 		return new TransactionPool();
 	}
-	
-
 
 	/**
 	 * Pulls up beancoin blockchain on startup. [Note to self: what is startup? Is
@@ -295,6 +299,14 @@ public class HomeController {
 	public String getPublish(Model model) {
 		model.addAttribute("message", new Message());
 		return "publish";
+	}
+
+	@RequestMapping(value = "homeplay", method = RequestMethod.GET)
+	public String getPlay(Model model) {
+//		StringUtils.mapKeyValue(model.asMap(), "homecontroller 302");
+		System.out.println("Wallet Address " + ((Wallet) model.getAttribute("wallet")).getAddress());
+		System.out.println("random number" + ((String)model.getAttribute("randomnumber")));
+		return "play";
 	}
 
 //	String messages;

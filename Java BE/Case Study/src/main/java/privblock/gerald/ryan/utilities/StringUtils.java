@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -26,8 +27,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * Method for converting a string array into a byte array directly
-	 * through streaming objects. Can replace with below? 
+	 * Method for converting a string array into a byte array directly through
+	 * streaming objects. Can replace with below?
 	 * 
 	 * @param strArray
 	 * @return
@@ -42,10 +43,9 @@ public class StringUtils {
 		objectOutputStream.close();
 		return byteArrayOutputStream.toByteArray();
 	}
-	
+
 	/**
-	 * Converts a object into a byte array directly
-	 * through streaming objects. 
+	 * Converts a object into a byte array directly through streaming objects.
 	 * 
 	 * @param strArray
 	 * @return
@@ -81,9 +81,29 @@ public class StringUtils {
 			System.out.println(s);
 		}
 	}
-	
+
 	public static String getUUID8() {
 		return String.valueOf(UUID.randomUUID()).substring(0, 8);
+	}
+
+	/**
+	 * Prints key and value to console of map for quick discovery. If line is
+	 * specified, you can tell your console where the map is coming from - e.g.
+	 * mapKeyValue(model.asMap(), "homecontroller line 134")
+	 * 
+	 * @param map
+	 */
+	public static void mapKeyValue(Map<?, ?> map) {
+		System.err.println("Mapping through dictionary");
+		for (Object key : map.keySet()) {
+			System.out.println("key:" + key + " value: " + map.get(key));
+		}
+	}
+	public static void mapKeyValue(Map<?, ?> map, String line) {
+		System.err.println("Mapping through dictionary at " + line);
+		for (Object key : map.keySet()) {
+			System.out.println("key:" + key + " value: " + map.get(key));
+		}
 	}
 
 //	public static String removeQuotesAndUnescape(String uncleanJson) {
