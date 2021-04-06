@@ -56,13 +56,10 @@ import pubsub.PubNubApp;
 @SessionAttributes({ "blockchain", "wallet", "user", "randomnumber", "isloggedin" })
 public class HomeController {
 
-
 	PubNubApp pnapp = new PubNubApp();
 
 	public HomeController() throws InterruptedException {
-//		pnapp = new PubNubApp(); // moved to @modelAttribute new blockchain
 	}
-
 
 	@ModelAttribute("isloggedin")
 	public boolean isLoggedIn() {
@@ -82,23 +79,6 @@ public class HomeController {
 	@ModelAttribute("transactionpool")
 	public TransactionPool initTransactionPool() {
 		return new TransactionPool();
-	}
-
-
-
-	/**
-	 * Preload site with wallet object
-	 * 
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws NoSuchProviderException
-	 * @throws InvalidAlgorithmParameterException
-	 */
-	@ModelAttribute("wallet")
-	public Wallet addWallet()
-			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
-		Wallet wallet = Wallet.createWallet();
-		return wallet;
 	}
 
 
@@ -123,58 +103,7 @@ public class HomeController {
 
 
 
-	@GetMapping("/wallet")
-	public String getWallet(Model model) {
 
-		return "wallet";
-	}
-
-
-	@GetMapping("/wallet/transact")
-	public String getTransact(@ModelAttribute("wallet") Wallet w)
-			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		return "transact";
-	}
-
-	@PostMapping("/wallet/transact")
-	@ResponseBody
-	public String postTransact(Model model, @RequestBody Map<String, Object> body, @ModelAttribute("wallet") Wallet w)
-			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		System.out.printf("Address in post %s\n", body);
-		Transaction t1 = new Transaction(w, (String) body.get("address"), (double) ((Integer) body.get("amount")));
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put("status", 200);
-		hm.put("data", t1.toJSONtheTransaction());
-//		return new Gson().toJson(hm); // this would work but gson adds escape slashes and breaks json prettier
-//		System.out.println(t1.toString());
-		try {
-			pnapp.broadcastTransaction(t1);
-		} catch (PubNubException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return t1.toJSONtheTransaction(); // response body
-//		return "transaction";
-	}
-
-	@RequestMapping(value = "/wallet/transaction", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public String postTransaction(@ModelAttribute("wallet") Wallet w, Model model,
-			@RequestParam("address") String address, @RequestParam("amount") double amount, HttpServletRequest request)
-			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		System.err.println("REQUEST PARAMS");
-		System.err.println(address);
-		System.err.println(amount);
-		Transaction t1 = new Transaction(w, address, amount);
-		model.addAttribute("transaction", t1);
-		System.out.println(t1.getAmount());
-		// Transaction t1 = new Transaction(w, address, amount);
-//		System.out.println(t1.toString());
-//		return "transaction";
-
-		return t1.toJSONtheTransaction();
-
-	}
 
 	@GetMapping("/login")
 	public String showLoginPage() {

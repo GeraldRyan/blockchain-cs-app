@@ -71,30 +71,16 @@ public class BlockchainController {
 		return ((Blockchain) model.getAttribute("blockchain")).toJSONtheChain();
 	}
 
-//	@GetMapping("/blockchaindesc")
-//	public String serveBlockchaindesc(Model model) throws NoSuchAlgorithmException {
-//		model.addAttribute("blockdata", new BlockData());
-//		return "blockchaindesc";
-//	}
-
-//	@PostMapping("/blockchaindesc")
-//	public String save(@ModelAttribute("blockdata") BlockData blockData) {
-//		System.out.println(blockData.getBlockdata());
-//		return "redirect:/blockchain/mine";
-//	}
-
 	@GetMapping("/mine")
 	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
 			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
-//		blockchain.add_block("FOOBARFORTHEWIN");
+
 		String stubbedData = "MAIN INSTANCE STUBBED DATA";
 		String[] stubbedDataV = { "MAIN INSTANCE STUBBED DATA" };
-		// Block new_block = blockchain.add_block(stubbedData);
 		Block new_block = blockchainApp.addBlockService("beancoin", stubbedDataV);
-//		blockApp.addBlockService(new_block);
 		model.addAttribute("foo", "Bar");
 		pnapp.broadcastBlock(new_block);
-		return "mine";
+		return "blockchain/mine";
 	}
 
 	public void refreshChain(Model model) {
