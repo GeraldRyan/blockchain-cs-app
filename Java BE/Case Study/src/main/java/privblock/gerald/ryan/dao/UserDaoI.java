@@ -10,11 +10,11 @@ public interface UserDaoI {
 
 	public User getUser(String username);
 
-	public User updateUser(User user);
+	public Wallet addWallet(String username, Wallet wallet);
 
+//	public User updateUser(User user);
 	public User removeUser(String username);
 
-	public Wallet addWallet(String username, Wallet wallet);
 //	public List<User> getAllUsers(); // is this safe? It also gets their wallets
 
 }

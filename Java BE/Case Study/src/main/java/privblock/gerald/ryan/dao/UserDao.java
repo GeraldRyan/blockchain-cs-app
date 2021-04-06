@@ -11,32 +11,44 @@ public class UserDao extends DBConnection implements UserDaoI {
 	@Override
 	public User addUser(User user) {
 		this.connect();
-		// TODO Auto-generated method stub
+		em.getTransaction().begin();
+		em.persist(user);
+		em.getTransaction().commit();
+		this.disconnect();
 		return null;
 	}
 
 	@Override
 	public User getUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		this.connect();
+		User u = em.find(User.class, username);
+		this.disconnect();
+		return u;
 	}
 
-	@Override
-	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public User updateUser(User user) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public User removeUser(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		this.connect();
+		User u = em.find(User.class, username);
+		em.remove(u); // how the heck does this work???
+		this.disconnect();
+		return u;
 	}
 
 	@Override
 	public Wallet addWallet(String username, Wallet wallet) {
-		// TODO Auto-generated method stub
-		return null;
+		this.connect();
+		User u = em.find(User.class, username);
+		em.getTransaction().begin();
+		u.setWallet(wallet);
+		em.getTransaction().commit();
+		this.disconnect();
+		return wallet;
 	}
-
 }
