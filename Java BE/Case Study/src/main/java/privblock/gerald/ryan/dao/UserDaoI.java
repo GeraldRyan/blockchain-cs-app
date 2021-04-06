@@ -15,6 +15,8 @@ public interface UserDaoI {
 //	public User updateUser(User user);
 	public User removeUser(String username);
 
+	public boolean authenticateUser(String username, String password);
+
 //	public List<User> getAllUsers(); // is this safe? It also gets their wallets
 
 }

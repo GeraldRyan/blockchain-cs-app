@@ -26,4 +26,9 @@ public class UserService {
 
 	}
 
+	public boolean authenticateUserService(String username, String password) {
+		return userD.authenticateUser(username, password);
+
+	}
+
 }

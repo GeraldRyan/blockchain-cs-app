@@ -1,5 +1,7 @@
 package privblock.gerald.ryan.dao;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import privblock.gerald.ryan.dbConnection.DBConnection;
@@ -50,5 +52,20 @@ public class UserDao extends DBConnection implements UserDaoI {
 		em.getTransaction().commit();
 		this.disconnect();
 		return wallet;
+	}
+
+	@Override
+	public boolean authenticateUser(String username, String password) {
+		this.connect();
+		User u = em.find(User.class, username);
+		boolean result = false;
+		if (u == null) {
+			throw new NoSuchElementException("The selected user was not found in the database");
+		}
+		if (u.getPassword() == password) {
+			result = true;
+		}
+		this.disconnect();
+		return result;
 	}
 }
