@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 /**
  * @author Gerald Ryan
+ * Natural constructor is zero arg
  *
  */
 public class TransactionPool {
