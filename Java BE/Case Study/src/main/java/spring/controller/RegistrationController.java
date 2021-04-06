@@ -16,11 +16,10 @@ import privblock.gerald.ryan.service.UserService;
 public class RegistrationController {
 	UserService userService = new UserService();
 
-	@GetMapping("/")
+	@GetMapping("")
 	public String showRegisterPage(Model model) {
 		model.addAttribute("user", new User());
-
-		return "register";
+		return "registration/register";
 	}
 
 	@GetMapping("welcome")
@@ -29,10 +28,12 @@ public class RegistrationController {
 		return "welcomepage";
 	}
 
-	@PostMapping("/")
+	@PostMapping("")
 	public String registerUser(@ModelAttribute("user") User user) {
 		System.out.println(user.toString());
 		return "welcome";
 	}
+	
+
 
 }

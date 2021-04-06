@@ -11,6 +11,8 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+	<h1>Welcome to our Node</h1>
 	<h2>The dwarves are hard at work mining your Block</h2>
 	<h3>
 		<%=request.getAttribute("foo")%>
@@ -22,9 +24,8 @@
 	</h3>
 
 	<h4>Most recent block</h4>
-	<%=	bc.getLastBlock().toJSONtheBlock()
-	%>
-	<h1>Welcome to our ${foo}</h1>
+	<%=bc.getLastBlock().toJSONtheBlock()%>
+
 	<h3>${afb}</h3>
 </body>
 </html>

@@ -10,7 +10,7 @@
 	<h1>Welcome to the blockchain</h1>
 	<a href="./blockchain">See our version of the blockchain</a>
 	<br>
-	<a href="./blockchaindesc">Same as above but with description</a>
+	<a href="./blockchain/mine">Mine Block</a>
 	<br>
 	<a href="./wallet/">Your wallet</a>
 	<br>

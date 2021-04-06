@@ -13,10 +13,11 @@
 <link rel="stylesheet" href="./blockchain.css" type="text/css"></link>
 </head>
 <body>
-	<h1>Have a wallet</h1>
+	<h1>Your Wallet</h1>
 
 	Address: ${wallet.getAddress() }
 	<br> Balance: ${wallet.getBalance() }
+	<br>
 	<br> public key: ${wallet.getPublickey().toString() }
 	<br>
 	<br>

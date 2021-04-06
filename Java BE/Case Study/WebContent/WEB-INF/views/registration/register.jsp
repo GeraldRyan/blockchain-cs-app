@@ -40,6 +40,10 @@
 				<td><form:button id="register" name="register">Register</form:button>
 				</td>
 			</tr>
+			<tr>
+				<td><a href="../">Home</a></td>
+			</tr>
+
 		</table>
 	</form:form>
 </body>

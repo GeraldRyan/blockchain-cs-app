@@ -11,9 +11,11 @@
 
 	<br>
 	<h4>Would you like to create your wallet now?</h4>
-	<a href="./createwallet">Yes:: create a Wallet</a>
+	<a href="./createwallet">Yes--> create a Wallet</a>
+	<h1>Random number ${sessionScope.randomnumber }</h1>
 	<br>
 	<br>
-	<a href="index.jsp">Home</a>
+	<a href="../">Home</a>
+
 </body>
 </html>

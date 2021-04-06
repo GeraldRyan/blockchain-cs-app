@@ -53,66 +53,38 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", "user" })
+@SessionAttributes({ "blockchain", "wallet", "user", "randomnumber", "isloggedin" })
 public class HomeController {
 
-	BlockService blockApp = new BlockService();
-	BlockchainService blockchainApp = new BlockchainService();
+
 	PubNubApp pnapp = new PubNubApp();
 
 	public HomeController() throws InterruptedException {
 //		pnapp = new PubNubApp(); // moved to @modelAttribute new blockchain
 	}
-//	@RequestMapping("/")
-//	public ModelAndView welcome() {
-//		ModelAndView mav = new ModelAndView("index");
-//		return mav;
-//	}
 
-//	@RequestMapping(value="/process", method=RequestMethod.POST)
-//	public ModelAndView processSomething() {
-//		return new ModelAndView("index");
-//	}
+
+	@ModelAttribute("isloggedin")
+	public boolean isLoggedIn() {
+		return false;
+	}
 
 	@ModelAttribute("afb")
 	public String addFooBar() {
 		return "FooAndBar";
 	}
 
-//	@ModelAttribute("randomnumber")
-//	public String randomUUID() {
-//		return String.valueOf(UUID.randomUUID()).substring(0, 8);
-//	}
+	@ModelAttribute("randomnumber")
+	public String randomUUID() {
+		return String.valueOf(UUID.randomUUID()).substring(0, 8);
+	}
 
 	@ModelAttribute("transactionpool")
 	public TransactionPool initTransactionPool() {
 		return new TransactionPool();
 	}
 
-	/**
-	 * Pulls up beancoin blockchain on startup. [Note to self: what is startup? Is
-	 * it session based? What is session? Define the terms]
-	 * 
-	 * If no beancoin exists, create one and populate it with initial values
-	 * 
-	 * Also syncs blockchain so should be updated
-	 */
-	@ModelAttribute("blockchain")
-	public Blockchain addBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException {
-//		System.err.println("addBlockchain called at controller");
-		try {
-			Blockchain blockchain = blockchainApp.getBlockchainService("beancoin");
-			PubNubApp pnapp = new PubNubApp(blockchain, (TransactionPool) model.getAttribute("transactionpool"));
-			System.out.println("Pulling up your beancoin from our records");
-			return blockchain;
-		} catch (Exception e) {
-			System.err.println("Creating new beancoin");
-			Blockchain blockchain = blockchainApp.newBlockchainService("beancoin");
-			Initializer.loadBC("beancoin");
-			Blockchain populated_blockchain = blockchainApp.getBlockchainService("beancoin");
-			return populated_blockchain;
-		}
-	}
+
 
 	/**
 	 * Preload site with wallet object
@@ -129,28 +101,7 @@ public class HomeController {
 		return wallet;
 	}
 
-	public void refreshChain(Model model) {
-		System.err.println("Refreshing Blockchain from local database");
-		Blockchain newer_blockchain_from_db = blockchainApp.getBlockchainService("beancoin");
-		try {
-			// Database for some reason loads ArrayList<Block> unsorted. Manually resorting
-			// it here upon load.
-			ArrayList<Block> new_chain = new ArrayList<Block>(newer_blockchain_from_db.getChain());
-			System.out.println("RE-SORTING ArrayList<Block>");
-			// I believe I have to make a new chain instance for mutation. Won't mutate
-			// Blockchain.chain property?
-			Collections.sort(new_chain, Comparator.comparingLong(Block::getTimestamp));
-			/*
-			 * Are setter methods secure for chain replacement? Could replace with invalid
-			 * chain. Should use replaceChain method, incorporating this into that, but
-			 * struggling with JPA and loading in order.
-			 */
-			((Blockchain) model.getAttribute("blockchain")).setChain(new_chain);
-		} catch (Exception e) {
-			System.out.println("CAN'T SORT IT FOR SOME REASON");
-			e.printStackTrace();
-		}
-	}
+
 
 //	@ModelAttribute("pubnubapp")
 //	public PubNubApp addPubNub() throws InterruptedException {
@@ -164,25 +115,13 @@ public class HomeController {
 
 	}
 
-	@GetMapping("/")
+	@GetMapping("")
 	public String showIndex(Model model) {
 		consoleModelProperties(model);
 		return "index";
 	}
 
-	@RequestMapping(value = "blockchain", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public String serveBlockchain(Model model) throws NoSuchAlgorithmException, InterruptedException,
-			ChainTooShortException, GenesisBlockInvalidException, BlocksInChainInvalidException {
-		refreshChain(model);
-		return ((Blockchain) model.getAttribute("blockchain")).toJSONtheChain();
-	}
 
-	@GetMapping("/blockchaindesc")
-	public String serveBlockchaindesc(Model model) throws NoSuchAlgorithmException {
-		model.addAttribute("blockdata", new BlockData());
-		return "blockchaindesc";
-	}
 
 	@GetMapping("/wallet")
 	public String getWallet(Model model) {
@@ -190,31 +129,10 @@ public class HomeController {
 		return "wallet";
 	}
 
-	@PostMapping("/blockchaindesc")
-	public String save(@ModelAttribute("blockdata") BlockData blockData) {
-		System.out.println(blockData.getBlockdata());
-		return "redirect:/blockchain/mine";
-	}
-
-	@GetMapping("/blockchain/mine")
-	public String getMine(@ModelAttribute("blockchain") Blockchain blockchain, Model model)
-			throws NoSuchAlgorithmException, PubNubException, InterruptedException {
-//		blockchain.add_block("FOOBARFORTHEWIN");
-		String stubbedData = "MAIN INSTANCE STUBBED DATA";
-		String[] stubbedDataV = { "MAIN INSTANCE STUBBED DATA" };
-		// Block new_block = blockchain.add_block(stubbedData);
-		Block new_block = blockchainApp.addBlockService("beancoin", stubbedDataV);
-//		blockApp.addBlockService(new_block);
-		model.addAttribute("foo", "Bar");
-		pnapp.broadcastBlock(new_block);
-		return "mine";
-	}
 
 	@GetMapping("/wallet/transact")
 	public String getTransact(@ModelAttribute("wallet") Wallet w)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-//		Transaction t1 = new Transaction(w, "654s", 100);
-
 		return "transact";
 	}
 
@@ -260,7 +178,7 @@ public class HomeController {
 
 	@GetMapping("/login")
 	public String showLoginPage() {
-		return "login";
+		return "login/login";
 	}
 
 	@PostMapping("/login")
@@ -270,7 +188,6 @@ public class HomeController {
 		System.out.println(email);
 		return "index";
 	}
-
 
 	@GetMapping("/data")
 	public String getData(Model model) {
