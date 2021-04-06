@@ -1,98 +1,82 @@
 package privblock.gerald.ryan.entity;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class User {
-	int id;
-	String first_name;
-	String last_name;
-	String middle_initial;
-	String country;
-	long date_registered;
-	
-	
+	@Id
+	String username;
+	String password;
+	String hint;
+	String answer;
+	String email;
+	@Embedded
+	Wallet wallet;
 
-	public int getId() {
-		return id;
+	public User(String username, String password, String hint, String answer, String email, Wallet wallet) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.hint = hint;
+		this.answer = answer;
+		this.email = email;
+		this.wallet = wallet;
 	}
 
-
-
-	public void setId(int id) {
-		this.id = id;
+	public User(String username, String password, String hint, String answer, String email) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.hint = hint;
+		this.answer = answer;
+		this.email = email;
+		this.wallet = null;
 	}
 
+	public User() {
 
-
-	public String getFirst_name() {
-		return first_name;
 	}
 
-
-
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public String getUsername() {
+		return username;
 	}
 
-
-
-	public String getLast_name() {
-		return last_name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-
-
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public String getPassword() {
+		return password;
 	}
 
-
-
-	public String getMiddle_initial() {
-		return middle_initial;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-
-
-	public void setMiddle_initial(String middle_initial) {
-		this.middle_initial = middle_initial;
+	public String getHint() {
+		return hint;
 	}
 
-
-
-	public String getCountry() {
-		return country;
+	public void setHint(String hint) {
+		this.hint = hint;
 	}
 
-
-
-	public void setCountry(String country) {
-		this.country = country;
+	public String getAnswer() {
+		return answer;
 	}
 
-
-
-	public long getDate_registered() {
-		return date_registered;
+	public void setAnswer(String answer) {
+		this.answer = answer;
 	}
 
-
-
-	public void setDate_registered(long date_registered) {
-		this.date_registered = date_registered;
+	public Wallet getWallet() {
+		return wallet;
 	}
 
-
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", first_name=" + first_name + ", last_name=" + last_name + ", middle_initial="
-				+ middle_initial + ", country=" + country + ", date_registered=" + date_registered + "]";
-	}
-
-
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public void setWallet(Wallet wallet) {
+		this.wallet = wallet;
 	}
 
 }

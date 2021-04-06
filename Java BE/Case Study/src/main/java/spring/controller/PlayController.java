@@ -9,7 +9,7 @@ import privblock.gerald.ryan.utilities.StringUtils;
 
 @Controller
 @RequestMapping("/play")
-public class Play {
+public class PlayController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String getPlay(Model model) {

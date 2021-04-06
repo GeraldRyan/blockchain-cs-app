@@ -53,7 +53,7 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", "randomnumber" })
+@SessionAttributes({ "blockchain", "wallet", })
 public class HomeController {
 
 	BlockService blockApp = new BlockService();
@@ -79,10 +79,10 @@ public class HomeController {
 		return "FooAndBar";
 	}
 
-	@ModelAttribute("randomnumber")
-	public String randomUUID() {
-		return String.valueOf(UUID.randomUUID()).substring(0, 8);
-	}
+//	@ModelAttribute("randomnumber")
+//	public String randomUUID() {
+//		return String.valueOf(UUID.randomUUID()).substring(0, 8);
+//	}
 
 	@ModelAttribute("transactionpool")
 	public TransactionPool initTransactionPool() {

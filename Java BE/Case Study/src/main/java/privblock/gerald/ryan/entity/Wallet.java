@@ -23,6 +23,7 @@ import java.util.Base64;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
 import com.google.gson.Gson;
@@ -31,16 +32,24 @@ import privblock.gerald.ryan.utilities.StringUtils;
 
 /**
  * An individual wallet for a miner. Keeps track of miner's balance. Allows
- * miner to authorize Transactions.
+ * miner to authorize Transactions. Will be stored in a user db as an embedded
+ * object, accessed as a session model attribute upon login. user can create one
+ * wallet at any time but is not required to do so in which case his field will
+ * be null
  * 
- * NOTE- HAVING A SETTER FOR ADDRESS FIELD WILL BREAK THIS BEAN related to
- * instantiating new transactions with request param page. setAddress() breaks
- * bean. Maybe setThisAddress will work fine but setAddress will break the
+ * Open to expansion of greater possibilities but this is a great first step.
+ * 
+ * NOTE- HAVING A SETTER FOR ADDRESS FIELD WILL BREAK THIS BEAN at present
+ * related to instantiating new transactions with request param page.
+ * setAddress() breaks bean. Maybe setThisAddress will work fine but setAddress
+ * will break the
+ *
+ * 
  * 
  * @author User
  *
  */
-@Entity
+@Embeddable
 public class Wallet {
 	double balance;
 	PrivateKey privatekey;
@@ -62,6 +71,7 @@ public class Wallet {
 
 	/**
 	 * used to recreate what's known of wallet without the private key info
+	 * 
 	 * @param balance
 	 * @param publickey
 	 * @param address
@@ -87,8 +97,6 @@ public class Wallet {
 		return wallet;
 	}
 
-
-	
 	/**
 	 * Generate a signature based on data using local private key
 	 * 
@@ -199,7 +207,9 @@ public class Wallet {
 	}
 
 	/**
-	 * Restores a public key object from either a string or a byte[] as transmitted over the wire
+	 * Restores a public key object from either a string or a byte[] as transmitted
+	 * over the wire
+	 * 
 	 * @param pk
 	 * @return
 	 * @throws NoSuchAlgorithmException
@@ -212,13 +222,15 @@ public class Wallet {
 		PublicKey pkRestored = keyFactory.generatePublic(new X509EncodedKeySpec(pk, "EC"));
 		return pkRestored;
 	}
+
 	public static PublicKey restorePK(String pk)
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		KeyFactory keyFactory = KeyFactory.getInstance("EC", "SunEC");
-		PublicKey pkRestored = keyFactory.generatePublic(new X509EncodedKeySpec(pk.getBytes(StandardCharsets.UTF_8), "EC"));
+		PublicKey pkRestored = keyFactory
+				.generatePublic(new X509EncodedKeySpec(pk.getBytes(StandardCharsets.UTF_8), "EC"));
 		return pkRestored;
 	}
-	
+
 	public double getBalance() {
 		return balance;
 	}

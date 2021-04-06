@@ -112,7 +112,7 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 	}
 
 	/**
-	 * This part of callback is called when a message is received
+	 * This method is called when a message is heard by listener
 	 */
 	@Override
 	public void message(PubNub pubnub, PNMessageResult message) {
@@ -125,27 +125,16 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 		System.out.println("Message timetoken: " + message.getTimetoken());
 		System.out.println("-- End Transmission -");
 		System.out.println();
-		if (message.getChannel().equals("BLOCK_CHANNEL")) { // CHANNELS.get("BLOCK")
-			// NECESSARY OR ELSE IT'S IN THIS FORMAT
-			// "{\"restaurant\":{\"id\":\"abc-012\",\"name\":\"good restaurant\"}"
-			String block_string = message.getMessage().toString().replaceAll("^\"|\"$|", "").replace("\\", "");
-//			String clean_block_string = block_string.replaceAll("^\"|\"$|", "").replace("\\", "");
-//			System.out.println("_____________________________-");
+		if (message.getChannel().equals("BLOCK_CHANNEL")) {
+//			String block_string = message.getMessage().toString().replaceAll("^\"|\"$|", "").replace("\\", ""); // no longer needed because .getAsString() fixes .toString() error
+			String block_string = message.getMessage().getAsString();
 			ArrayList<Block> potential_chain = new ArrayList<Block>(blockchain.getChain());
-//			System.arraycopy(blockchain.getChain().toArray(), 0, potential_chain, 0, blockchain.getChain().size());
-			System.out.println(block_string);
-//			Block deserialized_block = Block.fromJsonToBlock(block_string.toString());
 			Block deserialized_block = new Gson().fromJson(block_string, Block.class);
-			System.out.println(potential_chain.equals(this.blockchain.getChain()));
 			potential_chain.add(deserialized_block);
-			System.out.println(potential_chain.hashCode());
-			System.out.println(blockchain.getChain().hashCode());
-			System.out.println(blockchain.getChain().size());
-			System.out.println(potential_chain.size());
 			try {
 				this.blockchain.replace_chain(potential_chain);
 				blockchainApp.replaceChainService("beancoin", potential_chain);
-				System.out.println("Successfully replaced the local chain");
+				System.out.println("SUCCESSFULLY REPLACED LOCAL CHAIN WITH BROADCAST CHAIN");
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			} catch (ChainTooShortException e) {
@@ -156,21 +145,22 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 				System.err.println("DID NOT REPLACE CHAIN. Genesis block invalid exception");
 			}
 		} else if (message.getChannel().equals("TRANSACTION")) {
+			String raw_transaction = message.getMessage().getAsString();
 			System.out.println("RECEIVED NEW TRANSACTION FROM THE NETWORK");
-			System.out.println(message.getMessage());
+			System.out.println(raw_transaction);
 			try {
-				Transaction tRestored = Transaction.fromJSONToTransaction(message.getMessage().toString()); // TODO Error here, fix escapes
-				// in Message Payload: "{\"output\":{\"juli\":999.0,\"36e5e5ee\":1.0},\"in
-				System.err.println("I'm here and I got this UUID");
-				System.out.println(tRestored.getUuid());
+				Transaction transactionRestored = Transaction.fromJSONToTransaction(message.getMessage().getAsString());
+				// New transaction object created from network signal. Now what?
+				// Pool it somehow, somewhere. Persist it or pool it or both?
+				System.err.println("New Transaction collected and build from network broadcast");
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println(
+						"Received transaction message over network but failed to rebuild transaction in PubNubSubCallback");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	// Presence
 	@Override
 	public void presence(@NotNull PubNub pubnub, @NotNull PNPresenceEventResult presence) {
 		System.out.println("Presence Event: " + presence.getEvent());

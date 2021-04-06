@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 public class StringUtils {
@@ -99,6 +100,7 @@ public class StringUtils {
 			System.out.println("key:" + key + " value: " + map.get(key));
 		}
 	}
+
 	public static void mapKeyValue(Map<?, ?> map, String line) {
 		System.err.println("Mapping through dictionary at " + line);
 		for (Object key : map.keySet()) {
@@ -106,11 +108,15 @@ public class StringUtils {
 		}
 	}
 
-//	public static String removeQuotesAndUnescape(String uncleanJson) {
-//	    String noQuotes = uncleanJson.replaceAll("^\"|\"$", "");
-//
-//	    return StringEscapeUtils.unescapeJava(noQuotes);
-//	}
+	public static void showThreads() {
+		Map<Thread, StackTraceElement[]> threadSet = Thread.getAllStackTraces();
+		StringUtils.mapKeyValue(threadSet);
+	}
+
+	public static void showThreads(String line) {
+		Map<Thread, StackTraceElement[]> threadSet = Thread.getAllStackTraces();
+		StringUtils.mapKeyValue(threadSet, line);
+	}
 
 }
 
