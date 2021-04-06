@@ -63,6 +63,14 @@ public class User {
 		this.hint = hint;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getAnswer() {
 		return answer;
 	}

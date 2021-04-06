@@ -15,7 +15,9 @@
 	<a href="./wallet/">Your wallet</a>
 	<br>
 	<a href="./wallet/transact">Transact on the blockchain</a>
-
+	<br>
+	<br>
+	<a href="./login">Login</a>
 	<h3>${afb}</h3>
 </body>
 </html>

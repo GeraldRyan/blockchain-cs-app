@@ -8,20 +8,39 @@
 <title>Register here</title>
 </head>
 <body>
-	<form:form action="./register" method="post" modelAttribute="user">
-		<div>
-			<label>Name</label>
-			<form:input path="name" />
-			<form:errors path="name" />
-		</div>
-		<div>
-			<label>Email</label>
-			<form:input path="email" />
-			<form:errors path="email" />
-		</div>
-		<div>
-			<input type="submit" value="Login" />
-		</div>
+	<form:form method="post" modelAttribute="user" action="welcome">
+		<table align="center">
+			<tr>
+				<td><label>Choose a username</label></td>
+				<td><form:input path="username" /></td>
+				<td><form:errors path="username" /></td>
+			</tr>
+			<tr>
+				<td><label>Choose a strong password</label></td>
+				<td><form:input path="password" /></td>
+				<td><form:errors path="password" /></td>
+			</tr>
+			<tr>
+				<td><label>Enter your Email</label></td>
+				<td><form:input path="email" /></td>
+				<td><form:errors path="email" /></td>
+			</tr>
+
+			<tr>
+				<td><label>Enter a hint or question</label></td>
+				<td><form:input path="hint" /></td>
+				<td><form:errors path="hint" /></td>
+			</tr>
+			<tr>
+				<td><label>Enter the answer</label></td>
+				<td><form:input path="answer" /></td>
+				<td><form:errors path="answer" /></td>
+			</tr>
+			<tr>
+				<td><form:button id="register" name="register">Register</form:button>
+				</td>
+			</tr>
+		</table>
 	</form:form>
 </body>
 </html>

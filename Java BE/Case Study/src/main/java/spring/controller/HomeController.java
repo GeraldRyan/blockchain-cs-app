@@ -53,7 +53,7 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", })
+@SessionAttributes({ "blockchain", "wallet", "user" })
 public class HomeController {
 
 	BlockService blockApp = new BlockService();
@@ -271,17 +271,6 @@ public class HomeController {
 		return "index";
 	}
 
-	@GetMapping("/register")
-	public String showRegisterPage(Model model) {
-		model.addAttribute("user", new User());
-		return "register";
-	}
-
-	@PostMapping("/register")
-	public String registerUser(@ModelAttribute("user") User user) {
-		System.out.println(user.toString());
-		return "index";
-	}
 
 	@GetMapping("/data")
 	public String getData(Model model) {
@@ -305,7 +294,7 @@ public class HomeController {
 	public String getPlay(Model model) {
 //		StringUtils.mapKeyValue(model.asMap(), "homecontroller 302");
 		System.out.println("Wallet Address " + ((Wallet) model.getAttribute("wallet")).getAddress());
-		System.out.println("random number" + ((String)model.getAttribute("randomnumber")));
+		System.out.println("random number" + ((String) model.getAttribute("randomnumber")));
 		return "play";
 	}
 
