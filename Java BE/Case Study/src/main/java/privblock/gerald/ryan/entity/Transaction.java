@@ -21,18 +21,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.util.Base64Utils;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-
 import exceptions.InvalidTransactionException;
 import exceptions.TransactionAmountExceedsBalance;
+import privblock.gerald.ryan.service.BlockService;
+import privblock.gerald.ryan.service.TransactionService;
+import privblock.gerald.ryan.service.UserService;
 import privblock.gerald.ryan.utilities.StringUtils;
 
 /* TODO ? Stop serializing entire Wallet and Transaction objects here and elsewhere. Serialize only the necessary data - address, balance, public key
@@ -48,12 +54,15 @@ import privblock.gerald.ryan.utilities.StringUtils;
  *
  */
 @Entity
+@Table(name="transaction")
 public class Transaction {
 
-//	long id;
 	@Id
-	String uuid; // could have also gone with ye olde timestamp
+	String uuid; // could have also gone with timestamp
+	@Transient
 	Wallet senderWallet; // should this be transient? Can it be?
+
+	@Column(name = "address")
 	String recipientAddress;
 	double amount;
 	/**
@@ -61,11 +70,13 @@ public class Transaction {
 	 * currency they are receiving and how much goes back to sender (change). Kind
 	 * of like a simple receipt/ledger.
 	 */
+	@Transient
 	HashMap<String, Object> output; // like basic receipt
 	/**
 	 * Meta info about transaction including timestamp, address, publickey of sender
 	 * and signature, used to determine validity. Depends on output above
 	 */
+	@Transient
 	HashMap<String, Object> input; // like wire transfer document
 
 	/**
@@ -499,6 +510,10 @@ public class Transaction {
 		Transaction t1r = Transaction.fromJSONToTransaction(jsonified);
 		System.out.println(t1);
 		System.out.println(t1r);
+		System.out.println(t1.getAmount());
+		System.out.println(t1.recipientAddress);
+		System.out.println(t1.getUuid());
+		new TransactionService().addTransactionService(t1);
 	}
 
 }

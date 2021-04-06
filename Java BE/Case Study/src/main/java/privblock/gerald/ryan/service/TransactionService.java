@@ -7,11 +7,23 @@ import privblock.gerald.ryan.entity.TransactionPool;
 public class TransactionService {
 	TransactionDao transactionD = new TransactionDao();
 
+	/**
+	 * Gets a transaction from the local database by transaction ID
+	 * 
+	 * @param uuid
+	 * @return
+	 */
 	public Transaction getTransactionService(String uuid) {
 		return transactionD.getTransaction(uuid);
 	}
 
-	public Transaction findTransactionByUUIDService(Transaction t) {
+	/**
+	 * Adds a transaction to the database
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public Transaction addTransactionService(Transaction t) {
 		return transactionD.addTransaction(t);
 	}
 
@@ -23,6 +35,11 @@ public class TransactionService {
 		return transactionD.removeTransaction(UUID);
 	}
 
+	/**
+	 * Gets entire list of transactions as TransactionPool type from database
+	 * 
+	 * @return
+	 */
 	public TransactionPool getAllTransactionsAsTransactionPoolService() {
 		return transactionD.getAllTransactionsAsTransactionPool();
 	}

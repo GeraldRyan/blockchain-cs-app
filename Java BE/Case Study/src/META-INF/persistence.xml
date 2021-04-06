@@ -8,6 +8,7 @@
 		<class>privblock.gerald.ryan.entity.Block</class>
 		<class>privblock.gerald.ryan.entity.Blockchain</class>
 		<class>privblock.gerald.ryan.entity.User</class>
+		<class>privblock.gerald.ryan.entity.Transaction</class>
 		<properties>
 			<!-- DB configuration -->
 			<property name="javax.persistence.jdbc.url"

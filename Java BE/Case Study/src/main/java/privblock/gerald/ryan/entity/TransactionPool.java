@@ -11,8 +11,7 @@ import java.security.NoSuchProviderException;
 import java.util.HashMap;
 
 /**
- * @author Gerald Ryan
- * Natural constructor is zero arg
+ * @author Gerald Ryan Natural constructor is zero arg
  *
  */
 public class TransactionPool {
@@ -65,6 +64,13 @@ public class TransactionPool {
 
 	public HashMap<String, Object> getTransactionMap() {
 		return transactionMap;
+	}
+
+	public void consoleLogAll() {
+		System.err.println("Transactions in Transaction Pool");
+		for (String id : this.getTransactionMap().keySet()) {
+			System.out.println("key: " + id + " value: " + this.getTransactionMap().get(id));
+		}
 	}
 
 	public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException,

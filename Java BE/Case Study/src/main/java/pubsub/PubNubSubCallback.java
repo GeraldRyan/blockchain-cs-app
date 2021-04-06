@@ -23,6 +23,7 @@ import privblock.gerald.ryan.entity.Blockchain;
 import privblock.gerald.ryan.entity.Transaction;
 import privblock.gerald.ryan.entity.TransactionPool;
 import privblock.gerald.ryan.service.BlockchainService;
+import privblock.gerald.ryan.service.TransactionService;
 import privblock.gerald.ryan.utilities.StringUtils;
 
 import java.io.IOException;
@@ -150,9 +151,13 @@ public class PubNubSubCallback extends com.pubnub.api.callbacks.SubscribeCallbac
 			System.out.println(raw_transaction);
 			try {
 				Transaction transactionRestored = Transaction.fromJSONToTransaction(message.getMessage().getAsString());
-				// New transaction object created from network signal. Now what?
-				// Pool it somehow, somewhere. Persist it or pool it or both?
-				System.err.println("New Transaction collected and build from network broadcast");
+				System.err.println("New Transaction collected and unpacked from network broadcast");
+
+				// Won't be able to test this until I have another server up and running
+				if (new TransactionService().getTransactionService(transactionRestored.getUuid()) != null) {
+					new TransactionService().addTransactionService(transactionRestored);
+				}
+
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
 				System.err.println(
 						"Received transaction message over network but failed to rebuild transaction in PubNubSubCallback");

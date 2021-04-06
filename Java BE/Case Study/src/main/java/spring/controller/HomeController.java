@@ -55,7 +55,7 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", "randomnumber", "isloggedin", "user", "msg" })
+@SessionAttributes({ "blockchain", "wallet", "randomnumber", "isloggedin", "user", "msg", "transactionpool" })
 public class HomeController {
 
 	PubNubApp pnapp = new PubNubApp();
@@ -99,6 +99,8 @@ public class HomeController {
 	@GetMapping("")
 	public String showIndex(Model model) {
 		consoleModelProperties(model);
+		((TransactionPool) model.getAttribute("transactionpool")).consoleLogAll();
+
 		return "index";
 	}
 

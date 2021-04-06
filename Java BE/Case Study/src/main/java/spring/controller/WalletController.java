@@ -26,14 +26,16 @@ import com.pubnub.api.PubNubException;
 
 import privblock.gerald.ryan.entity.Transaction;
 import privblock.gerald.ryan.entity.Wallet;
+import privblock.gerald.ryan.service.TransactionService;
 import pubsub.PubNubApp;
 
 @Controller
 @RequestMapping("wallet")
-@SessionAttributes({ "wallet" })
+@SessionAttributes({ "wallet", "latesttransaction" })
 public class WalletController {
 
 	PubNubApp pnapp = new PubNubApp();
+	TransactionService tService = new TransactionService();
 
 	public WalletController() throws InterruptedException {
 
@@ -89,24 +91,22 @@ public class WalletController {
 
 	@PostMapping("/transact")
 	@ResponseBody
-	public String postTransact(Model model, @RequestBody Map<String, Object> body, @ModelAttribute("wallet") Wallet w)
-			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		System.out.printf("Address in post %s\n", body);
-//		Transaction t = 
-		Transaction t1 = new Transaction(w, (String) body.get("address"), (double) ((Integer) body.get("amount")));
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put("status", 200);
-		hm.put("data", t1.toJSONtheTransaction());
-//		return new Gson().toJson(hm); // this would work but gson adds escape slashes and breaks json prettier
-//		System.out.println(t1.toString());
+	public String postTransact(Model model, @RequestBody Map<String, Object> body) throws InvalidKeyException,
+			NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidAlgorithmParameterException {
+
+		Wallet randomWallet = Wallet.createWallet(); // simulate random wallet on the wire, not saved in memory
+		// in future find way to overload this message with option
+
+		Transaction t1 = new Transaction(randomWallet, (String) body.get("address"),
+				(double) ((Integer) body.get("amount")));
+		tService.addTransactionService(t1); // error here
 		try {
 			pnapp.broadcastTransaction(t1);
 		} catch (PubNubException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Problem broadcasting the transaction.");
 			e.printStackTrace();
 		}
-		return t1.toJSONtheTransaction(); // response body
-//		return "transaction";
+		return t1.toJSONtheTransaction();
 	}
 
 	@RequestMapping(value = "/transaction", method = RequestMethod.GET, produces = "application/json")
@@ -114,15 +114,9 @@ public class WalletController {
 	public String postTransaction(@ModelAttribute("wallet") Wallet w, Model model,
 			@RequestParam("address") String address, @RequestParam("amount") double amount, HttpServletRequest request)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
-		System.err.println("REQUEST PARAMS");
-		System.err.println(address);
-		System.err.println(amount);
 		Transaction t1 = new Transaction(w, address, amount);
-		model.addAttribute("transaction", t1);
-		System.out.println(t1.getAmount());
-		// Transaction t1 = new Transaction(w, address, amount);
-//		System.out.println(t1.toString());
-//		return "transaction";
+		tService.addTransactionService(t1);
+		model.addAttribute("latesttransaction", t1);
 		return t1.toJSONtheTransaction();
 	}
 

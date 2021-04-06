@@ -8,14 +8,14 @@ import privblock.gerald.ryan.entity.TransactionPool;
 
 public interface TransactionDaoI {
 
-	public abstract Transaction getTransaction(String uuid);
+	public Transaction getTransaction(String uuid);
 
-	public abstract Transaction addTransaction(Transaction t);
+	public Transaction addTransaction(Transaction t);
 
-	public abstract Transaction updateTransaction(Transaction transaction);
+	public Transaction updateTransaction(Transaction transaction);
 
-	public abstract Transaction removeTransaction(String UUID);
+	public Transaction removeTransaction(String UUID);
 
-	public abstract TransactionPool getAllTransactionsAsTransactionPool();
+	public TransactionPool getAllTransactionsAsTransactionPool();
 
 }
