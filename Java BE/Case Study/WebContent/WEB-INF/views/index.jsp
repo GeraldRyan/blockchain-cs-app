@@ -15,7 +15,7 @@
 		</c:if>
 		<a href="./login">Login</a>
 		<br>
-		<a href="#">Register</a>
+		<a href="./register">Register</a>
 		<br>
 		<br>
 		<a href="./blockchain">Explore our version of the blockchain</a>
@@ -24,7 +24,7 @@
 
 
 	<c:if test="${isloggedin == true }">
-		<h1>Welcome to the blockchain ${username}</h1>
+		<h1>Welcome to the blockchain ${user.getUsername()}</h1>
 
 		<a href="./blockchain">See our version of the blockchain</a>
 		<br>

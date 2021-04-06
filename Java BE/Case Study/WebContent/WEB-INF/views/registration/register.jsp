@@ -8,7 +8,7 @@
 <title>Register here</title>
 </head>
 <body>
-	<form:form method="post" modelAttribute="user" action="welcome">
+	<form:form method="post" modelAttribute="user" >
 		<table align="center">
 			<tr>
 				<td><label>Choose a username</label></td>

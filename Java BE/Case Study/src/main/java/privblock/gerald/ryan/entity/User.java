@@ -91,4 +91,9 @@ public class User {
 		this.wallet = wallet;
 	}
 
+	public void setWallet(Wallet wallet) {
+		WalletForDB walletForDB = new WalletForDB(wallet);
+		this.wallet = walletForDB;
+	}
+
 }

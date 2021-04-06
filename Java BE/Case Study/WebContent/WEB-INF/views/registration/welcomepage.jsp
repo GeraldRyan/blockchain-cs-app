@@ -7,12 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h3>Welcome to the club ${user.getUsername() }</h3>
+	<h1>Welcome to the club ${user.getUsername() }</h1>
 
 	<br>
-	<h4>Would you like to create your wallet now?</h4>
-	<a href="./createwallet">Yes--> create a Wallet</a>
-	<h1>Random number ${sessionScope.randomnumber }</h1>
+
+	<h3>We created a <a href="./wallet">Wallet</a> for you and initialized it with 1.000 beancoin. Enjoy</h3>
 	<br>
 	<br>
 	<a href="../">Home</a>
