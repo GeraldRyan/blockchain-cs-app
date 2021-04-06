@@ -115,7 +115,7 @@ public class WalletController {
 			@RequestParam("address") String address, @RequestParam("amount") double amount, HttpServletRequest request)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		Transaction t1 = new Transaction(w, address, amount);
-		tService.addTransactionService(t1);
+//		tService.addTransactionService(t1);
 		model.addAttribute("latesttransaction", t1);
 		return t1.toJSONtheTransaction();
 	}

@@ -3,12 +3,14 @@ package privblock.gerald.ryan.dao;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import privblock.gerald.ryan.dbConnection.DBConnection;
 import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.entity.Wallet;
 import privblock.gerald.ryan.entity.WalletForDB;
 
+@Repository
 public class UserDao extends DBConnection implements UserDaoI {
 
 	@Override

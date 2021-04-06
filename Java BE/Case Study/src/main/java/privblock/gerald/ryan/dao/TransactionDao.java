@@ -50,4 +50,8 @@ public class TransactionDao extends DBConnection implements TransactionDaoI {
 		return pool;
 	}
 
+	public static void main(String[] args) {
+
+	}
+
 }

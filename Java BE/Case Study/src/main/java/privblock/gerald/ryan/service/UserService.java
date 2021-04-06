@@ -1,9 +1,12 @@
 package privblock.gerald.ryan.service;
 
+import org.springframework.stereotype.Service;
+
 import privblock.gerald.ryan.dao.UserDao;
 import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.entity.Wallet;
 
+@Service
 public class UserService {
 	private UserDao userD = new UserDao();
 

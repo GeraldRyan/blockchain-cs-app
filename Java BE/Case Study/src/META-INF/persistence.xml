@@ -4,11 +4,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 	<persistence-unit name="Case Study">
+		<class>privblock.gerald.ryan.entity.Transaction</class>
 		<class>privblock.gerald.ryan.entity.Account</class>
 		<class>privblock.gerald.ryan.entity.Block</class>
 		<class>privblock.gerald.ryan.entity.Blockchain</class>
 		<class>privblock.gerald.ryan.entity.User</class>
-		<class>privblock.gerald.ryan.entity.Transaction</class>
 		<properties>
 			<!-- DB configuration -->
 			<property name="javax.persistence.jdbc.url"
