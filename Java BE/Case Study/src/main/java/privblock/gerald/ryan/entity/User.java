@@ -4,6 +4,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.google.gson.Gson;
+
 @Entity
 public class User {
 	@Id
@@ -13,7 +15,7 @@ public class User {
 	String answer;
 	String email;
 	@Embedded
-	Wallet wallet;
+	WalletForDB wallet;
 
 	public User(String username, String password, String hint, String answer, String email, Wallet wallet) {
 		super();
@@ -22,7 +24,9 @@ public class User {
 		this.hint = hint;
 		this.answer = answer;
 		this.email = email;
-		this.wallet = wallet;
+		this.wallet = new WalletForDB(wallet);
+//		this.wallet = new Gson().toJson(wallet); // I think it will through an illegal serialization reflection error -
+		// they don't want serializing private stuff like private key
 	}
 
 	public User(String username, String password, String hint, String answer, String email) {
@@ -79,11 +83,11 @@ public class User {
 		this.answer = answer;
 	}
 
-	public Wallet getWallet() {
+	public WalletForDB getWallet() {
 		return wallet;
 	}
 
-	public void setWallet(Wallet wallet) {
+	public void setWallet(WalletForDB wallet) {
 		this.wallet = wallet;
 	}
 

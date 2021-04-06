@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,26 +38,27 @@ import exceptions.BlocksInChainInvalidException;
 import exceptions.ChainTooShortException;
 import exceptions.GenesisBlockInvalidException;
 import privblock.gerald.ryan.entity.Block;
-import privblock.gerald.ryan.entity.BlockData;
 import privblock.gerald.ryan.entity.Blockchain;
+import privblock.gerald.ryan.entity.Login;
 import privblock.gerald.ryan.entity.Message;
 import privblock.gerald.ryan.entity.Transaction;
 import privblock.gerald.ryan.entity.TransactionPool;
-//import org.springframework.web.bind.annotation.RequestMapping;
 import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.entity.Wallet;
 import privblock.gerald.ryan.initializors.Initializer;
 import privblock.gerald.ryan.service.BlockService;
 import privblock.gerald.ryan.service.BlockchainService;
+import privblock.gerald.ryan.service.UserService;
 import privblock.gerald.ryan.utilities.StringUtils;
 import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", "user", "randomnumber", "isloggedin" })
+@SessionAttributes({ "blockchain", "wallet", "username", "randomnumber", "isloggedin", "user", "msg" })
 public class HomeController {
 
 	PubNubApp pnapp = new PubNubApp();
+	UserService userService = new UserService();
 
 	public HomeController() throws InterruptedException {
 	}
@@ -81,8 +83,6 @@ public class HomeController {
 		return new TransactionPool();
 	}
 
-
-
 //	@ModelAttribute("pubnubapp")
 //	public PubNubApp addPubNub() throws InterruptedException {
 //		return new PubNubApp();
@@ -101,33 +101,34 @@ public class HomeController {
 		return "index";
 	}
 
-
-
-
-
 	@GetMapping("/login")
-	public String showLoginPage() {
+	public String showLoginPage(@ModelAttribute("login") Login login) {
 		return "login/login";
 	}
 
 	@PostMapping("/login")
-	public String processInput(@RequestParam("name") String name, @RequestParam("email") String email) {
-
-		System.out.println(name);
-		System.out.println(email);
+	public String processLogin(Model model, @ModelAttribute("login") Login login, HttpServletRequest request,
+			HttpServletResponse response) {
+		String result = validateUserAndPassword(login.getUsername(), login.getPassword());
+		if (result == "true") {
+			model.addAttribute("username", login.getUsername());
+			model.addAttribute("isloggedin", true);
+			model.addAttribute("user", new UserService().getUserService(login.getUsername()));
+			model.addAttribute("failed", false);
+			System.out.println("User found password correct");
+		} else if (result == "user not found") {
+			System.out.println("User not found in records");
+			model.addAttribute("failed", true);
+			model.addAttribute("msg", "User not found. Please try again");
+		} else {
+			System.err.println("Password not correct");
+			model.addAttribute("failed", true);
+			model.addAttribute("msg", "Password incorrect. Please try again");
+		}
+		System.out.println("Hello world");
+		System.err.println("password" + login.getPassword());
+		System.err.println("username" + login.getUsername());
 		return "index";
-	}
-
-	@GetMapping("/data")
-	public String getData(Model model) {
-		model.addAttribute("blockdata", new BlockData());
-		return "data";
-	}
-
-	@PostMapping("/data")
-	public String processData(@ModelAttribute("blockdata") BlockData blockdata) {
-		System.out.println(blockdata.getBlockdata());
-		return "data";
 	}
 
 	@GetMapping("/publish")
@@ -173,4 +174,21 @@ public class HomeController {
 		return "subscribe";
 	}
 
+	public String validateUserAndPassword(String username, String password) {
+		User user = userService.getUserService(username);
+
+		if (user == null) {
+			return "user not found";
+		}
+		if (user.getPassword().equalsIgnoreCase(password)) {
+			return "true";
+		}
+		return "false";
+	}
+
+	public static void main(String[] args)
+			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+		new UserService().addUserService(
+				new User("zelda", "ganon", "powerwisdom", "love", "zelda@hyrule.hr", Wallet.createWallet()));
+	}
 }

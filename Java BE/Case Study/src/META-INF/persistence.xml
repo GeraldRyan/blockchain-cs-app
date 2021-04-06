@@ -7,12 +7,14 @@
 		<class>privblock.gerald.ryan.entity.Account</class>
 		<class>privblock.gerald.ryan.entity.Block</class>
 		<class>privblock.gerald.ryan.entity.Blockchain</class>
+		<class>privblock.gerald.ryan.entity.User</class>
 		<properties>
 			<!-- DB configuration -->
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:mysql://localhost:3306/blockchain" />
 			<property name="javax.persistence.jdbc.user" value="root" />
-			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.cj.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.password"
 				value="root" />
 

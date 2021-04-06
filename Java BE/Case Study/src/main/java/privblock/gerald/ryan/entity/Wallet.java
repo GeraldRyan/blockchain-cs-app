@@ -51,6 +51,10 @@ import privblock.gerald.ryan.utilities.StringUtils;
  */
 @Embeddable
 public class Wallet {
+	public PrivateKey getPrivatekey() {
+		return privatekey;
+	}
+
 	double balance;
 	PrivateKey privatekey;
 	PublicKey publickey;

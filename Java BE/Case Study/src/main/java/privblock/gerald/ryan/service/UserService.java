@@ -31,4 +31,8 @@ public class UserService {
 
 	}
 
+	public static void main(String[] args) {
+		new UserService().addUserService(new User("zelda", "ganon", "powerwisdom", "love", "zelda@hyrule.hr"));
+	}
+
 }

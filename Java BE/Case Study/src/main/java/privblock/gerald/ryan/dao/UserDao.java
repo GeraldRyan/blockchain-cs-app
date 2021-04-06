@@ -7,15 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import privblock.gerald.ryan.dbConnection.DBConnection;
 import privblock.gerald.ryan.entity.User;
 import privblock.gerald.ryan.entity.Wallet;
+import privblock.gerald.ryan.entity.WalletForDB;
 
 public class UserDao extends DBConnection implements UserDaoI {
 
 	@Override
 	public User addUser(User user) {
 		this.connect();
-		em.getTransaction().begin();
-		em.persist(user);
-		em.getTransaction().commit();
+		User existing = em.find(User.class, user.getUsername());
+
+		if (existing == null) {
+			em.getTransaction().begin();
+			em.persist(user);
+			em.getTransaction().commit();
+			this.disconnect();
+			return user;
+		}
 		this.disconnect();
 		return null;
 	}
@@ -45,10 +52,11 @@ public class UserDao extends DBConnection implements UserDaoI {
 
 	@Override
 	public Wallet addWallet(String username, Wallet wallet) {
+		WalletForDB w = new WalletForDB(wallet);
 		this.connect();
 		User u = em.find(User.class, username);
 		em.getTransaction().begin();
-		u.setWallet(wallet);
+		u.setWallet(w);
 		em.getTransaction().commit();
 		this.disconnect();
 		return wallet;
