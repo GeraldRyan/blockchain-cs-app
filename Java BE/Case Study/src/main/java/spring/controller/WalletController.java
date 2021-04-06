@@ -69,11 +69,30 @@ public class WalletController {
 		return "wallet/transact";
 	}
 
+	/*
+	 * TODO collect transactions in transaction pool. Where to store? Store each
+	 * transaction in database and the pool equals each one, just instantiate or
+	 * rebuild pool on app startup Make a service.
+	 * 
+	 * Or else Make a transaction pool database that is one to many- really one to
+	 * all. Is one to all a thing? I think just track transaction in separate DB
+	 * 
+	 * Solution- Transactions will be persisted to a transaction database. The
+	 * transaction pool will be loaded in session memory on app startup by getting
+	 * all transactions from database. Could use OneToMany, that way it is easily
+	 * reconstructable as an object, otherwise you can just iterate yourself
+	 * logically simpler way.
+	 * 
+	 * So need a Transaction Pool in session model. Don't need a transaction
+	 * attribute as they are findable in model.
+	 */
+
 	@PostMapping("/transact")
 	@ResponseBody
 	public String postTransact(Model model, @RequestBody Map<String, Object> body, @ModelAttribute("wallet") Wallet w)
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		System.out.printf("Address in post %s\n", body);
+//		Transaction t = 
 		Transaction t1 = new Transaction(w, (String) body.get("address"), (double) ((Integer) body.get("amount")));
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("status", 200);

@@ -51,7 +51,7 @@ public class TransactionPool {
 	 * 
 	 * @return
 	 */
-	public Transaction getExistingTransaction(String walletAddress) {
+	public Transaction findExistingTransactionByWallet(String walletAddress) {
 		for (String transkey : this.getTransactionMap().keySet()) {
 			Transaction t = (Transaction) this.getTransactionMap().get(transkey);
 			if (t.getInput().get("address") == walletAddress) {
@@ -76,10 +76,10 @@ public class TransactionPool {
 		pool.putTransaction(new Transaction(Wallet.createWallet(), "foo", 15));
 		pool.putTransaction(new Transaction(Wallet.createWallet(), "foo", 15));
 		pool.putTransaction(new Transaction(Wallet.createWallet(), "foo", 15));
-		Transaction t = pool.getExistingTransaction(w.getAddress());
-		System.out.println(t); // expect a string representation of object (or address in memory)
-		Transaction tnull = pool.getExistingTransaction(unusedWallet.getAddress());
-		System.out.println(tnull); // expect null
+		Transaction t = pool.findExistingTransactionByWallet(w.getAddress());
+		System.out.println(t); // expect a string representation of object (or address in memory). Indeed
+		Transaction tnull = pool.findExistingTransactionByWallet(unusedWallet.getAddress());
+		System.out.println(tnull); // expect null. Indeed
 
 	}
 }
