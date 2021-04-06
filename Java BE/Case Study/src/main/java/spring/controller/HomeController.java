@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,7 +55,7 @@ import pubsub.PubNubApp;
 
 //@RequestMapping("/admin")
 @Controller
-@SessionAttributes({ "blockchain", "wallet", "username", "randomnumber", "isloggedin", "user", "msg" })
+@SessionAttributes({ "blockchain", "wallet", "randomnumber", "isloggedin", "user", "msg" })
 public class HomeController {
 
 	PubNubApp pnapp = new PubNubApp();
@@ -129,6 +130,13 @@ public class HomeController {
 		System.err.println("password" + login.getPassword());
 		System.err.println("username" + login.getUsername());
 		return "index";
+	}
+
+	@GetMapping("/logout")
+	public String logOut(Model model, HttpServletRequest request) {
+		model.addAttribute("isloggedin", false);
+		HttpSession httpSession = request.getSession();
+		return "redirect:/";
 	}
 
 	@GetMapping("/publish")

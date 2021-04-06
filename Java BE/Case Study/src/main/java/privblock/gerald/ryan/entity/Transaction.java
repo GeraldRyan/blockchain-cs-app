@@ -68,6 +68,23 @@ public class Transaction {
 	 */
 	HashMap<String, Object> input; // like wire transfer document
 
+	/**
+	 * Default constructor is one with Wallet, String and double: both minimum and
+	 * maximum data require for full instantiation
+	 * 
+	 * Constructor without wallet reconstructs a transaction from the wire (where
+	 * wallet isn't necessary but still contains private and public key
+	 * 
+	 * zero arg constructor is for java bean
+	 * 
+	 * @param senderWallet
+	 * @param recipientAddress
+	 * @param amount
+	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchProviderException
+	 * @throws InvalidKeyException
+	 * @throws IOException
+	 */
 	public Transaction(Wallet senderWallet, String recipientAddress, double amount)
 			throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, IOException {
 		super();

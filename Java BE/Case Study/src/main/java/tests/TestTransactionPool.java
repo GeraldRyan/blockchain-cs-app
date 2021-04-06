@@ -40,7 +40,7 @@ public class TestTransactionPool {
 			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, IOException {
 		TransactionPool tp = new TransactionPool();
 		Transaction t = new Transaction(new Wallet(), "here", 165);
-		tp.setTransaction(t);
+		tp.putTransaction(t);
 		assertEquals(t, tp.getTransactionMap().get(t.getUuid()));
 		Transaction t2 = new Transaction(new Wallet(), "here", 165);
 		assertNotEquals(t, tp.getTransactionMap().get(t2.getUuid()));
